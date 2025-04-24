@@ -65,7 +65,7 @@
                             <p>Email: <?php echo $user["email"] ?></p>
                             <p>Phone: <?php echo $user["phone"] ?></p>
 
-                            <button class="btn btn-primary">Edit Profile</button>
+                            <button class="btn btn-primary"><a href="updatepro.php">Edit Profile</a></button>
                         </div>
                     </div>
                 </div>
