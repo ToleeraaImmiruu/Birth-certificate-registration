@@ -411,10 +411,10 @@ if (isset($_POST["certificate_submit"])) {
                                 Search by ID
                             </div>
                             <div class="card-body">
-                                <form id="idSearchForm" action="viewdetail22.php">
+                                <form id="idSearchForm">
                                     <div class="mb-3">
                                         <label for="idNumber" class="form-label">ID Number</label>
-                                        <input type="text" class="form-control" id="idNumber" required>
+                                        <input type="text" class="form-control" name="kebele_id" id="idNumber" required>
                                     </div>
                                     <button type="submit" name="id_submit" class="btn btn-primary">Search ID</button>
                                 </form>
@@ -427,7 +427,7 @@ if (isset($_POST["certificate_submit"])) {
                                 Search by Birth Certificate
                             </div>
                             <div class="card-body">
-                                <form id="certificateSearchForm" action="" method="post">
+                                <form id="certificateSearchForm">
                                     <div class="mb-3">
                                         <label for="certificateNumber" class="form-label">Certificate Number</label>
                                         <input type="text" name="certificate_id" class="form-control" id="certificateNumber" required>
@@ -440,8 +440,48 @@ if (isset($_POST["certificate_submit"])) {
 
                     <!-- Display Area for Search Results -->
                     <div id="searchResults" class="mt-4">
-                        <!-- Modern ID Card Template -->
-                        <div id="idInfoTemplate" class="modern-id-card animate-show" style="display: none;">
+
+                        <div class="idresult" class="mt-4"></div>
+
+
+                        <div id="certificateResult" class="mt-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [Rest of your script section remains the same] -->
+
+
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+    <script>
+        function displayPhoto(photoSrc) {
+            const mainPhotoDisplay = document.getElementById('mainPhotoDisplay');
+            mainPhotoDisplay.innerHTML = `<img src="${photoSrc}" alt="Displayed Photo" class="img-fluid">`;
+        }
+
+        // ID Search - Hides certificate before showing ID
+        document.getElementById('idSearchForm').addEventListener('submit', function(e) {
+            const idvalue = document.getElementById('idNumber').value;
+            const resultdiv = document.getElementById('idresult');
+            resultdiv.innerHTML = 'searching...';
+            fetch('search_id', {
+                    method: "POST",
+                    headers: {
+                        'content-type': "application/x-www-form-urlencoded",
+                        body: 'kebele_id ' + encodeURI(idvalue)
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        resultdiv.innerHTML = ` <div id="idInfoTemplate" class="modern-id-card animate-show" style="display: none;">
                             <div class="id-card-header">
                                 <h4>NATIONAL ID CARD</h4>
                             </div>
@@ -489,136 +529,75 @@ if (isset($_POST["certificate_submit"])) {
                             <div class="id-card-footer">
                                 Federal Democratic Republic of Ethiopia • Ministry of Interior
                             </div>
-                        </div>
-
-                        <!-- Modern Certificate Template -->
-
-                        <?php if ($certificateFound) {
-                            echo ' <div id="certificateInfoTemplate" class="certificate-modern animate-show" style="display: none;">
-                                <div class="certificate-header-modern">
-                                    <h5>Federal Democratic Republic of Ethiopia</h5>
-                                    <h6>Ministry of Health</h6>
-                                    <h4 id="hospitalName"></h4>
-                                    <h6>Birth Certificate</h6>
-                                </div>
-
-                                <div class="certificate-content-modern">
-                                    <div>
-                                        <img id="certificatePhoto" src="https://via.placeholder.com/150" alt="Certificate Photo" class="certificate-photo-modern">
-                                    </div>
-                                    <div class="certificate-details-modern">
-                                        <table class="certificate-table-modern">
-                                            <tr>
-                                                <th>B.R.ID</th>
-                                                <td><span id="certificateNoDisplay"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Child Name:</th>
-                                                <td><span id="childName"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Fathers Name:</th>
-                                                <td><span id="fatherName"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Mothers Name:</th>
-                                                <td><span id="motherName"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Date of Birth:</th>
-                                                <td><span id="certDob">htmlspecialchars($birth_record["dob"]) </span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Place of Birth:</th>
-                                                <td><span id="placeOfBirth"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Issued Date:</th>
-                                                <td><span id="certIssuedDate"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Hospital email:</th>
-                                                <td><span id="hospitalEmail"></span></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="certificate-footer-modern">
-                                    <div class="signature-box-modern">
-                                        <p><strong>Registrar Name:</strong> <span id="registrarName"></span></p>
-                                        <p><strong>Registrar Signature:</strong></p>
-                                        <img id="registrarSignature" src="../images/certificate.jpg" alt="Signature" class="img-fluid">
-                                    </div>
-                                    <div class="signature-box-modern">
-                                        <p><strong>Official Seal / Stamp:</strong></p>
-                                        <img id="officialStamp" src="../images/certificate.jpg" alt="Official Stamp" class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>';
-                        } else {
-                            echo "the  certificate is not found";
-                        } ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- [Rest of your script section remains the same] -->
+                        </div>`;
+                        
+                    }
+                })
 
 
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+        })
 
-    <script>
-        function displayPhoto(photoSrc) {
-            const mainPhotoDisplay = document.getElementById('mainPhotoDisplay');
-            mainPhotoDisplay.innerHTML = `<img src="${photoSrc}" alt="Displayed Photo" class="img-fluid">`;
-        }
-
-        // ID Search - Hides certificate before showing ID
-        document.getElementById('idSearchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            document.getElementById('certificateInfoTemplate').style.display = 'none';
-            document.getElementById('idInfoTemplate').style.display = 'block';
-            document.getElementById('idNoDisplay').textContent = "ID12345";
-            document.getElementById('firstName').textContent = "John";
-            document.getElementById('middleName').textContent = "Doe";
-            document.getElementById('lastName').textContent = "Smith";
-            document.getElementById('dob').textContent = "2000-01-01";
-            document.getElementById('gender').textContent = "Male";
-            document.getElementById('nationality').textContent = "Ethiopian";
-            document.getElementById('kebele').textContent = "04";
-            document.getElementById('issuedDate').textContent = "2023-05-01";
-            document.getElementById('idPhoto').src = "https://via.placeholder.com/150";
-        });
-
-        // Certificate Search - Hides ID before showing certificate
         document.getElementById('certificateSearchForm').addEventListener('submit', function(e) {
-            // e.preventDefault();
+            e.preventDefault();
+            const certId = document.getElementById('certificateNumber').value;
+            const resultdiv = document.getElementById('certificateResult');
+            resultdiv.innerHTML = "searching...";
+            fetch('search_certificate.php', {
+                    method: "POST",
+                    headers: {
+                        'content-type': "application/x-www-form-urlencoded"
+                    },
+                    body: 'certificate_id=' + encodeURI(certId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        resultdiv.innerHTML = ` <div class="certificate-modern">
+                    <div class="certificate-header-modern">
+                        <h5>Federal Democratic Republic of Ethiopia</h5>
+                        <h6>Ministry of Health</h6>
+                        <h4>${data.hospital.name}</h4>
+                        <h6>Birth Certificate</h6>
+                    </div>
 
-            <?php if ($certificateFound) : ?>
+                    <div class="certificate-content-modern">
+                        <div>
+                            <img src="https://via.placeholder.com/150" alt="Certificate Photo" class="certificate-photo-modern">
+                        </div>
+                        <div class="certificate-details-modern">
+                            <table class="certificate-table-modern">
+                                <tr><th>B.R.ID</th><td>${data.birth_record.record_id}</td></tr>
+                                <tr><th>Child Name</th><td>${data.birth_record.child_name}</td></tr>
+                                <tr><th>Father's Name</th><td>${data.birth_record.father_name}</td></tr>
+                                <tr><th>Mother's Name</th><td>${data.birth_record.mother_name}</td></tr>
+                                <tr><th>Date of Birth</th><td>${data.birth_record.dob}</td></tr>
+                                <tr><th>Place of Birth</th><td>${data.birth_record.pob}</td></tr>
+                                <tr><th>Issued Date</th><td>${data.birth_record.created_at}</td></tr>
+                                <tr><th>Hospital Email</th><td>${data.hospital.email}</td></tr>
+                            </table>
+                        </div>
+                    </div>
 
-                document.getElementById('idInfoTemplate').style.display = 'none';
-                document.getElementById('certificateInfoTemplate').style.display = 'block';
-                document.getElementById('hospitalName').textContent = "<?= htmlspecialchars($hospital['name'])  ?>";
-                document.getElementById('certificateNoDisplay').textContent = "<?= htmlspecialchars($birth_record['record_id']) ?>";
-                document.getElementById('childName').textContent = "<?= htmlspecialchars($birth_record['child_name']) ?>";
-                document.getElementById('fatherName').textContent = "<?= htmlspecialchars($birth_record['father_name']) ?>";
-                document.getElementById('motherName').textContent = "<?= htmlspecialchars($birth_record['mother_name']) ?>";
-                document.getElementById('certDob').textContent = "2023-03-15";
-                document.getElementById('placeOfBirth').textContent = "<?= htmlspecialchars($birth_record['pob']) ?>";
-                document.getElementById('certIssuedDate').textContent = "<?= htmlspecialchars($birth_record['created_at']) ?>";
-                document.getElementById('hospitalEmail').textContent = "<?= htmlspecialchars($hospital["email"]) ?>";
-                document.getElementById('registrarName').textContent = "<?= htmlspecialchars($birth_record['nameOfDoctor']) ?>";
-                document.getElementById('certificatePhoto').src = "https://via.placeholder.com/150";
-            <?php else: ?>
-                alert("birth record is not found");
-            <?php endif; ?>
+                    <div class="certificate-footer-modern">
+                        <div class="signature-box-modern">
+                            <p><strong>Registrar Name:</strong> ${data.birth_record.nameOfDoctor}</p>
+                            <img src="../images/certificate.jpg" alt="Signature" class="img-fluid">
+                        </div>
+                        <div class="signature-box-modern">
+                            <p><strong>Official Seal / Stamp:</strong></p>
+                            <img src="../images/certificate.jpg" alt="Stamp" class="img-fluid">
+                        </div>
+                    </div>
+                </div>`;
+                    } else {
+                        resultdiv.innerHTML = `<div class="alert alert-danger">certificate is not found  </div>`;
+                    }
+                })
+                .catch(err => {
+                    resultdiv.innerHTML = `<div class="alert alert-danger">Error fetching data</div>`;
+                    console.log(err);
+                });
         });
     </script>
     </body>

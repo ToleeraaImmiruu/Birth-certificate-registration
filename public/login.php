@@ -1,13 +1,17 @@
  <?php
     session_start(); // Start session for user login
+    
 
     include '../setup/dbconnection.php'; // Include database connection
 
+     
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login"])) {
+        
         $email = trim($_POST["email"]);
         $password = trim($_POST["password"]);
 
         // Prepare the SQL statement to prevent SQL Injection
+        if($role == 'user' || $role =='addmin'){
         $sql = "SELECT * FROM users WHERE email = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $email);
@@ -39,7 +43,25 @@
         // Close statement and connection
         $stmt->close();
         $conn->close();
+    }elseif($role == 'hospital'){
+        $sql = "SELECT * FROM hospitals WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result->num_rows > 0){
+                $hospital = $result->fetch_assoc();
+                $_SESSION["id"]= $hospital["hospital_id"];
+                $_SESSION["email"] = $hospital["email"];
+                include "../hospitaldashboard/hospitalDashboard.php";
+
+        }
+        
+        
+
+
     }
+}
     ?>
 
  <!DOCTYPE html>
