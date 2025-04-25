@@ -1,3 +1,41 @@
+<?php 
+session_start();
+
+include "../../setup/dbconnection.php";
+
+  if($_SERVER["REQUEST_METHOD"]== "POST" && isset($_POST["hospitallogin"])){
+    $username =trim($_POST["username"]);
+    $password = trim($_POST["password"]);
+    
+    $sql = "SELECT * FROM hospitals WHERE username = ?";
+    $stmt =$conn->prepare($sql);
+    $stmt->bind_param("s",$username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if($result->num_rows > 0){
+     $hospital = $result->fetch_assoc();
+     $_SESSION["hospital_id"] = $hospital["hospital_id"];
+     if($password == $hospital["password"]){
+        header("location: ../../hospitaldashboard/hospitalDashboard.php");
+     }else{
+        echo 'incorrect password';
+     }
+
+
+
+    }else{
+        die("no hospital is found whith this username  ");
+    }
+
+    
+  $stmt->close();
+
+  }
+
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,12 +103,12 @@
                 <p class="text-muted">Please login to access your account</p>
             </div>
             
-            <form id="loginForm">
+            <form id="loginForm" action="" method="POST">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="username" class="form-label">username</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
                     </div>
                 </div>
                 
@@ -78,14 +116,14 @@
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required>
                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
                 </div>
                 
-                <button type="submit" class="btn btn-login w-100">Login</button>
+                <button type="submit" name="hospitallogin" class="btn btn-login w-100">Login</button>
                 
                 <div class="links">
                     <a href="#" id="forgotPassword">Forgot Password?</a>
@@ -102,46 +140,46 @@
     
     <script>
         // Toggle password visibility
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const password = document.getElementById('password');
-            const icon = this.querySelector('i');
+        // document.getElementById('togglePassword').addEventListener('click', function() {
+        //     const password = document.getElementById('password');
+        //     const icon = this.querySelector('i');
             
-            if (password.type === 'password') {
-                password.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                password.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        });
+        //     if (password.type === 'password') {
+        //         password.type = 'text';
+        //         icon.classList.remove('fa-eye');
+        //         icon.classList.add('fa-eye-slash');
+        //     } else {
+        //         password.type = 'password';
+        //         icon.classList.remove('fa-eye-slash');
+        //         icon.classList.add('fa-eye');
+        //     }
+        // });
         
-        // Form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // // Form submission
+        // document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
             
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        //     const username = document.getElementById('username').value;
+        //     const password = document.getElementById('password').value;
             
-            // Here you would typically send this data to a server for validation
-            console.log('Login attempt with:', { username, password });
+        //     // Here you would typically send this data to a server for validation
+        //     console.log('Login attempt with:', { username, password });
             
-            // For demo purposes, show an alert
-            alert('Login functionality would be implemented here. Check console for credentials.');
-        });
+        //     // For demo purposes, show an alert
+        //     alert('Login functionality would be implemented here. Check console for credentials.');
+        // });
         
-        // Forgot password link
-        document.getElementById('forgotPassword').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Forgot password functionality would be implemented here.');
-        });
+        // // Forgot password link
+        // document.getElementById('forgotPassword').addEventListener('click', function(e) {
+        //     e.preventDefault();
+        //     alert('Forgot password functionality would be implemented here.');
+        // });
         
-        // Create account link
-        document.getElementById('createAccount').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Account creation functionality would be implemented here.');
-        });
+        // // Create account link
+        // document.getElementById('createAccount').addEventListener('click', function(e) {
+        //     e.preventDefault();
+        //     alert('Account creation functionality would be implemented here.');
+        // });
     </script>
 </body>
 </html>

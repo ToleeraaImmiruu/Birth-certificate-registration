@@ -471,7 +471,7 @@ if (isset($_POST["certificate_submit"])) {
             const idvalue = document.getElementById('idNumber').value;
             const resultdiv = document.getElementById('idresult');
             resultdiv.innerHTML = 'searching...';
-            fetch('search_id', {
+            fetch('search_ID', {
                     method: "POST",
                     headers: {
                         'content-type': "application/x-www-form-urlencoded",

@@ -7,6 +7,13 @@
     <title>Ifaa Bulaa Kebele - Home</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         /* Reset and Base Styles */
         * {
@@ -667,7 +674,7 @@
     <header>
         <div class="container header-container">
             <div class="logo">
-                <img src="https://via.placeholder.com/50x50" alt="Ifaa Bulaa Kebele Logo">
+                <img src="user.png" alt="Ifaa Bulaa Kebele Logo">
                 <span class="logo-text">Ifaa Bulaa Kebele</span>
             </div>
 
@@ -696,10 +703,10 @@
                             Login
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="index1.php?role=admin">Login as Admin</a></li>
-                            <li><a class="dropdown-item" href="index1.php?role=hospital">Login as Hospital</a></li>
-                            <li><a class="dropdown-item" href="index1.php?role=user">Login as User</a></li>
-                            <li><a class="dropdown-item" href="index1.php?role=kebele">Login as Kebele</a></li>
+                            <li><a class="dropdown-item" href="login/addminlogin.php" onclick="openLogin('addmin')">Login as Admin</a></li>
+                            <li><a class="dropdown-item" href="login/hopsitalogin.php" onclick="openLogin('hospital')">Login as Hospital</a></li>
+                            <li><a class="dropdown-item" href="login/userlogin.php" onclick="openLogin('user')">Login as User</a></li>
+                            <li><a class="dropdown-item" href="login/kebelelogin.php" onclick="openLogin('kebele')">Login as Kebele</a></li>
                         </ul>
                     </div>
 
@@ -714,7 +721,15 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="loginModalContent">
+                <!-- Dynamic login content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
@@ -737,7 +752,7 @@
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-img">
-                        <img src="https://images.unsplash.com/photo-1581093196276-3e5b3f8a8b0a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Land Registration">
+                        <img src="family3_whith_cartifacte.jpg" alt="Land Registration">
                     </div>
                     <div class="service-content">
                         <h3 class="service-title">Land Registration</h3>
@@ -747,7 +762,7 @@
 
                 <div class="service-card">
                     <div class="service-img">
-                        <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Business License">
+                        <img src="family3_whith_cartifacte.jpg" alt="Business License">
                     </div>
                     <div class="service-content">
                         <h3 class="service-title">Business License</h3>
@@ -757,7 +772,7 @@
 
                 <div class="service-card">
                     <div class="service-img">
-                        <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Social Services">
+                        <img src="family3_whith_cartifacte.jpg" alt="Social Services">
                     </div>
                     <div class="service-content">
                         <h3 class="service-title">Social Services</h3>
@@ -767,7 +782,7 @@
 
                 <div class="service-card">
                     <div class="service-img">
-                        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Marriage Registration">
+                        <img src="family3_whith_cartifacte.jpg" alt="Marriage Registration">
                     </div>
                     <div class="service-content">
                         <h3 class="service-title">Marriage Registration</h3>
@@ -777,7 +792,7 @@
 
                 <div class="service-card">
                     <div class="service-img">
-                        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Birth Certificate">
+                        <img src="family3_whith_cartifacte.jpg" alt="Birth Certificate">
                     </div>
                     <div class="service-content">
                         <h3 class="service-title">Birth Certificate</h3>
@@ -787,7 +802,7 @@
 
                 <div class="service-card">
                     <div class="service-img">
-                        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Community Support">
+                        <img src="family3_whith_cartifacte.jpg" alt="Community Support">
                     </div>
                     <div class="service-content">
                         <h3 class="service-title">Community Support</h3>
@@ -812,7 +827,7 @@
                     <a href="#contact" class="btn" style="margin-top: 20px;">Learn More</a>
                 </div>
                 <div class="about-img">
-                    <img src="https://images.unsplash.com/photo-1566438480900-0609be27a4be?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Ifaa Bulaa Kebele Office">
+                    <img src="family3_whith_cartifacte.jpg" alt="Ifaa Bulaa Kebele Office">
                 </div>
             </div>
         </div>
@@ -979,6 +994,23 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function openLogin(role) {
+            fetch(`login/${role}login.php`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("loginModalContent").innerHTML = html;
+                    const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+                    modal.show();
+
+                    // Wait for modal to fully show before adding validation
+                    setTimeout(() => {
+                        // attachValidation(role);
+                    }, 300); // small delay to ensure content is in DOM
+                })
+                .catch(error => console.error("Error loading login form:", error));
+        }
+    </script>
 </body>
 
 
