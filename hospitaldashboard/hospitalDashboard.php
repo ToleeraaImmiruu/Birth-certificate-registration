@@ -1,3 +1,20 @@
+<?php
+if (isset($_GET["page"])) {
+  $page = $_GET["page"];
+
+  if ($page == "birthrecord") {
+    include "birthrecord.php";
+  } else if ($page == "home") {
+    include "home.php";
+  } else if ($page == "recordManagement") {
+    include "managebirthrecordfinal.php";
+  } else {
+    include "home.php";
+  }
+} else {
+  include "home.php";
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -208,25 +225,5 @@
   </div>
 
 </body>
-<?php
-if (isset($_GET["page"])) {
-  $page = $_GET["page"];
-
-  if ($page == "birthrecord") {
-    include "birthrecord.php";
-  }else if($page == "home"){
-    include "home.php";
-  }else if($page =="recordManagement"){
-    include "managebirthrecordfinal.php";
-  }else{
-    include "home.php";
-  }
-} else {
-  include "home.php";
-}
-
-
-
-?>
 
 </html>

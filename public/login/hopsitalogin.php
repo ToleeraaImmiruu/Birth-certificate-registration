@@ -14,8 +14,9 @@ include "../../setup/dbconnection.php";
     $result = $stmt->get_result();
     if($result->num_rows > 0){
      $hospital = $result->fetch_assoc();
-     $_SESSION["hospital_id"] = $hospital["hospital_id"];
+     echo $hospital["hospital_id"];
      if($password == $hospital["password"]){
+        $_SESSION["hospital_id"] = $hospital["hospital_id"];
         header("location: ../../hospitaldashboard/hospitalDashboard.php");
      }else{
         echo 'incorrect password';
@@ -31,10 +32,7 @@ include "../../setup/dbconnection.php";
   $stmt->close();
 
   }
-
-
-
-?>
+  ?>
 
 <!DOCTYPE html>
 <html lang="en">

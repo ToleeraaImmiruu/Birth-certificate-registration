@@ -1,16 +1,6 @@
 <?php
-function _action_fw_flash_message_backend_prepare()
-{
-    if (!session_id()) {
-        session_start();
-    }
-}
-
-            // session_start(); // MUST be the first line, no spaces above
-
+session_start();
 include "../setup/dbconnection.php";
-echo $_SESSION["hospital_id"];
-
 
 $hospital_id = $_SESSION["hospital_id"] ?? null;
 
@@ -245,13 +235,18 @@ $result = $stmt->get_result();
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>BR-2023-001</td>
-                                <td>John Doe</td>
-                                <td>June 15, 2023</td>
-                                <td>Michael Doe</td>
-                                <td>Jane Doe</td>
+                       
+                ';  
+                while($record = $result->fetch_assoc()){
+
+                     echo '
+                      <tbody>
+                           <tr>
+                                <td>'.$record["record_id"].'</td>
+                                <td>'.$record["child_name"].'</td>
+                                <td>'.$record["dob"].'</td>
+                                <td>'.$record["father_name"].'</td>
+                                <td>'.$record["mother_name"].'</td>
                                 <td>
                                     <button class="btn btn-sm btn-view" onclick="viewRecord()">
                                         <i class="fas fa-eye"></i> View/Print
@@ -262,6 +257,13 @@ $result = $stmt->get_result();
                     </table>
                 </div>
             </div>';
+
+                }
+                            
+        
+
+                       
+                       
             } else {
                 echo `<div class="alert">no birth record found</div>`;
             } ?>
