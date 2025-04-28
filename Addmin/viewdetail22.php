@@ -441,9 +441,7 @@ if (isset($_POST["certificate_submit"])) {
                     <!-- Display Area for Search Results -->
                     <div id="searchResults" class="mt-4">
 
-                        <div class="idresult" class="mt-4"></div>
-
-
+                        <div id="idresult" class="mt-4"></div>
                         <div id="certificateResult" class="mt-4"></div>
                     </div>
                 </div>
@@ -468,70 +466,71 @@ if (isset($_POST["certificate_submit"])) {
 
         // ID Search - Hides certificate before showing ID
         document.getElementById('idSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             const idvalue = document.getElementById('idNumber').value;
             const resultdiv = document.getElementById('idresult');
             resultdiv.innerHTML = 'searching...';
-            fetch('search_ID', {
+            fetch('search_ID.php', {
                     method: "POST",
                     headers: {
                         'content-type': "application/x-www-form-urlencoded",
-                        body: 'kebele_id ' + encodeURI(idvalue)
-                    }
+                    },
+                    body: 'kebele_id=' + encodeURI(idvalue)
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        resultdiv.innerHTML = ` <div id="idInfoTemplate" class="modern-id-card animate-show" style="display: none;">
-                            <div class="id-card-header">
-                                <h4>NATIONAL ID CARD</h4>
+                        resultdiv.innerHTML = `
+                <div class="modern-id-card animate-show">
+                    <div class="id-card-header">
+                        <h4>NATIONAL ID CARD</h4>
+                    </div>
+                    <div class="id-card-body">
+                        <div class="id-photo-section">
+                            <img src="${data.kebele_id.photo_url || 'https://via.placeholder.com/150'}" 
+                                 alt="ID Photo" class="id-main-photo">
+                        </div>
+                        <div class="id-details-section">
+                            <div class="id-detail-row">
+                                <div class="id-detail-label">ID Number:</div>
+                                <div class="id-detail-value">${data.kebele_id.kebele_id_number}</div>
                             </div>
-                            <div class="id-card-body">
-                                <div class="id-photo-section">
-                                    <img id="idPhoto" src="https://via.placeholder.com/150" alt="ID Photo" class="id-main-photo">
+                            <div class="id-detail-row">
+                                <div class="id-detail-label">Full Name:</div>
+                                <div class="id-detail-value">
+                                    ${data.kebele_id.first_name} ${data.kebele_id.middle_name || ''} ${data.kebele_id.last_name}
                                 </div>
-                                <div class="id-details-section">
-                                    <div class="id-detail-row">
-                                        <div class="id-detail-label">ID Number:</div>
-                                        <div class="id-detail-value" id="idNoDisplay"></div>
-                                    </div>
-                                    <div class="id-detail-row">
-                                        <div class="id-detail-label">Full Name:</div>
-                                        <div class="id-detail-value">
-                                            <span id="firstName"></span> <span id="middleName"></span> <span id="lastName"></span>
-                                        </div>
-                                    </div>
-                                    <div class="id-detail-row">
-                                        <div class="id-detail-label">Date of Birth:</div>
-                                        <div class="id-detail-value" id="dob"></div>
-                                    </div>
-                                    <div class="id-detail-row">
-                                        <div class="id-detail-label">Gender:</div>
-                                        <div class="id-detail-value" id="gender"></div>
-                                    </div>
-                                    <div class="id-detail-row">
-                                        <div class="id-detail-label">Nationality:</div>
-                                        <div class="id-detail-value" id="nationality"></div>
-                                    </div>
-                                    <div class="id-detail-row">
-                                        <div class="id-detail-label">Kebele:</div>
-                                        <div class="id-detail-value" id="kebele"></div>
-                                    </div>
-                                    <div class="id-detail-row">
-                                        <div class="id-detail-label">Issued Date:</div>
-                                        <div class="id-detail-value" id="issuedDate"></div>
-                                    </div>
-                                </div>
-                                <div class="id-card-qr">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ID12345" alt="QR Code">
-                                </div>
-                                <div class="id-card-watermark">OFFICIAL</div>
                             </div>
-                            <div class="id-card-footer">
-                                Federal Democratic Republic of Ethiopia • Ministry of Interior
+                            <div class="id-detail-row">
+                                <div class="id-detail-label">Date of Birth:</div>
+                                <div class="id-detail-value">${data.kebele_id.date_of_birth || 'N/A'}</div>
                             </div>
-                        </div>`;
-                        
+                            <div class="id-detail-row">
+                                <div class="id-detail-label">Gender:</div>
+                                <div class="id-detail-value">${data.kebele_id.gender || 'N/A'}</div>
+                            </div>
+                            <div class="id-detail-row">
+                                <div class="id-detail-label">Kebele:</div>
+                                <div class="id-detail-value">${data.kebele_id.kebele_name || 'N/A'}</div>
+                            </div>
+                        </div>
+                        <div class="id-card-qr">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${data.kebele_id.kebele_id_number}" 
+                                 alt="QR Code">
+                        </div>
+                    </div>
+                    <div class="id-card-footer">
+                        Federal Democratic Republic of Ethiopia • Ministry of Interior
+                    </div>
+                </div>`;
+                    } else {
+                        resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'ID not found'}</div>`;
                     }
+                })
+                .catch(err => {
+                    resultdiv.innerHTML = `
+                     < div class = "alert alert-danger" > Error fetching data < /div>`;
+                    console.log();
                 })
 
 
@@ -554,14 +553,14 @@ if (isset($_POST["certificate_submit"])) {
                 .then(data => {
                     if (data.success) {
                         resultdiv.innerHTML = ` <div class="certificate-modern">
-                    <div class="certificate-header-modern">
+                        <div class="certificate-header-modern">
                         <h5>Federal Democratic Republic of Ethiopia</h5>
                         <h6>Ministry of Health</h6>
                         <h4>${data.hospital.name}</h4>
                         <h6>Birth Certificate</h6>
-                    </div>
-
-                    <div class="certificate-content-modern">
+                        </div>
+    
+                        <div class="certificate-content-modern">
                         <div>
                             <img src="https://via.placeholder.com/150" alt="Certificate Photo" class="certificate-photo-modern">
                         </div>
@@ -577,9 +576,9 @@ if (isset($_POST["certificate_submit"])) {
                                 <tr><th>Hospital Email</th><td>${data.hospital.email}</td></tr>
                             </table>
                         </div>
-                    </div>
-
-                    <div class="certificate-footer-modern">
+                        </div>
+    
+                        <div class="certificate-footer-modern">
                         <div class="signature-box-modern">
                             <p><strong>Registrar Name:</strong> ${data.birth_record.nameOfDoctor}</p>
                             <img src="../images/certificate.jpg" alt="Signature" class="img-fluid">
@@ -588,8 +587,8 @@ if (isset($_POST["certificate_submit"])) {
                             <p><strong>Official Seal / Stamp:</strong></p>
                             <img src="../images/certificate.jpg" alt="Stamp" class="img-fluid">
                         </div>
-                    </div>
-                </div>`;
+                        </div>
+                     </div>`;
                     } else {
                         resultdiv.innerHTML = `<div class="alert alert-danger">certificate is not found  </div>`;
                     }
