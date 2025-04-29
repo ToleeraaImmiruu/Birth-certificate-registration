@@ -27,11 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["userlogin"])) {
             $_SESSION["email"] = $user["email"];
 
             // Redirect based on user role
-            if ($user["user"] === "admin") {
+            if ($user["role"] === "user") {
                 header("location: ../../userdashboard/user.php");
-            } else {
-                header("Location: ../../addmin/sidebar.php");
-            }
+            } 
             exit;
         } else {
             echo "<script>alert('Incorrect password!');</script>";

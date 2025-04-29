@@ -27,9 +27,9 @@
                 $_SESSION["email"] = $user["email"];
 
                 // Redirect based on user role
-                if ($user["role"] === "admin") {
+                if ($user["role"] == "admin") {
                     header("Location: ../addmin/sidebar.php");
-                } else {
+                } elseif($user["role"] == "user") {
                     header("location: ../userdashboard/user.php");
                 }
                 exit;

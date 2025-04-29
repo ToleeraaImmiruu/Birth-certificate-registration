@@ -357,7 +357,7 @@ if (isset($_POST["certificate_submit"])) {
     </style>
 </head>
 
-<>
+
     <div class="container-fluid mt-4">
         <div class="row">
             <!-- Left Side - Photo Display -->
@@ -393,7 +393,7 @@ if (isset($_POST["certificate_submit"])) {
 
                 <!-- Back to Dashboard Button -->
                 <div class="mt-4">
-                    <a href="dashboard.html" class="btn btn-secondary">
+                    <a href="sidebar.php?page=application" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Back to Dashboard
                     </a>
                 </div>
@@ -445,7 +445,7 @@ if (isset($_POST["certificate_submit"])) {
                         <div id="certificateResult" class="mt-4"></div>
                     </div>
                 </div>
-            </div>
+            </div>-
         </div>
     </div>
 
@@ -467,9 +467,13 @@ if (isset($_POST["certificate_submit"])) {
         // ID Search - Hides certificate before showing ID
         document.getElementById('idSearchForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const idvalue = document.getElementById('idNumber').value;
+            const certdiv = document.getElementById('certificateResult');
+            certdiv.style.display = "none";
             const resultdiv = document.getElementById('idresult');
+            resultdiv.style.display = "block";
             resultdiv.innerHTML = 'searching...';
+            const idvalue = document.getElementById('idNumber').value;
+
             fetch('search_ID.php', {
                     method: "POST",
                     headers: {
@@ -487,7 +491,7 @@ if (isset($_POST["certificate_submit"])) {
                     </div>
                     <div class="id-card-body">
                         <div class="id-photo-section">
-                            <img src="${data.kebele_id.photo_url || 'https://via.placeholder.com/150'}" 
+                            <img src="../kebele/${data.kebele_id.photo_path || 'https://via.placeholder.com/150'}" 
                                  alt="ID Photo" class="id-main-photo">
                         </div>
                         <div class="id-details-section">
@@ -540,8 +544,11 @@ if (isset($_POST["certificate_submit"])) {
         document.getElementById('certificateSearchForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const certId = document.getElementById('certificateNumber').value;
-            const resultdiv = document.getElementById('certificateResult');
-            resultdiv.innerHTML = "searching...";
+            const certdiv = document.getElementById('certificateResult');
+            const idresult = document.getElementById('idresult');
+            idresult.style.display = "none";
+            certdiv.style.display = "block"
+            certdiv.innerHTML = "searching...";
             fetch('search_certificate.php', {
                     method: "POST",
                     headers: {
@@ -552,7 +559,7 @@ if (isset($_POST["certificate_submit"])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        resultdiv.innerHTML = ` <div class="certificate-modern">
+                        certdiv.innerHTML = ` <div class="certificate-modern">
                         <div class="certificate-header-modern">
                         <h5>Federal Democratic Republic of Ethiopia</h5>
                         <h6>Ministry of Health</h6>

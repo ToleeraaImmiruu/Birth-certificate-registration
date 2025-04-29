@@ -52,7 +52,7 @@ $result = $conn->query($sql);
                             <td><?= $user['role']; ?></td>
                             <td>
                                 <!-- Button to view documents (assumes you have a page to display docs) -->
-                                <a href="channn.php?app_id=<?= $user['id'] ?>" id="viewdcoment" class="btn btn-info btn-sm">View Profile</a>
+                                <a href="userprofile.php?app_id=<?= $user['id'] ?>" id="viewdcoment" class="btn btn-info btn-sm">View Profile</a>
                                 <!-- Approve button -->
                                 <button class="btn btn-success btn-sm approveBtn" data-appid="<?= $user['id']; ?>">assing role</button>
                                 <!-- Reject button -->
