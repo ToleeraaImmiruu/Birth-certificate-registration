@@ -358,133 +358,133 @@ if (isset($_POST["certificate_submit"])) {
 </head>
 
 
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <!-- Left Side - Photo Display -->
-            <div class="col-md-6">
-                <h3>Photo Display</h3>
-                <div class="main-photo" id="mainPhotoDisplay">
-                    <p class="text-muted">Click a thumbnail to display photo here</p>
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Left Side - Photo Display -->
+        <div class="col-md-6">
+            <h3>Photo Display</h3>
+            <div class="main-photo" id="mainPhotoDisplay">
+                <p class="text-muted">Click a thumbnail to display photo here</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="thumbnail" onclick="displayPhoto('<?= htmlspecialchars($doc['applicant_id']) ?>')">
+                        <img src="<?= htmlspecialchars($doc['applicant_id']) ?>" alt="Photo 1" class="img-thumbnail img-fluid">
+                    </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="thumbnail" onclick="displayPhoto('<?= htmlspecialchars($doc['applicant_id']) ?>')">
-                            <img src="<?= htmlspecialchars($doc['applicant_id']) ?>" alt="Photo 1" class="img-thumbnail img-fluid">
-                        </div>
+                <div class="col-md-4">
+                    <div class="thumbnail" onclick="displayPhoto('<?= htmlspecialchars($doc['mother_id']) ?>')">
+                        <img src="<?= htmlspecialchars($doc['mother_id']) ?>" alt="Photo 2" class="img-thumbnail img-fluid">
                     </div>
-                    <div class="col-md-4">
-                        <div class="thumbnail" onclick="displayPhoto('<?= htmlspecialchars($doc['mother_id']) ?>')">
-                            <img src="<?= htmlspecialchars($doc['mother_id']) ?>" alt="Photo 2" class="img-thumbnail img-fluid">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="thumbnail" onclick="displayPhoto('<?= htmlspecialchars($doc['father_id']) ?>')">
-                            <img src="<?= htmlspecialchars($doc['father_id']) ?>" alt="Father ID" class="img-thumbnail img-fluid">
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="thumbnail" onclick="displayPhoto('<?= htmlspecialchars($doc['birth_record']) ?>')">
-                            <img src="<?= htmlspecialchars($doc['birth_record']) ?>" alt="Photo 3" class="img-thumbnail img-fluid">
-                        </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="thumbnail" onclick="displayPhoto('<?= htmlspecialchars($doc['father_id']) ?>')">
+                        <img src="<?= htmlspecialchars($doc['father_id']) ?>" alt="Father ID" class="img-thumbnail img-fluid">
                     </div>
                 </div>
 
-                <!-- Back to Dashboard Button -->
-                <div class="mt-4">
-                    <a href="sidebar.php?page=application" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to Dashboard
-                    </a>
+                <div class="col-md-4">
+                    <div class="thumbnail" onclick="displayPhoto('<?= htmlspecialchars($doc['birth_record']) ?>')">
+                        <img src="<?= htmlspecialchars($doc['birth_record']) ?>" alt="Photo 3" class="img-thumbnail img-fluid">
+                    </div>
                 </div>
             </div>
 
-            <!-- Right Side - Search Forms -->
-            <div class="col-md-6">
-                <div class="search-section">
-                    <h3>Search Records</h3>
+            <!-- Back to Dashboard Button -->
+            <div class="mt-4">
+                <a href="sidebar.php?page=application" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
 
-                    <!-- ID Search Form -->
-                    <div class="d-flex gap-3 flex-wrap">
-                        <div class="card flex-fill mb-4">
-                            <div class="card-header bg-primary text-white">
-                                Search by ID
-                            </div>
-                            <div class="card-body">
-                                <form id="idSearchForm">
-                                    <div class="mb-3">
-                                        <label for="idNumber" class="form-label">ID Number</label>
-                                        <input type="text" class="form-control" name="kebele_id" id="idNumber" required>
-                                    </div>
-                                    <button type="submit" name="id_submit" class="btn btn-primary">Search ID</button>
-                                </form>
-                            </div>
+        <!-- Right Side - Search Forms -->
+        <div class="col-md-6">
+            <div class="search-section">
+                <h3>Search Records</h3>
+
+                <!-- ID Search Form -->
+                <div class="d-flex gap-3 flex-wrap">
+                    <div class="card flex-fill mb-4">
+                        <div class="card-header bg-primary text-white">
+                            Search by ID
                         </div>
-
-                        <!-- Birth Certificate Search Form -->
-                        <div class="card flex-fill">
-                            <div class="card-header bg-success text-white">
-                                Search by Birth Certificate
-                            </div>
-                            <div class="card-body">
-                                <form id="certificateSearchForm">
-                                    <div class="mb-3">
-                                        <label for="certificateNumber" class="form-label">Certificate Number</label>
-                                        <input type="text" name="certificate_id" class="form-control" id="certificateNumber" required>
-                                    </div>
-                                    <button type="submit" name="certificate_submit" class="btn btn-success">Search Certificate</button>
-                                </form>
-                            </div>
+                        <div class="card-body">
+                            <form id="idSearchForm">
+                                <div class="mb-3">
+                                    <label for="idNumber" class="form-label">ID Number</label>
+                                    <input type="text" class="form-control" name="kebele_id" id="idNumber" required>
+                                </div>
+                                <button type="submit" name="id_submit" class="btn btn-primary">Search ID</button>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- Display Area for Search Results -->
-                    <div id="searchResults" class="mt-4">
-
-                        <div id="idresult" class="mt-4"></div>
-                        <div id="certificateResult" class="mt-4"></div>
+                    <!-- Birth Certificate Search Form -->
+                    <div class="card flex-fill">
+                        <div class="card-header bg-success text-white">
+                            Search by Birth Certificate
+                        </div>
+                        <div class="card-body">
+                            <form id="certificateSearchForm">
+                                <div class="mb-3">
+                                    <label for="certificateNumber" class="form-label">Certificate Number</label>
+                                    <input type="text" name="certificate_id" class="form-control" id="certificateNumber" required>
+                                </div>
+                                <button type="submit" name="certificate_submit" class="btn btn-success">Search Certificate</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>-
-        </div>
+
+                <!-- Display Area for Search Results -->
+                <div id="searchResults" class="mt-4">
+
+                    <div id="idresult" class="mt-4"></div>
+                    <div id="certificateResult" class="mt-4"></div>
+                </div>
+            </div>
+        </div>-
     </div>
+</div>
 
-    <!-- [Rest of your script section remains the same] -->
+<!-- [Rest of your script section remains the same] -->
 
 
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
 
-    <script>
-        function displayPhoto(photoSrc) {
-            const mainPhotoDisplay = document.getElementById('mainPhotoDisplay');
-            mainPhotoDisplay.innerHTML = `<img src="${photoSrc}" alt="Displayed Photo" class="img-fluid">`;
-        }
+<script>
+    function displayPhoto(photoSrc) {
+        const mainPhotoDisplay = document.getElementById('mainPhotoDisplay');
+        mainPhotoDisplay.innerHTML = `<img src="${photoSrc}" alt="Displayed Photo" class="img-fluid">`;
+    }
 
-        // ID Search - Hides certificate before showing ID
-        document.getElementById('idSearchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const certdiv = document.getElementById('certificateResult');
-            certdiv.style.display = "none";
-            const resultdiv = document.getElementById('idresult');
-            resultdiv.style.display = "block";
-            resultdiv.innerHTML = 'searching...';
-            const idvalue = document.getElementById('idNumber').value;
+    // ID Search - Hides certificate before showing ID
+    document.getElementById('idSearchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const certdiv = document.getElementById('certificateResult');
+        certdiv.style.display = "none";
+        const resultdiv = document.getElementById('idresult');
+        resultdiv.style.display = "block";
+        resultdiv.innerHTML = 'searching...';
+        const idvalue = document.getElementById('idNumber').value;
 
-            fetch('search_ID.php', {
-                    method: "POST",
-                    headers: {
-                        'content-type': "application/x-www-form-urlencoded",
-                    },
-                    body: 'kebele_id=' + encodeURI(idvalue)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        resultdiv.innerHTML = `
+        fetch('search_ID.php', {
+                method: "POST",
+                headers: {
+                    'content-type': "application/x-www-form-urlencoded"
+                },
+                body: 'kebele_id=' + encodeURI(idvalue)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultdiv.innerHTML = `
                 <div class="modern-id-card animate-show">
                     <div class="id-card-header">
                         <h4>NATIONAL ID CARD</h4>
@@ -527,39 +527,40 @@ if (isset($_POST["certificate_submit"])) {
                         Federal Democratic Republic of Ethiopia • Ministry of Interior
                     </div>
                 </div>`;
-                    } else {
-                        resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'ID not found'}</div>`;
-                    }
-                })
-                .catch(err => {
-                    resultdiv.innerHTML = `
+                } else {
+                    resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'ID not found'}</div>`;
+                }
+            })
+            .catch(err => {
+                resultdiv.innerHTML = `
                      < div class = "alert alert-danger" > Error fetching data < /div>`;
-                    console.log();
-                })
+                console.log();
+            })
+            
 
 
 
-        })
+    })
 
-        document.getElementById('certificateSearchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const certId = document.getElementById('certificateNumber').value;
-            const certdiv = document.getElementById('certificateResult');
-            const idresult = document.getElementById('idresult');
-            idresult.style.display = "none";
-            certdiv.style.display = "block"
-            certdiv.innerHTML = "searching...";
-            fetch('search_certificate.php', {
-                    method: "POST",
-                    headers: {
-                        'content-type': "application/x-www-form-urlencoded"
-                    },
-                    body: 'certificate_id=' + encodeURI(certId)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        certdiv.innerHTML = ` <div class="certificate-modern">
+    document.getElementById('certificateSearchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const certId = document.getElementById('certificateNumber').value;
+        const certdiv = document.getElementById('certificateResult');
+        const idresult = document.getElementById('idresult');
+        idresult.style.display = "none";
+        certdiv.style.display = "block"
+        certdiv.innerHTML = "searching...";
+        fetch('search_certificate.php', {
+                method: "POST",
+                headers: {
+                    'content-type': "application/x-www-form-urlencoded"
+                },
+                body: 'certificate_id=' + encodeURI(certId)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    certdiv.innerHTML = ` <div class="certificate-modern">
                         <div class="certificate-header-modern">
                         <h5>Federal Democratic Republic of Ethiopia</h5>
                         <h6>Ministry of Health</h6>
@@ -596,16 +597,16 @@ if (isset($_POST["certificate_submit"])) {
                         </div>
                         </div>
                      </div>`;
-                    } else {
-                        resultdiv.innerHTML = `<div class="alert alert-danger">certificate is not found  </div>`;
-                    }
-                })
-                .catch(err => {
-                    resultdiv.innerHTML = `<div class="alert alert-danger">Error fetching data</div>`;
-                    console.log(err);
-                });
-        });
-    </script>
-    </body>
+                } else {
+                    resultdiv.innerHTML = `<div class="alert alert-danger">certificate is not found  </div>`;
+                }
+            })
+            .catch(err => {
+                resultdiv.innerHTML = `<div class="alert alert-danger">Error fetching data</div>`;
+                console.log(err);
+            });
+    });
+</script>
+</body>
 
 </html>

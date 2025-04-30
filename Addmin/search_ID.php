@@ -15,7 +15,7 @@ $stmt->execute();
 $result= $stmt->get_result();
 
 if($result->num_rows == 0){
-    $response["message"]= "identity not found !!";
+    $response["message"]= "identity not found.";
     echo json_encode($response);
     exit;
 }

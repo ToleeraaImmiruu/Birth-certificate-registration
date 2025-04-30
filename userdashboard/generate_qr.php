@@ -2,7 +2,7 @@
 require_once '../phpqrcode/qrlib.php';
 
 // Set the path for QR codes - using absolute path for reliability
-$path = __DIR__ . '../qrcodes/';
+$path = __DIR__ . 'qrcodes/';
 
 // Create directory if it doesn't exist
 if (!file_exists($path)) {

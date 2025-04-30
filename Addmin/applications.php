@@ -66,7 +66,11 @@ $result = $conn->query($sql);
                                 <!-- Approve button -->
                                 <button class="btn btn-success btn-sm approveBtn" onclick="approved(<?= $row['id']; ?>)" data-appid="<?= $row['id']; ?>">Approve</button>
                                 <!-- Reject button -->
-                                <button class="btn btn-danger btn-sm rejectBtn" onclick="regectfunction(<?= $row['id']; ?>)" data-appid="<?= $row['id']; ?>">Reject</button>
+                                <!-- <button class="btn btn-danger btn-sm rejectBtn" onclick="regectfunction(<?= $row['id']; ?>)" data-appid="<?= $row['id']; ?>">Reject</button> -->
+
+                                <button class="btn btn-danger" onclick="document.getElementById('rejectPopUp').style.display='block'">
+                                    reject
+                                </button>
 
                             </td>
                         </tr>
@@ -91,14 +95,14 @@ $result = $conn->query($sql);
                     if (xmlhttp.status == 200 && xmlhttp.responseText.trim() === "Certificate approved and email sent successfully!") {
                         document.getElementById("row-" + id).remove();
                         alert("Certificate approved and email sent successfully!");
-                } else {
-                    alert("Error: " + xmlhttp.responseText);
+                    } else {
+                        alert("Error: " + xmlhttp.responseText);
+                    }
                 }
-            }
 
-        }
-        xmlhttp.open("GET", "approved.php?approve_id=" + id, true);
-        xmlhttp.send();
+            }
+            xmlhttp.open("GET", "approved.php?approve_id=" + id, true);
+            xmlhttp.send();
         }
 
 
@@ -118,6 +122,25 @@ $result = $conn->query($sql);
 
         }
     </script>
+
+
+
+    <div style="display:none;position: fixed; top:0; left:0; background-color:rgba(0,0,0,4);width:100%;height:100%;" id="rejectPopUp">
+        <div class="card">
+            <div class="card-header">
+                Title
+            </div>
+            <div class="card-body">
+
+                <button type="button" onclick="submitting()">submit</button>
+                <button class="btn btn-danger" onclick="document.getElementById('rejectPopUp').style.display='none'">
+                    close
+                </button>
+
+            </div>
+        </div>
+
+    </div>
 
 </body>
 

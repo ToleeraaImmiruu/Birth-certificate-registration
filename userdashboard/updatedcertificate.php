@@ -2,7 +2,7 @@
 session_start();
 include "../setup/dbconnection.php";
 $user_id = $_SESSION["id"];
-$sql = "SELECT certificate_id, CONCAT(first_name, ' ', middle_name,' ', last_name) AS full_name, dob,gender,place_of_birth,father_name,mother_name, created_at  FROM certificates WHERE user_id = ?";
+$sql = "SELECT certificate_id, CONCAT(first_name, ' ', middle_name,' ', last_name) AS full_name, dob,gender,place_of_birth,father_name,mother_name, issued_at  FROM certificates WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -238,7 +238,9 @@ $certificate = $result->fetch_assoc();
                 <p>Identification Photo</p>
             </div>
             <div class="certificate-photo">
-                <img src="generate_qr.php?data=<?php echo urlencode('Certificate ID: ' . $certificate['certificate_id'] . ', Name: ' . $certificate['full_name']); ?>" alt="QR Code" style="width:150px;">
+                <!-- <img src="generate_qr.php?data=" alt="QR Code" style="width:150px;"> -->
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?php echo urlencode('Certificate ID: ' . $certificate['certificate_id'] . ', Name: ' . $certificate['full_name']); ?>"
+                    alt="QR Code">
                 <p>Scan to verify</p>
             </div>
 

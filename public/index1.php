@@ -710,7 +710,7 @@
                         </ul>
                     </div>
 
-                    <button class="auth-btn signup">Sign Up</button>
+                    <a class="auth-btn signup" href="signUp.php">Sign Up</a>
                 </div>
 
             </div>

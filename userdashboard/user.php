@@ -111,6 +111,12 @@ $num_notf = $notification->num_rows;
             display: flex;
             gap: 1rem;
         }
+
+        .notification{
+            background-color: red;
+            padding: 0.1rem;
+            border-radius: 50%;
+        }
     </style>
     <script>
         function toggleSidebar() {
@@ -132,7 +138,7 @@ $num_notf = $notification->num_rows;
         <button class="btn btn-primary" onclick="location.href='user.php?page=apply'"><img src="../image/apply.png" alt="Apply"> APPLY</button>
         <button class="btn btn-primary" onclick="location.href='user.php?page=status'"><img src="../image/check-list.png" alt="Status"> STATUS</button>
         <button class="btn btn-primary" onclick="location.href='user.php?page=editprofile'"><img src="../image/user.png" alt="Profile Setting"> PROFILE SETTING</button>
-        <button class="btn btn-primary" onclick="location.href='user.php?page=notification'"><img src="../image/user.png" alt="Profile Setting"> notifications <?php echo $num_notf  ?> </button>
+        <button class="btn btn-primary" onclick="location.href='user.php?page=notification'"><img src="../image/user.png" alt="Profile Setting"> notifications <p class="notification"><?php echo $num_notf  ?></p> </button>
     </div>
 
 </body>

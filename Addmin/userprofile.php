@@ -151,9 +151,9 @@ if($result->num_rows){
                             <button class="btn btn-outline-danger me-2">
                                 <i class="fas fa-ban me-1"></i> Suspend
                             </button>
-                            <button class="btn btn-outline-primary me-2">
+                            <a class="btn btn-outline-primary me-2" href="sendmeassagetouser.php">
                                 <i class="fas fa-envelope me-1"></i> Message
-                            </button>
+                            </a>
                             <button class="btn btn-primary">
                                 <i class="fas fa-edit me-1"></i> Edit Profile
                             </button>
