@@ -73,7 +73,7 @@ if (isset($_GET['approve_id'])) {
                 $title = "approved application";
                 $msg = "Your certificate application has been approved!";
                 $stmt = $conn->prepare($notify);
-                $stmt->bind_param("is", $applicant['id'],$title, $msg);
+                $stmt->bind_param("iss", $applicant['id'],$title, $msg);
                 $stmt->execute();
                 echo "Certificate approved and email sent successfully!";
             } catch (Exception $e) {

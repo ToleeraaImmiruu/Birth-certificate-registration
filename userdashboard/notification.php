@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 include '../setup/dbconnection.php';
 
 // Assume user is logged in and session holds their ID

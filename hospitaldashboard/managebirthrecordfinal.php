@@ -220,56 +220,51 @@ $result = $stmt->get_result();
                     </div>
                 </div>
             </div>
-            <?php if ($result->num_rows > 0) {
-                $record = $result->fetch_assoc();
-                echo ' <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Record ID</th>
-                                <th>Full Name</th>
-                                <th>Date of Birth</th>
-                                <th>Father Name</th>
-                                <th>Mother Name</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                       
-                ';  
-                while($record = $result->fetch_assoc()){
+            <?php if ($result->num_rows > 0) { ?>
+                <div class="card-body">
+                    <!-- Add search input here -->
+                    <div class="mb-3">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by child name..."
+                            onkeyup="searchTable()">
+                    </div>
 
-                     echo '
-                      <tbody>
-                           <tr>
-                                <td>'.$record["record_id"].'</td>
-                                <td>'.$record["child_name"].'</td>
-                                <td>'.$record["dob"].'</td>
-                                <td>'.$record["father_name"].'</td>
-                                <td>'.$record["mother_name"].'</td>
-                                <td>
-                                    <button class="btn btn-sm btn-view" onclick="viewRecord()">
-                                        <i class="fas fa-eye"></i> View/Print
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="recordsTable">
+                            <thead>
+                                <tr>
+                                    <th>Record ID</th>
+                                    <th>Full Name</th>
+                                    <th>Date of Birth</th>
+                                    <th>Father Name</th>
+                                    <th>Mother Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($record = $result->fetch_assoc()) { ?>
+                                    <tr>
+                                        <td><?= $record["record_id"] ?></td>
+                                        <td><?= $record["child_name"] ?></td>
+                                        <td><?= $record["dob"] ?></td>
+                                        <td><?= $record["father_name"] ?></td>
+                                        <td><?= $record["mother_name"] ?></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-view" onclick="viewRecord()">
+                                                <i class="fas fa-eye"></i> View/Print
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>';
-
-                }
-                            
-        
-
-                       
-                       
-            } else {
-                echo `<div class="alert">no birth record found</div>`;
+            <?php } else {
+                echo '<div class="alert alert-info">No birth records found</div>';
             } ?>
-
         </div>
     </div>
+
 
     <!-- View/Print Record Modal -->
     <div class="modal fade" id="viewRecordModal" tabindex="-1" aria-hidden="true">
@@ -398,7 +393,35 @@ $result = $stmt->get_result();
         // View record details function
         function viewRecord() {
             viewRecordModal.show();
-        }
+        } 
+        
+            function searchTable() {
+                // Get input value and convert to lowercase
+                const input = document.getElementById("searchInput");
+                const filter = input.value.toLowerCase();
+
+                // Get table and rows
+                const table = document.getElementById("recordsTable");
+                const rows = table.getElementsByTagName("tr");
+
+                // Loop through all table rows (skip header row)
+                for (let i = 1; i < rows.length; i++) {
+                    // Get the name column (second column, index 1)
+                    const nameCell = rows[i].getElementsByTagName("td")[1];
+                    if (nameCell) {
+                        const nameText = nameCell.textContent || nameCell.innerText;
+
+                        // Show/hide row based on search term
+                        if (nameText.toLowerCase().indexOf(filter) > -1) {
+                            rows[i].style.display = "";
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+   
+
     </script>
 </body>
 

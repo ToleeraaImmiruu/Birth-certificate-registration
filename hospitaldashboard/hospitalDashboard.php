@@ -207,7 +207,6 @@ if (isset($_GET["page"])) {
 
   <div class="dashboard_container">
     <button class="btn btn-secondary toggle-btn" onclick="toggleSidebar()">☰</button>
-
     <div class="sidebar">
       <img src="image/hospital.png" alt="Logo" class="logo" />
       <a onclick='location.href="hospitalDashboard.php?page=home"' class="btn btn-primary">

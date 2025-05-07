@@ -1,66 +1,11 @@
 <?php
 session_start();
-include "../setup/dbconnection.php";
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-    $target_dir = "../assets/uploads/";
-    function uploadfile($inputname, $target_dir)
-    {
-        if (!empty($_FILES[$inputname]["name"])) {
-            $filename = basename($_FILES[$inputname]["name"]);
-            $filetype = strtolower(pathinfo($_FILES[$inputname]["name"], PATHINFO_EXTENSION));
-            $allowedTypes = array("jpg", "jpeg", "png", "pdf");
-            if (in_array($filetype, $allowedTypes)) {
-                $filepath = $target_dir . time() . "_" . $filename;
-                if (move_uploaded_file($_FILES[$inputname]["tmp_name"], $filepath)) {
-                    return $filepath;
-                } else {
-                    echo " error ";
-                }
-            } else {
-                echo "invalid type";
-            }
-        } else {
-            return null;
-        }
-    }
 
-    if (isset($_SESSION["id"])) {
-        $user_id = $_SESSION["id"];
-
-        $father_id_path = uploadfile("father_id", $target_dir);
-        $mother_id_path = uploadfile("mother_id", $target_dir);
-        $applicant_id_path = uploadfile("applicant_id", $target_dir);
-        $birth_record_path = uploadfile("birth_record", $target_dir);
-        $firstname = $_POST["first_name"];
-        $middlename = $_POST["middle_name"];
-        $lastname = $_POST["last_name"];
-        $dob = $_POST["dob"];
-        $gender = $_POST["gender"];
-        $birth_place = $_POST["birth_place"];
-        $email = $_POST["email"];
-        $address = $_POST["address"];
-        $father_name = $_POST["father_name"];
-        $mother_name = $_POST["mother_name"];
-
-        $sql = "INSERT INTO applications ( user_id,first_name ,middle_name ,last_name ,dob,email,gender,place_of_birth,father_name,mother_name ,current_address,father_id,mother_id,applicant_id,birth_record) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issssssssssssss", $user_id, $firstname, $middlename, $lastname, $dob, $email, $gender, $birth_place, $father_name, $mother_name, $address, $father_id_path, $mother_id_path, $applicant_id_path, $birth_record_path);
-
-        echo $father_id_path;
-        echo $mother_id_path;
-        if ($stmt->execute()) {
-            header("location: user.php");
-        } else {
-            header("location: status.php");
-        }
-    } else {
-        header("location: ../public/login.php");
-    }
+// Check if the session variable is set
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
 }
-
-
-
-
 ?>
 
 

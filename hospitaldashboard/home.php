@@ -25,7 +25,7 @@
             border-radius: 10px;
             background-color: white;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-           
+
         }
 
         .sidebar {
@@ -178,7 +178,7 @@
     <div class="container">
         <div class="content">
             <button class="btn btn-primary logout-btn">
-                <img src="image/logout.png" alt="Logout" /> Logout
+                <img src="image/logout.png" alt="Logout" /><a href="../public/logOut.php">Logout</a>
             </button>
 
             <h4 class="mb-4 animated-title">Welcome to Hospital Dashboard</h4>

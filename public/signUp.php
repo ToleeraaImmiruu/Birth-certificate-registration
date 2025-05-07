@@ -70,6 +70,7 @@
             echo "Error: " . mysqli_error($conn);
         }
         $_SESSION["email"] = $_POST["email"];
+        // $_SESSION["id"]= $_POST["id"];
         mysqli_close($conn);
     }
 

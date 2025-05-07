@@ -1,15 +1,14 @@
 <?php
-session_start();
+// session_start();
 include "../setup/dbconnection.php";
 
 
 if (!isset($_SESSION["id"])) {
-    header:
-    "location:../public/login.php";
+    header:"location:../public/login.php";
 } else {
     $user_id = $_SESSION["id"];
 }
-echo $user_id;
+
 
 
 

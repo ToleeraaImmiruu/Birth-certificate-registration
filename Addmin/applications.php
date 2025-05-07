@@ -62,7 +62,7 @@ $result = $conn->query($sql);
                             <td><?= $row['mother_name']; ?></td>
                             <td>
                                 <!-- Button to view documents (assumes you have a page to display docs) -->
-                                <a href="viewdetail22.php?app_id=<?= $row['id'] ?>" id="viewdcoment" class="btn btn-info btn-sm">View Document</a>
+                                <a href="updatdetailview.php?app_id=<?= $row['id'] ?>" id="viewdcoment" class="btn btn-info btn-sm">View Document</a>
                                 <!-- Approve button -->
                                 <button class="btn btn-success btn-sm approveBtn" onclick="approved(<?= $row['id']; ?>)" data-appid="<?= $row['id']; ?>">Approve</button>
                                 <!-- Reject button -->

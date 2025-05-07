@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "../setup/dbconnection.php";
 $sql = "SELECT * FROM announcements";
 $stmt = $conn->prepare($sql);
@@ -138,13 +139,11 @@ $num_notf = $notification->num_rows;
         <button class="btn btn-primary" onclick="location.href='user.php?page=apply'"><img src="../image/apply.png" alt="Apply"> APPLY</button>
         <button class="btn btn-primary" onclick="location.href='user.php?page=status'"><img src="../image/check-list.png" alt="Status"> STATUS</button>
         <button class="btn btn-primary" onclick="location.href='user.php?page=editprofile'"><img src="../image/user.png" alt="Profile Setting"> PROFILE SETTING</button>
-        <button class="btn btn-primary" onclick="location.href='user.php?page=notification'"><img src="../image/user.png" alt="Profile Setting"> notifications <p class="notification"><?php echo $num_notf  ?></p> </button>
+        <button class="btn btn-primary" onclick="location.href='user.php?page=notification'"><img src="../image/user.png" alt="Profile Setting"> notifications <p class="notification"><?php echo $num_notf?></p> </button>
     </div>
 
 </body>
 <?php
-
-
 if (isset($_GET['page'])) {
     $page = $_GET['page'];
     if ($page == "apply") {
@@ -159,9 +158,7 @@ if (isset($_GET['page'])) {
         echo "<h3>Page Not Found</h3>";
     }
 } else {
-    include 'home.php'; // Default Page
+    include 'home.php';
 }
 ?>
-
-
 </html>
