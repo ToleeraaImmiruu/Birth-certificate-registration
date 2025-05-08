@@ -652,68 +652,106 @@ if (isset($_POST["certificate_submit"])) {
 
             </div>
 
-            <form class="form_container" method="POST">
-                <textarea name="message_of_rejection" id="meassage_of_rejection" cols="50" rows="10" placeholder="write reason here">
-
-            </textarea>
+            <form id="regectreason" class="form_container" method="POST" action="">
+                <textarea name="message_of_rejection" id="message_of_rejection" cols="50" rows="10" placeholder="write reason here"></textarea>
+                <div id="error_message" class="error_message"></div>
                 <button type="submit">send</button>
             </form>
+
         </div>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    function displayPhoto(photoSrc) {
-    const mainPhotoDisplay = document.getElementById('mainPhotoDisplay');
-    if (photoSrc && photoSrc !== 'photo is not uploaded') {
-    mainPhotoDisplay.innerHTML = `<img src="${photoSrc}" alt="Displayed Photo" class="img-fluid" style="max-height: 100%;">`;
-    } else {
-    mainPhotoDisplay.innerHTML = '<p class="text-muted">Photo not available</p>';
-    }
-    }
+        document.getElementById("regectreason").addEventListener("submit", function(event) {
+            event.preventDefault();
 
-    function regectapplication() {
-    const regectdiv = document.getElementById('regectpopup');
-    regectdiv.classList.remove('regectpopuphidden');
-    regectdiv.classList.add('regectpopupvisible');
-    }
+            const error = document.getElementById("error_message");
+            const message = document.getElementById("message_of_rejection").value;
 
-    function closepopup() {
-    const regectdiv = document.getElementById('regectpopup');
-    regectdiv.classList.remove(regectpopupvisible);
-    regectdiv.classList.add('regectpopuphidden');
+            if (message.trim() === "") {
+                error.innerHTML = "Please write the reason for rejection";
+                error.style.color = "red";
+                error.style.fontSize = "20px";
+                error.style.fontWeight = "bold";
+                error.style.marginTop = "10px";
+            } else {
+                error.innerHTML = "";
+                const formData = new FormData(this);
+                formData.append("app_id", "<?php echo $app_id; ?>");
+                formData.append("user_id", "<?php echo $application['user_id']; ?>");
 
-    }
+                fetch("regect.php?app_id=<?php echo $application['id']; ?>", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        if (data.toLowerCase().includes("application rejected")) {
+                            alert("Application is rejected");
+                            document.getElementById("regectpopup").style.display = "none";
+                        } else {
+                            alert("Error rejecting application");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error in rejection application", error);
+                    });
+            }
+        });
 
-    // Initialize photo display
-    displayPhoto('<?= htmlspecialchars($doc['applicant_id']) ?>');
 
-    // ID Search
-    document.getElementById('idSearchForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const resultdiv = document.getElementById('idresult');
-    const certdiv = document.getElementById('certificateResult');
-    certdiv.style.display = "none";
-    resultdiv.style.display = "block";
-    resultdiv.innerHTML = `<div class="text-center py-4">
+        function displayPhoto(photoSrc) {
+            const mainPhotoDisplay = document.getElementById('mainPhotoDisplay');
+            if (photoSrc && photoSrc !== 'photo is not uploaded') {
+                mainPhotoDisplay.innerHTML = `<img src="${photoSrc}" alt="Displayed Photo" class="img-fluid" style="max-height: 100%;">`;
+            } else {
+                mainPhotoDisplay.innerHTML = '<p class="text-muted">Photo not available</p>';
+            }
+        }
+
+        function regectapplication() {
+            const regectdiv = document.getElementById('regectpopup');
+            regectdiv.classList.remove('regectpopuphidden');
+            regectdiv.classList.add('regectpopupvisible');
+        }
+
+        function closepopup() {
+            const regectdiv = document.getElementById('regectpopup');
+            regectdiv.classList.remove(regectpopupvisible);
+            regectdiv.classList.add('regectpopuphidden');
+
+        }
+
+        // Initialize photo display
+        displayPhoto('<?= htmlspecialchars($doc['applicant_id']) ?>');
+
+        // ID Search
+        document.getElementById('idSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const resultdiv = document.getElementById('idresult');
+            const certdiv = document.getElementById('certificateResult');
+            certdiv.style.display = "none";
+            resultdiv.style.display = "block";
+            resultdiv.innerHTML = `<div class="text-center py-4">
         <div class="spinner-border text-primary" role="status"></div>
         <p class="mt-2">Searching...</p>
     </div>`;
 
-    const idvalue = document.getElementById('idNumber').value;
+            const idvalue = document.getElementById('idNumber').value;
 
-    fetch('search_ID.php', {
-    method: "POST",
-    headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: 'kebele_id=' + encodeURIComponent(idvalue)
-    })
-    .then(response => response.json())
-    .then(data => {
-    if (data.success) {
-    resultdiv.innerHTML = `
+            fetch('search_ID.php', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'kebele_id=' + encodeURIComponent(idvalue)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        resultdiv.innerHTML = `
     <div class="modern-id-card animate-show">
         <div class="id-card-header">
             <h4>NATIONAL ID CARD</h4>
@@ -756,41 +794,41 @@ if (isset($_POST["certificate_submit"])) {
             Federal Democratic Republic of Ethiopia • Ministry of Interior
         </div>
     </div>`;
-    } else {
-    resultdiv.innerHTML = `<div class="alert alert-danger">${data.message || 'ID not found'}</div>`;
-    }
-    })
-    .catch(err => {
-    resultdiv.innerHTML = `<div class="alert alert-danger">Error fetching data</div>`;
-    console.error(err);
-    });
-    });
+                    } else {
+                        resultdiv.innerHTML = `<div class="alert alert-danger">${data.message || 'ID not found'}</div>`;
+                    }
+                })
+                .catch(err => {
+                    resultdiv.innerHTML = `<div class="alert alert-danger">Error fetching data</div>`;
+                    console.error(err);
+                });
+        });
 
-    // Certificate Search
-    document.getElementById('certificateSearchForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const certdiv = document.getElementById('certificateResult');
-    const idresult = document.getElementById('idresult');
-    idresult.style.display = "none";
-    certdiv.style.display = "block";
-    certdiv.innerHTML = `<div class="text-center py-4">
+        // Certificate Search
+        document.getElementById('certificateSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const certdiv = document.getElementById('certificateResult');
+            const idresult = document.getElementById('idresult');
+            idresult.style.display = "none";
+            certdiv.style.display = "block";
+            certdiv.innerHTML = `<div class="text-center py-4">
              <div class="spinner-border text-success" role="status"></div>
         <p class="mt-2">Searching...</p>
     </div>`;
 
-    const certId = document.getElementById('certificateNumber').value;
+            const certId = document.getElementById('certificateNumber').value;
 
-    fetch('search_certificate.php', {
-    method: "POST",
-    headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: 'certificate_id=' + encodeURIComponent(certId)
-    })
-    .then(response => response.json())
-    .then(data => {
-    if (data.success) {
-    certdiv.innerHTML = `
+            fetch('search_certificate.php', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'certificate_id=' + encodeURIComponent(certId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        certdiv.innerHTML = `
     <div class="card">
         <div class="card-header bg-success text-white">
             <h5 class="mb-0">Certificate Verification Result</h5>
@@ -840,18 +878,18 @@ if (isset($_POST["certificate_submit"])) {
             </div>
         </div>
     </div>`;
-    } else {
-    certdiv.innerHTML = `<div class="alert alert-danger">Certificate not found</div>`;
-    }
-    })
-    .catch(err => {
-    certdiv.innerHTML = `<div class="alert alert-danger">Error fetching data</div>`;
-    console.error(err);
-    });
-    });
+                    } else {
+                        certdiv.innerHTML = `<div class="alert alert-danger">Certificate not found</div>`;
+                    }
+                })
+                .catch(err => {
+                    certdiv.innerHTML = `<div class="alert alert-danger">Error fetching data</div>`;
+                    console.error(err);
+                });
+        });
 
-    // Initialize Bootstrap tabs
-    const searchTab = new bootstrap.Tab(document.getElementById('id-tab'));
+        // Initialize Bootstrap tabs
+        const searchTab = new bootstrap.Tab(document.getElementById('id-tab'));
     </script>
 </body>
 
