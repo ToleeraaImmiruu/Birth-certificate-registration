@@ -1,5 +1,6 @@
 <?php
-session_start();
+require 'init.php';
+
 include "../setup/dbconnection.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     $target_dir = "../assets/uploads/";

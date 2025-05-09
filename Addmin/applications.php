@@ -64,13 +64,13 @@ $result = $conn->query($sql);
                                 <!-- Button to view documents (assumes you have a page to display docs) -->
                                 <a href="updatdetailview.php?app_id=<?= $row['id'] ?>" id="viewdcoment" class="btn btn-info btn-sm">View Document</a>
                                 <!-- Approve button -->
-                                <button class="btn btn-success btn-sm approveBtn" onclick="approved(<?= $row['id']; ?>)" data-appid="<?= $row['id']; ?>">Approve</button>
+                                <!-- <button class="btn btn-success btn-sm approveBtn" onclick="approved(<?= $row['id']; ?>)" data-appid="<?= $row['id']; ?>">Approve</button>
                                 <!-- Reject button -->
                                 <!-- <button class="btn btn-danger btn-sm rejectBtn" onclick="regectfunction(<?= $row['id']; ?>)" data-appid="<?= $row['id']; ?>">Reject</button> -->
 
-                                <button class="btn btn-danger" onclick="document.getElementById('rejectPopUp').style.display='block'">
+                                <!-- <button class="btn btn-danger" onclick="document.getElementById('rejectPopUp').style.display='block'">
                                     reject
-                                </button>
+                                </button> --> 
 
                             </td>
                         </tr>

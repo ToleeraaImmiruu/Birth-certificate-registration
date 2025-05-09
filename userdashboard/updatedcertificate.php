@@ -1,6 +1,7 @@
 <?php
-session_start();
-include "../setup/dbconnection.php";
+require 'init.php';
+
+                                                                                        include "../setup/dbconnection.php";
 $user_id = $_SESSION["id"];
 $sql = "SELECT certificate_id, CONCAT(first_name, ' ', middle_name,' ', last_name) AS full_name, dob,gender,place_of_birth,father_name,mother_name, issued_at  FROM certificates WHERE user_id = ?";
 $stmt = $conn->prepare($sql);

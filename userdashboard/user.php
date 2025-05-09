@@ -1,5 +1,5 @@
 <?php
-session_start();
+require 'init.php';
 include "../setup/dbconnection.php";
 $sql = "SELECT * FROM announcements";
 $stmt = $conn->prepare($sql);

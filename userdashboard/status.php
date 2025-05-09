@@ -1,5 +1,6 @@
 <?php
-// session_start();
+require 'init.php';
+
 include "../setup/dbconnection.php";
 
 
@@ -79,15 +80,13 @@ if ($result->num_rows > 0) {
                   <div class="card shadow p-4">
                       <h4 class="text-center text-primary">Application Status</h4>
                       <div id="statusContainer" class="status-box pending">  you are not apply for birth certificate yet </div>
-                      <div id="certificateButtonContainer" class="text-center mt-3 approved btn btn-succes">apply now</div>
+                      <div id="certificateButtonContainer" class="text-center mt-3 approved btn btn-succes"><a href="user.php?page=apply">apply now<a/></div>
                   </div>
                </div>
             ';
     }
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
