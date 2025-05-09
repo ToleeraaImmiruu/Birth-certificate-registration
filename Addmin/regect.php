@@ -10,7 +10,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" ){
     echo $app_id;
     $message = $_POST["message_of_rejection"];
     $sql = "SELECT * FROM applications WHERE id = ?";
-    $stmt = $conn->prepare($sql);
+   $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $app_id);
     $stmt->execute();
     $result = $stmt->get_result();

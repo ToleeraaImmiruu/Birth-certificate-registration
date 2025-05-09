@@ -6,10 +6,7 @@ $stmt = $conn->prepare($sql);
 $stmt->execute();
 $notification = $stmt->get_result();
 $num_notf = $notification->num_rows;
-
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,7 +60,7 @@ $num_notf = $notification->num_rows;
             position: relative;
             margin-left: 250px;
             transition: margin-left 0.5s ease;
-            background-color: red;
+            /* background-color: red; */
         }
 
         .sidebar.hidden+.content {

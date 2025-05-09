@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 include '../setup/dbconnection.php';
 
 // Initialize all variables at the top
@@ -54,6 +58,50 @@ if (isset($_POST["certificate_submit"])) {
                         $hospital = $result->fetch_assoc();
                     }
                 }
+            }
+        }
+    }
+}
+
+if (isset($_POST["submit"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+    $message = $_POST["message_of_rejection"];
+    $app_id = $_POST["app_id"];
+    $sql = "SELECT * FROM applications WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $app_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $application = $result->fetch_assoc();
+    $email = $application["email"];
+    $full_name = $application["first_name"] . " " . $application["middle_name"] . " " . $application["last_name"];
+    $title = "rejected application";
+    $sql = "INSERT INTO messages (user_id, title, body) VALUES (?,?,?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iss", $application["user_id"], $title,  $message);
+
+    if ($stmt->execute()) {
+        $sql = "DELETE FROM applications WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $app_id);
+        if ($stmt->execute()) {
+
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'bonsadaba8@gmail.com';
+                $mail->Password = 'nfcg vsoa oyhm etyv';
+                $mail->SMTPSecure = 'tls';
+                $mail->Port = 587;
+                $mail->setFrom('bonsadaba8@gmail.com', 'ifa bula certificate office');
+                $mail->addAddress($email, $full_name);
+                $mail->Subject = 'your application has been rejected';
+                $mail->Body = "hello $full_name, your application has been rejected. reason: $message";
+                $mail->send();
+                echo "application rejected";
+            } catch (Exception $e) {
+                echo "application regected but email failed: {$mail->ErrorInfo}";
             }
         }
     }
@@ -652,10 +700,11 @@ if (isset($_POST["certificate_submit"])) {
 
             </div>
 
-            <form id="regectreason" class="form_container" method="POST" action="">
+            <form id="regectreason" class="form_container" method="POST" action="updatdetailview.php">
+                <input type="hidden" value="<?php echo $application["id"] ?>" name="app_id" id="app_id">
                 <textarea name="message_of_rejection" id="message_of_rejection" cols="50" rows="10" placeholder="write reason here"></textarea>
                 <div id="error_message" class="error_message"></div>
-                <button type="submit">send</button>
+                <button type="submit" name="submit">send</button>
             </form>
 
         </div>
@@ -664,43 +713,6 @@ if (isset($_POST["certificate_submit"])) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById("regectreason").addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            const error = document.getElementById("error_message");
-            const message = document.getElementById("message_of_rejection").value;
-
-            if (message.trim() === "") {
-                error.innerHTML = "Please write the reason for rejection";
-                error.style.color = "red";
-                error.style.fontSize = "20px";
-                error.style.fontWeight = "bold";
-                error.style.marginTop = "10px";
-            } else {
-                error.innerHTML = "";
-                const formData = new FormData(this);
-                formData.append("app_id", "<?php echo $app_id; ?>");
-                formData.append("user_id", "<?php echo $application['user_id']; ?>");
-
-                fetch("regect.php?app_id=<?php echo $application['id']; ?>", {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        if (data.toLowerCase().includes("application rejected")) {
-                            alert("Application is rejected");
-                            document.getElementById("regectpopup").style.display = "none";
-                        } else {
-                            alert("Error rejecting application");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error in rejection application", error);
-                    });
-            }
-        });
-
 
         function displayPhoto(photoSrc) {
             const mainPhotoDisplay = document.getElementById('mainPhotoDisplay');

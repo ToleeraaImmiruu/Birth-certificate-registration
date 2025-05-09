@@ -1,11 +1,11 @@
 <?php
-session_start();
+// session_start();
 
 // Check if the session variable is set
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
+// if (!isset($_SESSION['user_id'])) {
+//     header('Location: login.php');
+//     exit();
+// }
 ?>
 
 

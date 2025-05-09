@@ -41,18 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["userlogin"])) {
     // Close statement and connection
     $stmt->close();
     $conn->close();
-    // }elseif($role == 'hospital'){
-    //     $sql = "SELECT * FROM hospitals WHERE email = ?";
-    //     $stmt = $conn->prepare($sql);
-    //     $stmt->bind_param("s", $email);
-    //     $stmt->execute();
-    //     $result = $stmt->get_result();
-    //     if($result->num_rows > 0){
-    //             $hospital = $result->fetch_assoc();
-    //             $_SESSION["id"]= $hospital["hospital_id"];
-    //             $_SESSION["email"] = $hospital["email"];
-    //             include "../hospitaldashboard/hospitalDashboard.php";
-
+   
 }
 ?>
 <!DOCTYPE html>
@@ -149,8 +138,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["userlogin"])) {
                 </button>
 
                 <div class="login-links">
-                    <a href="#" class="text-decoration-none" id="forgotPassword">Forgot Password?</a>
-                    <a href="#" class="text-decoration-none" id="createAccount">Create Account</a>
+                    <a href="forgetpassword.php" class="text-decoration-none" id="forgotPassword">Forgot Password?</a>
+                    <a href="../signUp.php" class="text-decoration-none" id="createAccount">Create Account</a>
                 </div>
             </form>
         </div>
