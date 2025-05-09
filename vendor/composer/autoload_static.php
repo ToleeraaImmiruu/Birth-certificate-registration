@@ -13,6 +13,10 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
     );
 
     public static $prefixLengthsPsr4 = array (
+        'Y' => 
+        array (
+            'Yaphet17\\Chapa\\' => 15,
+        ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
@@ -25,6 +29,10 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
         ),
+        'C' => 
+        array (
+            'Chapa\\' => 6,
+        ),
         'A' => 
         array (
             'AfricasTalking\\SDK\\' => 19,
@@ -32,6 +40,10 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
     );
 
     public static $prefixDirsPsr4 = array (
+        'Yaphet17\\Chapa\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/yaphet17/chapa/src',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
@@ -56,6 +68,10 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Chapa\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/yaphet17/chapa/src',
         ),
         'AfricasTalking\\SDK\\' => 
         array (

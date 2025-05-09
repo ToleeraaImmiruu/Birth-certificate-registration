@@ -339,7 +339,7 @@ $announcements = $stmt->get_result();
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- <?php 
+                             <?php 
                                 $sql = "SELECT * FROM applications WHERE user_id = ? ORDER BY created_at DESC LIMIT 3";
                                 $stmt = $conn->prepare($sql);
                                 $stmt->bind_param("i", $user_id);
@@ -349,7 +349,7 @@ $announcements = $stmt->get_result();
                                 while ($app = $apps->fetch_assoc()): ?>
                                 <tr>
                                     <td>#BC-<?php echo str_pad($app['id'], 5, '0', STR_PAD_LEFT) ?></td>
-                                    <td><?php echo htmlspecialchars($app['first_name'] . ' ' . htmlspecialchars($app['last_name']) ?></td>
+                                    <td><?php echo htmlspecialchars($app['first_name'] ). ' ' . htmlspecialchars($app['last_name']) ?></td>
                                     <td><?php echo date('M d, Y', strtotime($app['dob'])) ?></td>
                                     <td>
                                         <?php 
