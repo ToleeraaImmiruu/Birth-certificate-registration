@@ -1,4 +1,4 @@
-<?php 
+<?php
 include '../setup/dbconnection.php';
 ?>
 <!DOCTYPE html>
@@ -20,7 +20,7 @@ include '../setup/dbconnection.php';
       align-items: center;
       background-color: #f8f9fa;
     } */
-
+/* 
     .container {
       display: flex;
       flex-direction: column;
@@ -31,7 +31,7 @@ include '../setup/dbconnection.php';
       border-radius: 10px;
       background-color: white;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+    } */
 
     .sidebar {
       width: 250px;
@@ -155,6 +155,40 @@ include '../setup/dbconnection.php';
     .animated-delay-4 {
       animation-delay: 1.2s;
     }
+
+
+
+
+
+
+    
+    /* Mobile responsiveness */
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 0;
+        overflow: hidden;
+      }
+
+      .sidebar.active {
+        width: 250px;
+        z-index: 1000;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .menu-toggle {
+        display: block !important;
+      }
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-right: 15px;
+    } 
   </style>
   <script>
     function toggleSidebar() {
@@ -167,6 +201,7 @@ include '../setup/dbconnection.php';
 
   <div class="container">
     <button class="btn btn-secondary toggle-btn" onclick="toggleSidebar()">☰</button>
+
 
     <div class="sidebar">
       <img src="images/admin.png" alt="Logo" class="logo" />
@@ -186,14 +221,33 @@ include '../setup/dbconnection.php';
         <img src="images/imaginative.png" alt="Role" /> NOTIFICATION
       </a>
     </div>
+    <!-- <div class="sidebar" id="sidebar">
+
+      <h4>Birth Certificate System</h4>
+      <p class="mb-0 text-muted">Admin Dashboard</p>
+    </div>
+
+    <div class="sidebar-header">
+      <div class="sidebar-menu">
+        <a href="dashboard.php?page=home" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="hospitals.php"><i class="fas fa-hospital"></i> Hospitals</a>
+        <a href="#"><i class="fas fa-user-tie"></i> Application Officers</a>
+        <a href="#"><i class="fas fa-users-cog"></i> Kebele Officers</a>
+        <a href="dashboard.php?page=manageuser"><i class="fas fa-users"></i> Users</a>
+        <a href="#"><i class="fas fa-certificate"></i> Certificates</a>
+        <a href="#"><i class="fas fa-ticket-alt"></i> Support Tickets</a>
+        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+        <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      </div>
+    </div> -->
 
     <!-- <div class="content">
       <button class="btn btn-primary logout-btn" href="../public/logout.php">
         <img src="images/back-arrow.png" alt="Logout" /> Logout
       </button> -->
 
-
-    </div>
+<!-- 
+  </div> -->
   </div>
 
 </body>
@@ -217,7 +271,7 @@ if (isset($_GET['page'])) {
     include 'manageuser.php';
   } elseif ($page == "create") {
     include 'createrole.php';
-  } elseif($page == "notification"){
+  } elseif ($page == "notification") {
     include 'notification.php';
   } else {
     echo "<h3>Page Not Found</h3>";

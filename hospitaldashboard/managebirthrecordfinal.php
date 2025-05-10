@@ -32,8 +32,8 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2980b9;
+            --primary-color: #2c3e50;
+            --secondary-color: #2c3e50;
         }
 
         body {
@@ -165,6 +165,13 @@ $result = $stmt->get_result();
             margin-top: 60px;
         }
 
+        .flex{
+            display: flex;
+            justify-content: space-between;
+        } .margin_left {
+            margin-left: 12rem;
+        }
+
         @media print {
             body * {
                 visibility: hidden;
@@ -191,12 +198,18 @@ $result = $stmt->get_result();
     </style>
 </head>
 
+
+
+
+
+
+
 <body>
     <div class="header">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1><i class="fas fa-baby me-2"></i> Birth Records Management</h1>
+            <div class="row align-items-left mx-auto flex">
+                <div class="col-md-6 me-3 margin_left">
+                    <h1><i class="fas fa-baby " style="text-align: right;"></i> Records Management</h1>
                 </div>
                 <div class="col-md-6 text-end">
                     <img src="https://via.placeholder.com/150x40?text=Hospital+Logo" alt="Hospital Logo" class="hospital-logo">
@@ -206,7 +219,7 @@ $result = $stmt->get_result();
     </div>
 
 
-    <div class="container">
+    <div class="container me-4" style="max-width: 1200px;">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
@@ -393,35 +406,33 @@ $result = $stmt->get_result();
         // View record details function
         function viewRecord() {
             viewRecordModal.show();
-        } 
-        
-            function searchTable() {
-                // Get input value and convert to lowercase
-                const input = document.getElementById("searchInput");
-                const filter = input.value.toLowerCase();
+        }
 
-                // Get table and rows
-                const table = document.getElementById("recordsTable");
-                const rows = table.getElementsByTagName("tr");
+        function searchTable() {
+            // Get input value and convert to lowercase
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toLowerCase();
 
-                // Loop through all table rows (skip header row)
-                for (let i = 1; i < rows.length; i++) {
-                    // Get the name column (second column, index 1)
-                    const nameCell = rows[i].getElementsByTagName("td")[1];
-                    if (nameCell) {
-                        const nameText = nameCell.textContent || nameCell.innerText;
+            // Get table and rows
+            const table = document.getElementById("recordsTable");
+            const rows = table.getElementsByTagName("tr");
 
-                        // Show/hide row based on search term
-                        if (nameText.toLowerCase().indexOf(filter) > -1) {
-                            rows[i].style.display = "";
-                        } else {
-                            rows[i].style.display = "none";
-                        }
+            // Loop through all table rows (skip header row)
+            for (let i = 1; i < rows.length; i++) {
+                // Get the name column (second column, index 1)
+                const nameCell = rows[i].getElementsByTagName("td")[1];
+                if (nameCell) {
+                    const nameText = nameCell.textContent || nameCell.innerText;
+
+                    // Show/hide row based on search term
+                    if (nameText.toLowerCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
                     }
                 }
             }
-   
-
+        }
     </script>
 </body>
 
