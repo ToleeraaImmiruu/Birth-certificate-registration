@@ -1,21 +1,5 @@
-<?php
-if (isset($_GET["page"])) {
-  $page = $_GET["page"];
-
-  if ($page == "birthrecord") {
-    include "birthrecord.php";
-  } else if ($page == "home") {
-    include "home.php";
-  } else if ($page == "recordManagement") {
-    include "managebirthrecordfinal.php";
-  } else if($page == "notification"){
-    include "notification.php";
-  }else {
-    include "home.php";
-  }
-} else {
-  include "home.php";
-}
+<?php 
+include '../setup/dbconnection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,8 +29,8 @@ if (isset($_GET["page"])) {
       max-width: 1200px;
       padding: 20px;
       border-radius: 10px;
+      background-color: white;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
     }
 
     .sidebar {
@@ -85,7 +69,7 @@ if (isset($_GET["page"])) {
       margin-right: 10px;
     }
 
-    .content {
+    /* .content {
       flex-grow: 1;
       padding: 20px;
       margin-left: 250px;
@@ -96,7 +80,7 @@ if (isset($_GET["page"])) {
 
     .sidebar.hidden+.content {
       margin-left: 0;
-    }
+    } */
 
     .logo {
       width: 100px;
@@ -171,32 +155,6 @@ if (isset($_GET["page"])) {
     .animated-delay-4 {
       animation-delay: 1.2s;
     }
-
-    /* Animated H4 Heading */
-    .animated-title {
-      font-weight: bold;
-      animation: slideFadeIn 1.2s ease-out forwards;
-      opacity: 0;
-      transform: translateY(-20px);
-      transition: all 0.4s ease-in-out;
-    }
-
-    @keyframes slideFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .dashboard_container {
-      display: flex;
-      flex-direction: column;
-    }
   </style>
   <script>
     function toggleSidebar() {
@@ -207,27 +165,66 @@ if (isset($_GET["page"])) {
 
 <body>
 
-  <div class="dashboard_container">
+  <div class="container">
     <button class="btn btn-secondary toggle-btn" onclick="toggleSidebar()">☰</button>
+
     <div class="sidebar">
-      <img src="image/hospital.png" alt="Logo" class="logo" />
-      <a onclick='location.href="hospitalDashboard.php?page=home"' class="btn btn-primary">
-        <img src="image/apply.png" alt="Home" /> HOME
+      <img src="images/admin.png" alt="Logo" class="logo" />
+      <a href="dashboard.php?page=home" class="btn btn-primary">
+        <img src="images/register.png" alt="Home" /> HOME
       </a>
-      <a onclick='location.href="hospitalDashboard.php?page=birthrecord"' class="btn btn-primary">
-        <img src="image/apply.png" alt="Home" /> APPLY FOR BIRTH CERTIFICATE
+      <a href="dashboard.php?page=regester" class="btn btn-primary">
+        <img src="images/register.png" alt="Home" /> REGISTERING HOSPITAL
       </a>
-      <a onclick='location.href="hospitalDashboard.php?page=recordManagement"' class="btn btn-primary">
-        <img src="image/mngmt.png" alt="Apply" /> BIRTH CERTIFICATE MANAGEMENT
+      <a href="dashboard.php?page=manage" class="btn btn-primary">
+        <img src="images/team.png" alt="Apply" /> MANAGE USER
       </a>
-      <a onclick='location.href="hospitalDashboard.php?page=notification"' class="btn btn-primary">
-        <img src="image/mngmt.png" alt="Apply" /> NOTIFICATION
+      <a href="dashboard.php?page=create" class="btn btn-primary">
+        <img src="images/imaginative.png" alt="Role" /> CREATE ROLE
+      </a>
+      <a href="dashboard.php?page=notification" class="btn btn-primary">
+        <img src="images/imaginative.png" alt="Role" /> NOTIFICATION
       </a>
     </div>
 
-    <!-- -->
+    <!-- <div class="content">
+      <button class="btn btn-primary logout-btn" href="../public/logout.php">
+        <img src="images/back-arrow.png" alt="Logout" /> Logout
+      </button> -->
+
+
+    </div>
   </div>
 
 </body>
+<?php
+$sql = "SELECT * FROM users WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $_SESSION["email"]);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+if ($user) {
+  $_SESSION["ID"] = $user["id"];
+}
+if (isset($_GET['page'])) {
+  $page = $_GET['page'];
+  if ($page == "home") {
+    include 'home.php';
+  } elseif ($page == "regester") {
+    include 'registering.php';
+  } elseif ($page == "manage") {
+    include 'manageuser.php';
+  } elseif ($page == "create") {
+    include 'createrole.php';
+  } elseif($page == "notification"){
+    include 'notification.php';
+  } else {
+    echo "<h3>Page Not Found</h3>";
+  }
+} else {
+  include 'home.php';
+}
+?>
 
 </html>

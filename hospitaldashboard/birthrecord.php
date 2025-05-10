@@ -9,7 +9,7 @@ if (!$conn) {
 function generateId(){
   global $conn;
   $year = date('y');
-  $sql = "SELECT MAX(id) AS max_id FROM birth_records";
+  $sql = "SELECT MAX(record_id) AS max_id FROM birth_records";
   $stmt = $conn->prepare($sql);
   $stmt->execute();
   $result = $stmt->get_result();
@@ -20,7 +20,7 @@ function generateId(){
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  $hospital = 1;
+  $hospital_id = 1;
   $record_id = generateId();
   $childname = $_POST["child_full_name"];
   $dob = $_POST["dob"];
@@ -35,10 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $nameofdoctor = $_POST["name_of_doctor"];
 
   $sql = "INSERT INTO birth_records(record_id,hospital_id,child_name, dob, pob, tob, gender, weight, father_name, mother_name, phone, address, nameOfDoctor)
-            VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
   $stmt = $conn->prepare($sql);
-  $stmt->bind_param("isssssdsssss", $record_id,$hospital_id, $childname, $dob, $pob, $tob, $gender, $weight, $fatherName, $motherName, $phone, $address, $nameofdoctor);
+  $stmt->bind_param("iisssssdsssss", $record_id,$hospital_id, $childname, $dob, $pob, $tob, $gender, $weight, $fatherName, $motherName, $phone, $address, $nameofdoctor);
 
   try {
     if ($stmt->execute()) {

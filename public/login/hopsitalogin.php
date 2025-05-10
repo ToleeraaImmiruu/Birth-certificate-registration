@@ -15,7 +15,7 @@ include "../../setup/dbconnection.php";
     if($result->num_rows > 0){
      $hospital = $result->fetch_assoc();
      echo $hospital["hospital_id"];
-     if($password == $hospital["password"]){
+     if(password_verify($password , $hospital["password"])){
         $_SESSION["hospital_id"] = $hospital["hospital_id"];
         header("location: ../../hospitaldashboard/hospitalDashboard.php");
      }else{

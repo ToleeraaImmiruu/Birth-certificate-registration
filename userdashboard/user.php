@@ -141,6 +141,15 @@ $num_notf = $notification->num_rows;
 
 </body>
 <?php
+$sql = "SELECT * FROM users WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $_SESSION["email"]);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+if($user){
+    $_SESSION["ID"] = $user["id"];
+}
 if (isset($_GET['page'])) {
     $page = $_GET['page'];
     if ($page == "apply") {

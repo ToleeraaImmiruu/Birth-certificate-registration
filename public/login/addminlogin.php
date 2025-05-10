@@ -28,7 +28,7 @@
 
                 // Redirect based on user role
                 if ($user["role"] === "admin") {
-                    header("Location: ../../addmin/sidebar.php");
+                    header("Location: ../../officer/sidebar.php");
                 } else {
                     header("location: ../../userdashboard/user.php");
                 }

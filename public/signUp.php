@@ -1,7 +1,7 @@
-  <?php
-    session_start();
+<?php
+session_start();
     include '../setup/dbconnection.php';
-    
+
 
 
     if (!$conn) {
@@ -12,6 +12,7 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["submit"])) {
 
         $firstname = trim($_POST["first_name"]);
+        $middlename = trim($_POST["middle_name"]);
         $lastname = trim($_POST["last_name"]);
         $phone = trim($_POST["phone"]);
         $password = trim($_POST["password"]);
@@ -61,15 +62,16 @@
             die("Username or email already exists.");
         }
 
-        $sql = "INSERT INTO users (first_name, last_name,email,phone, password, profile_image) VALUES ('$firstname', '$lastname', '$email','$phone','$hashed_password','$profile_image')";
+        $sql = "INSERT INTO users (first_name, middle_name,last_name,email,phone, password, profile_image) VALUES ('$firstname','$middlename', '$lastname', '$email','$phone','$hashed_password','$profile_image')";
         if (mysqli_query($conn, $sql)) {
+            $_SESSION["email"] = $_POST["email"];
             header("location: ../userdashboard/user.php");
             echo "Registration successful!";
         } else {
             header("location: login.php");
             echo "Error: " . mysqli_error($conn);
         }
-        $_SESSION["email"] = $_POST["email"];
+        // $_SESSION["email"] = $_POST["email"];
         // $_SESSION["id"]= $_POST["id"];
         mysqli_close($conn);
     }
@@ -106,11 +108,15 @@
                               </div>
 
                               <div class="mb-3">
-                                  <label for="last_name" class="form-label">middle Name</label>
+                                  <label for="middle_name" class="form-label">middle Name</label>
+                                  <input type="text" class="form-control" id="middle_name" name="middle_name" required>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="last_name" class="form-label">last Name</label>
                                   <input type="text" class="form-control" id="last_name" name="last_name" required>
                               </div>
                               <div class="mb-3">
-                                  <label for="current_address" class="form-label">current Name</label>
+                                  <label for="current_address" class="form-label">Address </label>
                                   <input type="text" class="form-control" id="current_address" name="current_address" required>
                               </div>
 

@@ -703,10 +703,12 @@
                             Login
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="login/addminlogin.php" onclick="openLogin('addmin')">Login as Admin</a></li>
+                            <li><a class="dropdown-item" href="login/addminlogin.php" onclick="openLogin('addmin')">Login as officer</a></li>
                             <li><a class="dropdown-item" href="login/hopsitalogin.php" onclick="openLogin('hospital')">Login as Hospital</a></li>
                             <li><a class="dropdown-item" href="login/userlogin.php" onclick="openLogin('user')">Login as User</a></li>
                             <li><a class="dropdown-item" href="login/kebelelogin.php" onclick="openLogin('kebele')">Login as Kebele</a></li>
+                            <li><a class="dropdown-item" href="login.php" onclick="openLogin('Admin')">Login as ADMIN</a></li>
+
                         </ul>
                     </div>
 
