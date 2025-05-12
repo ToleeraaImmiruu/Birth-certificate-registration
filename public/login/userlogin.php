@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["userlogin"])) {
             // Redirect based on user role
             if ($user["role"] === "user") {
                 header("location: ../../userdashboard/user.php");
-            } 
+            }
             exit;
         } else {
             echo "<script>alert('Incorrect password!');</script>";
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["userlogin"])) {
 
     // Close statement and connection
     $stmt->close();
-    $conn->close();   
+    $conn->close();
 }
 ?>
 <!DOCTYPE html>
@@ -61,6 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["userlogin"])) {
             display: flex;
             align-items: center;
         }
+
         .login-card {
             max-width: 400px;
             margin: 0 auto;
@@ -132,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["userlogin"])) {
                     </div>
                 </div>
 
-                <button type="submit"  name="userlogin" class="btn btn-primary btn-login w-100 mb-3">
+                <button type="submit" name="userlogin" class="btn btn-primary btn-login w-100 mb-3">
                     <i class="fas fa-sign-in-alt me-2"></i>Login
                 </button>
 

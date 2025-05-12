@@ -6,7 +6,7 @@ $stmt = $conn->prepare($sql);
 $stmt->execute();
 $notification = $stmt->get_result();
 $num_notf = $notification->num_rows;
-?>
+?> 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,103 +18,183 @@ $num_notf = $notification->num_rows;
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
-        .sidebar {
-            width: 250px;
-            background-color: #6c757d;
-            color: white;
-            padding: 20px;
-            transition: transform 0.5s ease, background-color 0.5s ease;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-        }
+      body {
+        min-height: 100vh;
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-        .sidebar.hidden {
-            transform: translateX(-100%);
-            background-color: rgba(108, 117, 125, 0.5);
-        }
+      /* .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 1400px;
+        padding: 0;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      } */
 
-        .sidebar .btn {
-            width: 100%;
-            margin-bottom: 10px;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            transition: opacity 0.5s ease;
-        }
+      .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 25px 15px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: fixed;
+        height: 100vh;
+        left: 0;
+        top: 0;
+        z-index: 100;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+      }
 
-        .sidebar.hidden .btn {
-            opacity: 0;
-        }
+      .sidebar.hidden {
+        transform: translateX(-100%);
+        box-shadow: none;
+      }
 
-        .sidebar .btn img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
+      .sidebar .btn {
+        width: 100%;
+        margin-bottom: 12px;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        padding: 12px 15px;
+        border-radius: 8px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        border: none;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ecf0f1;
+      }
 
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-            position: relative;
-            margin-left: 250px;
-            transition: margin-left 0.5s ease;
-            /* background-color: red; */
-        }
+      .sidebar .btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+      }
 
-        .sidebar.hidden+.content {
-            margin-left: 0;
-        }
+      .sidebar .btn.active {
+        background-color: #3498db;
+      }
 
-        .logo {
-            width: 100px;
-            display: block;
-            margin-bottom: 20px;
-            transition: opacity 0.5s ease;
-        }
+      .sidebar .btn img {
+        width: 22px;
+        height: 22px;
+        margin-right: 12px;
+        filter: brightness(0) invert(1);
+      }
 
-        .sidebar.hidden .logo {
-            opacity: 0;
-        }
+      .sidebar.hidden .btn {
+        opacity: 0;
+        pointer-events: none;
+      }
 
-        .logout-btn {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-        }
+      .content {
+        flex-grow: 1;
+        padding: 30px;
+        margin-left: 280px;
+        transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        max-width: 1200px;
+        background-color: white;
+        min-height: 100vh;
+      }
 
-        .logout-btn img {
-            width: 20px;
-            height: 20px;
-            margin-right: 5px;
-        }
+      .sidebar.hidden+.content {
+        margin-left: 0;
+      }
 
-        .toggle-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1000;
-        }
+      .logo {
+        width: 120px;
+        display: block;
+        margin: 0 auto 30px;
+        transition: all 0.4s ease;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      }
 
-        .header {
-            height: 10vh;
-            background-color: red;
-            width: 100%;
-        }
+      .sidebar.hidden .logo {
+        opacity: 0;
+        transform: scale(0.8);
+      }
 
-        .header ul {
-            display: flex;
-            gap: 1rem;
-        }
+      .logout-btn {
+        position: fixed;
+        top: 20px;
+        right: 30px;
+        display: flex;
+        align-items: center;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 500;
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
 
-        .notification{
-            background-color: red;
-            padding: 0.1rem;
-            border-radius: 50%;
-        }
+      .logout-btn:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .logout-btn img {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+        filter: brightness(0) invert(1);
+      }
+
+      .toggle-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #2c3e50;
+        color: white;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .toggle-btn:hover {
+        background-color: #34495e;
+        transform: scale(1.1);
+      }
+
+      .welcome-message {
+        margin-top: 80px;
+        text-align: center;
+        font-size: 2.2rem;
+        color: #2c3e50;
+        padding: 30px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid #3498db;
+        animation: fadeIn 0.8s ease;
+      }
+      
+      .notification-badge {
+        background-color: #e74c3c;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 12px;
+        margin-left: 8px;
+      }
     </style>
     <script>
         function toggleSidebar() {
@@ -124,47 +204,62 @@ $num_notf = $notification->num_rows;
 </head>
 
 <body>
-
-    <div class="content">
-        <button class="btn btn-primary logout-btn"><img src="../image/logout.png" alt="Logout"><a href="../public/logOut.php">Logout</a> </button>
-        <h2>Welcome to Efa Bula Kebele</h2>
+    <div class="container">
+        <button class="logout-btn" onclick="location.href='../public/logOut.php'">
+            <img src="../image/logout.png" alt="Logout"> Logout
+        </button>
+        
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        
+        <div class="sidebar">
+            <img src="../image/birth.png" alt="Logo" class="logo">
+            <button class="btn" onclick="location.href='user.php'">
+                <img src="../image/home.png" alt="Home"> HOME
+            </button>
+            <button class="btn" onclick="location.href='user.php?page=apply'">
+                <img src="../image/apply.png" alt="Apply"> APPLY
+            </button>
+            <button class="btn" onclick="location.href='user.php?page=status'">
+                <img src="../image/check-list.png" alt="Status"> STATUS
+            </button>
+            <button class="btn" onclick="location.href='user.php?page=editprofile'">
+                <img src="../image/user.png" alt="Profile Setting"> PROFILE SETTING
+            </button>
+            <button class="btn" onclick="location.href='user.php?page=notification'">
+                <img src="../image/bell.png" alt=""> NOTIFICATIONS 
+                <span class="notification-badge"><?php echo $num_notf ?></span>
+            </button>
+        </div>
+        
+        <div class="content">
+            <?php
+            $sql = "SELECT * FROM users WHERE email = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $_SESSION["email"]);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
+            if($user){
+                $_SESSION["ID"] = $user["id"];
+            }
+            if (isset($_GET['page'])) {
+                $page = $_GET['page'];
+                if ($page == "apply") {
+                    include 'application.php';
+                } elseif ($page == "editprofile") {
+                    include 'editprofile.php';
+                } elseif ($page == "status") {
+                    include 'status.php';
+                } elseif ($page == "notification") {
+                    include 'notification.php';
+                } else {
+                    echo "<h3>Page Not Found</h3>";
+                }
+            } else {
+                include 'home.php';
+            }
+            ?> 
+        </div>
     </div>
-    <button class="btn btn-secondary toggle-btn" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar">
-        <img src="../image/birth.png" alt="Logo" class="logo">
-        <button class="btn btn-primary" onclick="location.href='user.php'"><img src="../image/home.png" alt="Home"> HOME</button>
-        <button class="btn btn-primary" onclick="location.href='user.php?page=apply'"><img src="../image/apply.png" alt="Apply"> APPLY</button>
-        <button class="btn btn-primary" onclick="location.href='user.php?page=status'"><img src="../image/check-list.png" alt="Status"> STATUS</button>
-        <button class="btn btn-primary" onclick="location.href='user.php?page=editprofile'"><img src="../image/user.png" alt="Profile Setting"> PROFILE SETTING</button>
-        <button class="btn btn-primary" onclick="location.href='user.php?page=notification'"><img src="../image/user.png" alt="Profile Setting"> notifications <p class="notification"><?php echo $num_notf?></p> </button>
-    </div>
-
 </body>
-<?php
-$sql = "SELECT * FROM users WHERE email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $_SESSION["email"]);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-if($user){
-    $_SESSION["ID"] = $user["id"];
-}
-if (isset($_GET['page'])) {
-    $page = $_GET['page'];
-    if ($page == "apply") {
-        include 'apply.php';
-    } elseif ($page == "editprofile") {
-        include 'editprofile.php';
-    } elseif ($page == "status") {
-        include 'status.php';
-    } elseif ($page == "notification") {
-        include 'notification.php';
-    } else {
-        echo "<h3>Page Not Found</h3>";
-    }
-} else {
-    include 'home.php';
-}
-?>
 </html>

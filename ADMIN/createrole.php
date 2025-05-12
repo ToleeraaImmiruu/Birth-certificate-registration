@@ -23,7 +23,7 @@ function sendmessage($email,$name, $password)
     $mail->Port       = 587;
 
     $mail->setFrom('bonsadaba8@gmail.com', 'Certificate Office');
-    $mail->addAddress($email, $name, $password);
+    $mail->addAddress($email, $name);
 
     $mail->Subject = 'WELL COME  TO OUR SYSTEM!';
     $mail->addAddress($email, $name);

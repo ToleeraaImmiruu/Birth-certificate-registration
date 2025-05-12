@@ -10,9 +10,6 @@ if (!isset($_SESSION["id"])) {
     $user_id = $_SESSION["id"];
 }
 
-
-
-
 // First, check the certificates table
 $sql = "SELECT * FROM certificates WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
@@ -27,10 +24,10 @@ if ($result->num_rows > 0) {
     echo '
 <div class="container">
     <div class="card shadow p-4">
-        <h4 class="text-center text-primary">Application Status</h4>
+        <h4 class="text-center" style="color: var(--primary-color)">Application Status</h4>
         <div id="statusContainer" class="status-box approved">✅ Your application is approved.</div>
         <div id="certificateButtonContainer" class="text-center mt-4">
-            <a href="updatedcertificate.php" class="btn btn-success">View Certificate</a>
+            <a href="updatedcertificate.php" class="btn" style="background-color: var(--secondary-color); color: white">View Certificate</a>
         </div>
     </div>
 </div>';
@@ -48,24 +45,21 @@ if ($result->num_rows > 0) {
         echo $status;
 
         if ($status == "Pending") {
-
             echo '
                <div class="container">
                   <div class="card shadow p-4">
-                      <h4 class="text-center text-primary">Application Status</h4>
+                      <h4 class="text-center" style="color: var(--primary-color)">Application Status</h4>
                       <div id="statusContainer" class="status-box pending"> ⏳ Your application is pending. </div>
                       <div id="certificateButtonContainer" class="text-center mt-3">we notify you by your email</div>
                   </div>
                </div>
             ';
         } elseif ($status == "regect") {
-
-
             echo '
                <div class="container">
                   <div class="card shadow p-4">
-                      <h4 class="text-center text-primary">Application Status</h4>
-                      <div id="statusContainer" class="status-box pending"> ❌ Your application is regect. </div>
+                      <h4 class="text-center" style="color: var(--primary-color)">Application Status</h4>
+                      <div id="statusContainer" class="status-box rejected"> ❌ Your application is rejected. </div>
                       <div id="certificateButtonContainer" class="text-center mt-3"></div>
                   </div>
                </div>
@@ -74,13 +68,12 @@ if ($result->num_rows > 0) {
             echo "ℹ️ Application status: " . $status;
         }
     } else {
-
         echo '
                <div class="container">
                   <div class="card shadow p-4">
-                      <h4 class="text-center text-primary">Application Status</h4>
+                      <h4 class="text-center" style="color: var(--primary-color)">Application Status</h4>
                       <div id="statusContainer" class="status-box pending">  you are not apply for birth certificate yet </div>
-                      <div id="certificateButtonContainer" class="text-center mt-3 approved btn btn-succes"><a href="user.php?page=apply">apply now<a/></div>
+                      <div id="certificateButtonContainer" class="text-center mt-3"><a href="user.php?page=apply" class="btn" style="background-color: var(--secondary-color); color: white">apply now</a></div>
                   </div>
                </div>
             ';
@@ -96,6 +89,13 @@ if ($result->num_rows > 0) {
     <title>Birth Certificate Status</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #0d924f;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+        }
+        
         .container {
             max-width: 600px;
             margin-top: 20px;
@@ -107,65 +107,50 @@ if ($result->num_rows > 0) {
             padding: 10px;
             text-align: center;
             border-radius: 5px;
+            margin: 10px 0;
         }
 
         .approved {
             background-color: #d4edda;
-            color: #155724;
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
         }
 
-        .declined {
+        .rejected {
             background-color: #f8d7da;
-            color: #721c24;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
         }
 
         .pending {
             background-color: #fff3cd;
-            color: #856404;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        body {
+            background-color: var(--light-bg);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+        
+        .btn {
+            padding: 8px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 
 <body>
-    <!-- 
-    <div class="container">
-        <div class="card shadow p-4">
-            <h4 class="text-center text-primary">Application Status</h4>
-            <div id="statusContainer" class="status-box pending">Your application is pending.</div>
-            <div id="certificateButtonContainer" class="text-center mt-3"></div>
-        </div>
-    </div> -->
-
-    <script>
-        // // Simulated status retrieval (Replace this with actual API call if needed)
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     $sql = "select"
-        //     let status = "approved"; // Example: Change this to "approved" or "declined" dynamically
-        //     let statusContainer = document.getElementById("statusContainer");
-        //     let certificateButtonContainer = document.getElementById("certificateButtonContainer");
-
-        //     if (status === "approved") {
-        //         statusContainer.textContent = "Your application has been approved.";
-        //         statusContainer.classList.remove("pending", "declined");
-        //         statusContainer.classList.add("approved");
-
-        //         // Add the view certificate button
-        //         let viewCertificateButton = document.createElement("button");
-        //         viewCertificateButton.classList.add("btn", "btn-success");
-        //         viewCertificateButton.textContent = "View Certificate";
-        //         viewCertificateButton.onclick = function() {
-        //             // Replace with the actual link to view the certificate
-
-        //         };
-        //         certificateButtonContainer.appendChild(viewCertificateButton);
-        //     } else if (status === "declined") {
-        //         statusContainer.textContent = "Your application has been declined.";
-        //         statusContainer.classList.remove("pending", "approved");
-        //         statusContainer.classList.add("declined");
-        //     }
-        // });
-    </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
