@@ -19,16 +19,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
 
     if (!password_verify($oldpassword, $user["password"])) {
         $error = "Incorrect current password";
-    } else if ($newpassword != $confirmpassword) {
+    } else if (!empty($newpassword) && $newpassword != $confirmpassword) {
         $error = "New passwords don't match";
     } else {
-        $hashedpassword = password_hash($newpassword, PASSWORD_DEFAULT);
+        if (!empty($newpassword)) {
+            $hashedpassword = password_hash($newpassword, PASSWORD_DEFAULT);
+        } else {
+            $hashedpassword = $user["password"]; // keep the current password
+        }
+
         $sql = "UPDATE users SET password = ?, phone = ? WHERE id= ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssi", $hashedpassword, $phone, $user_id);
         if ($stmt->execute()) {
             $success = "Profile updated successfully!";
-            // Refresh user data
             $user["phone"] = $phone;
         } else {
             $error = "Error updating profile. Please try again.";
@@ -59,9 +63,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         }
 
         .profile-container {
-            margin-left: 270px;
-            /* Match sidebar width */
-            padding: 2rem;
+            margin-left: 10rem;
+            width: 110rem;
+                /* Match sidebar width */
+                padding: 2rem;
             transition: margin 0.3s ease;
         }
 
@@ -166,13 +171,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
 <body>
     <!-- Sidebar would be included here -->
 
-    <div class="profile-container">
+    <div class="profile-container ms-5">
         <div class="profile-card">
             <div class="profile-header">
                 <img src="../assets/uploads/<?php echo htmlspecialchars($user["profile_image"] ?? 'default-profile.jpg') ?>"
                     alt="Profile Image"
-                    class="profile-avatar"
-                    onerror="this.src='../assets/uploads/default-profile.jpg'">
+                    class="profile-avatar">
                 <h3><?php echo htmlspecialchars($user["first_name"] . " " . $user["last_name"]) ?></h3>
                 <p class="mb-0"><i class="fas fa-user-shield me-2"></i><?php echo ucfirst($user["role"]) ?></p>
             </div>
