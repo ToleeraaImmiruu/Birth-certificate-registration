@@ -32,10 +32,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssi", $hashedpassword, $phone, $user_id);
         if ($stmt->execute()) {
-            $success = "Profile updated successfully!";
+            echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        });
+    </script>";
+
+
+
             $user["phone"] = $phone;
         } else {
-            $error = "Error updating profile. Please try again.";
+            echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        });
+    </script>";
+           
         }
     }
 }
@@ -65,8 +79,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         .profile-container {
             margin-left: 10rem;
             width: 110rem;
-                /* Match sidebar width */
-                padding: 2rem;
+            /* Match sidebar width */
+            padding: 2rem;
             transition: margin 0.3s ease;
         }
 
@@ -272,6 +286,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
             </div>
         </div>
     </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-success">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                 your profile is changed successfully
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    Something went wrong. Please try again.
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

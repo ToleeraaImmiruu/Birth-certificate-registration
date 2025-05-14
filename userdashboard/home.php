@@ -1,12 +1,38 @@
 <?php
 require "../userdashboard/init.php";
 include "../setup/dbconnection.php";
+$user_id = $_SESSION["id"];
 $sql = "SELECT * FROM users WHERE id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $_SESSION["id"]);
+$stmt->bind_param("i", $user_id);
 $stmt->execute();
-$result =$stmt->get_result();
-$user =$result->fetch_assoc();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+$sql = "SELECT * FROM applications WHERE id = ?";
+$appstmt = $conn->prepare($sql);
+$appstmt->bind_param("i", $user_id);
+$appstmt->execute();
+$result = $appstmt->get_result();
+$totalapp = $result->num_rows;
+$sql = "SELECT * FROM certificates WHERE id = ?";
+$certstmt = $conn->prepare($sql);
+$certstmt->bind_param("i", $user_id);
+$certstmt->execute();
+$result = $certstmt->get_result();
+$totalcert = $result->num_rows;
+
+$totalrequest = $totalapp + $totalcert;
+
+$sql = "SELECT * FROM announcements ORDER BY posted_at DESC LIMIT 3";
+$annstmt = $conn->prepare($sql);
+$annstmt->execute();
+$result = $annstmt->get_result();
+$count = 3;
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -137,7 +163,7 @@ $user =$result->fetch_assoc();
     <div class="main-container">
         <div class="dashboard-container">
             <div class="welcome-box text-center">
-                <h2>Welcome, <?php echo htmlspecialchars($user["first_name"]. " ". $user["last_name"]); ?>!</h2>
+                <h2>Welcome, <?php echo htmlspecialchars($user["first_name"] . " " . $user["last_name"]); ?>!</h2>
                 <p class="lead mb-0">Manage your birth certificate requests and view updates here.</p>
             </div>
 
@@ -147,7 +173,7 @@ $user =$result->fetch_assoc();
                         <div class="card-body text-center">
                             <i class="fas fa-file-alt text-primary"></i>
                             <h5 class="card-title mt-2">Total Requests</h5>
-                            <p class="card-text fs-3 fw-bold">3</p>
+                            <p class="card-text fs-3 fw-bold"><?php echo $totalrequest ?></p>
                             <small class="text-muted">View all requests</small>
                         </div>
                     </div>
@@ -157,7 +183,7 @@ $user =$result->fetch_assoc();
                         <div class="card-body text-center">
                             <i class="fas fa-check-circle text-success"></i>
                             <h5 class="card-title mt-2">Approved</h5>
-                            <p class="card-text fs-3 fw-bold">2</p>
+                            <p class="card-text fs-3 fw-bold"><?php echo $totalcert ?></p>
                             <small class="text-muted">View approved certificates</small>
                         </div>
                     </div>
@@ -167,7 +193,7 @@ $user =$result->fetch_assoc();
                         <div class="card-body text-center">
                             <i class="fas fa-hourglass-half text-warning"></i>
                             <h5 class="card-title mt-2">Pending</h5>
-                            <p class="card-text fs-3 fw-bold">1</p>
+                            <p class="card-text fs-3 fw-bold"><?php echo $totalapp ?></p>
                             <small class="text-muted">Track pending requests</small>
                         </div>
                     </div>
@@ -176,20 +202,21 @@ $user =$result->fetch_assoc();
 
             <div class="mt-5">
                 <h4 class="section-title">Latest Announcements</h4>
-                <div class="announcement-box mb-3">
+                <?php while ($result->num_rows > 0 && $count > 0) {
+                    $announcement = $result->fetch_assoc();
+                    echo '
+                    <div class="announcement-box mb-3">
                     <div class="d-flex align-items-center mb-2">
                         <i class="fas fa-bullhorn me-2 text-primary"></i>
-                        <h6 class="mb-0">System Maintenance</h6>
+                        <h6 class="mb-0">'.$announcement["title"].'</h6>
                     </div>
-                    <p class="mb-0">The system will be down for maintenance on Saturday between 1 AM - 3 AM.</p>
+                    <p class="mb-0">'.$announcement["body"].'</p>
                 </div>
-                <div class="announcement-box">
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-info-circle me-2 text-primary"></i>
-                        <h6 class="mb-0">New Update</h6>
-                    </div>
-                    <p class="mb-0">Online payment feature has been added for faster processing.</p>
-                </div>
+                   ';
+                   $count --;
+                }
+                ?>
+
             </div>
         </div>
     </div>
@@ -218,4 +245,5 @@ $user =$result->fetch_assoc();
         });
     </script>
 </body>
+
 </html>

@@ -46,7 +46,7 @@ if ($result->num_rows > 0) {
 
         if ($status == "Pending") {
             echo '
-               <div class="container">
+               <div class="container me-5">
                   <div class="card shadow p-4">
                       <h4 class="text-center" style="color: var(--primary-color)">Application Status</h4>
                       <div id="statusContainer" class="status-box pending"> ⏳ Your application is pending. </div>

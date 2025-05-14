@@ -12,16 +12,26 @@ if (!isset($_SESSION["id"])) {
 }
 
 // First, check the certificates table
+
 $sql = "SELECT * FROM certificates WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('s', $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
-if($result->num_rows > 0 ){ 
+
+if ($result->num_rows > 0) {
     $cert = $result->fetch_assoc();
     $payment_status = $cert["payment_status"];
+    $sql = "SELECT * FROM payments WHERE certificate_id = ?";
+    $paystmt = $conn->prepare($sql);
+    $paystmt->bind_param("s", $cert["id"]);
+    $paystmt->execute();
+    $result = $paystmt->get_result();
+    $payment = $result->fetch_assoc();
+    
 
-    if($payment_status == "unpaid"){
+
+    if ($payment_status == "unpaid" && $result->num_rows ==0) {
         echo '
                 <div class="status-card mb-4">
             <div class="status-header text-center">
@@ -57,8 +67,11 @@ if($result->num_rows > 0 ){
                         </button>
                     </div>
                 </div>';
+    }else if($payment_status == "unpaid" && $result->num_rows > 0){
 
-    }else if($payment_status == "paid"){
+        
+
+    } else if ($payment_status == "paid") {
         echo '
         
 <div class="container">
@@ -72,17 +85,16 @@ if($result->num_rows > 0 ){
 </div>
         ';
     }
-
-}else {
+} else {
     $sql = "SELECT * FROM applications WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('s', $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    if($result->num_rows > 0){
+    if ($result->num_rows > 0) {
 
         echo '
-          <div class="col-md-6 mb-4">
+          <div class="col-md-6 mb-4 appending">
                 <div class="status-card h-100">
                     <div class="status-header text-center">
                         <h4 class="mb-0"><i class="bi bi-hourglass-split status-icon"></i> Pending Application</h4>
@@ -98,9 +110,8 @@ if($result->num_rows > 0 ){
                     </div>
                 </div>
             </div>';
-        
-    }else{
-        
+    } else {
+
         echo '
           <div class="col-12 ms-5 mt-5">
                 <div class="status-card ms-5">
@@ -123,6 +134,52 @@ if($result->num_rows > 0 ){
 }
 
 
+if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST["submit"])) {
+    $target_dir = "uploads/";
+    function uploadfile($inputname, $target_dir)
+    {
+        if (!empty($_FILES[$inputname]["name"])) {
+            $filename = basename($_FILES[$inputname]["name"]);
+            $filetype = strtolower(pathinfo($_FILES[$inputname]["name"], PATHINFO_EXTENSION));
+            $allowedTypes = array("jpg", "jpeg", "png", "pdf");
+            if (in_array($filetype, $allowedTypes)) {
+                $filepath = $target_dir . time() . "_" . $filename;
+                if (move_uploaded_file($_FILES[$inputname]["tmp_name"], $filepath)) {
+                    return $filepath;
+                } else {
+                    echo " error ";
+                }
+            } else {
+                echo "invalid type";
+            }
+        } else {
+            return null;
+        }
+    }
+
+    $fullname = $_POST["name"];
+    $certificate_id = $_POST["certificate_id"];
+    $phone = $_POST["phone"];
+    $amount = $_POST["amount"];
+    $screenshoot_path = uploadfile("payment_screenshoot", $target_dir);
+    // $captcha = $_POST["captcha"];
+
+    $sql = "INSERT INTO payments (user_id, full_name,certificate_id,phone,payment_IMG,amount) VALUES (?,?,?,?,?,?)";
+    $paymentstmt = $conn->prepare($sql);
+    $paymentstmt->bind_param("isssss", $user_id, $fullname, $certificate_id, $phone, $screenshoot_path, $amount);
+
+
+    if ($paymentstmt->execute()) {
+        echo "<script>
+         document.getElementById('paymentForm').style.display = 'none';
+            document.getElementById('paymentCompleted').style.display = 'block';
+            document.getElementById('paymentCompleted').scrollIntoView({
+                behavior: 'smooth'
+            });
+        
+        </script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -150,6 +207,12 @@ if($result->num_rows > 0 ){
         /* Custom container width (default is 1140px for xl, reduced by 100px) */
         .container {
             max-width: 1040px;
+        }
+
+        .appending {
+            margin-left: 20rem;
+            margin-top: 3rem;
+
         }
 
         .status-card {
@@ -303,6 +366,10 @@ if($result->num_rows > 0 ){
             font-weight: 500;
             border-radius: 50px;
         }
+
+        .paymentform{
+            margin-left: 10rem;
+        }
     </style>
 </head>
 
@@ -311,92 +378,92 @@ if($result->num_rows > 0 ){
         <!-- Main Status Card -->
 
 
-                <!-- Payment Form (Hidden by default) -->
-                <div id="paymentForm" style="display: none;">
-                    <div class="divider"></div>
-                    <h4 class="text-center mb-4" style="color: var(--primary-color)">
-                        <i class="bi bi-credit-card me-2"></i>Payment Details
-                    </h4>
+        <!-- Payment Form (Hidden by default) -->
+        <div id="paymentForm" style="display: none;" class="paymentform">
+            <div class="divider"></div>
+            <h4 class="text-center mb-4" style="color: var(--primary-color)">
+                <i class="bi bi-credit-card me-2"></i>Payment Details
+            </h4>
 
-                    <form id="paymentSubmissionForm" onsubmit="return validatePayment()">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="fullname" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="fullname" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="request_id" class="form-label">Application ID</label>
-                                <input type="text" class="form-control" id="request_id" value="BC-2023-58741" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="phone" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="amount" class="form-label">Amount (ETB)</label>
-                                <input type="number" class="form-control" id="amount" value="250" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Payment Screenshot</label>
-                                <div class="file-upload">
-                                    <input type="file" id="screenshot" class="file-upload-input" accept=".jpg,.jpeg,.png,.pdf" required>
-                                    <label for="screenshot" class="file-upload-label" id="fileLabel">
-                                        <i class="bi bi-cloud-arrow-up me-2"></i>
-                                        <span>Upload payment confirmation (JPG, PNG or PDF)</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="captcha-container">
-                                    <div class="captcha-math" id="captcha-question"></div>
-                                    <input type="text" class="form-control" id="captcha-answer" placeholder="Your answer" required>
-                                    <button type="button" class="btn btn-sm btn-outline-custom" onclick="generateCaptcha()">
-                                        <i class="bi bi-arrow-clockwise"></i>
-                                    </button>
-                                </div>
-                                <div id="captcha-error" class="text-danger small"></div>
-                            </div>
-
-                            <div class="col-12 mt-4">
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                                    <button type="submit" class="btn btn-success-custom me-md-2 px-4">
-                                        <i class="bi bi-send-check-fill me-2"></i>Submit Payment
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary px-4" onclick="hidePaymentForm()">
-                                        <i class="bi bi-x-circle me-2"></i>Cancel
-                                    </button>
-                                </div>
-                            </div>
+            <form action="newstatus.php" method="post" enctype="multipart/form-data" id="paymentSubmissionForm" onsubmit="return validatePayment()">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="fullname" class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-control" id="fullname" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="request_id" class="form-label">certificate ID</label>
+                        <input type="text" name="certificate_id" class="form-control" id="request_id">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" id="phone" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="amount" class="form-label">Amount (ETB)</label>
+                        <input type="number" name="amount" class="form-control" id="amount" value="250" readonly>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Payment Screenshot</label>
+                        <div class="file-upload">
+                            <input type="file" name="payment_screenshoot" id="screenshot" class="file-upload-input" accept=".jpg,.jpeg,.png,.pdf" required>
+                            <label for="screenshot" class="file-upload-label" id="fileLabel">
+                                <i class="bi bi-cloud-arrow-up me-2"></i>
+                                <span>Upload payment confirmation (JPG, PNG or PDF)</span>
+                            </label>
                         </div>
-                    </form>
-                </div>
+                    </div>
 
-                <!-- Payment Success (Hidden by default) -->
-                <div id="paymentCompleted" style="display: none;">
-                    <div class="divider"></div>
-                    <div class="text-center py-3">
-                        <div class="status-box approved mb-4">
-                            <i class="bi bi-check-circle-fill status-icon"></i> Payment successfully completed!
+                    <div class="col-12">
+                        <div class="captcha-container">
+                            <div class="captcha-math" id="captcha-question"></div>
+                            <input type="text" class="form-control" id="captcha-answer" placeholder="Your answer" required>
+                            <button type="button" class="btn btn-sm btn-outline-custom" name="captcha" onclick="generateCaptcha()">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
                         </div>
-                        <div class="alert alert-success" role="alert">
-                            <i class="bi bi-envelope-check-fill me-2"></i> A receipt has been sent to your email address.
+                        <div id="captcha-error" class="text-danger small"></div>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <button type="submit" name="submit" class="btn btn-success-custom me-md-2 px-4">
+                                <i class="bi bi-send-check-fill me-2"></i>Submit Payment
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary px-4" onclick="hidePaymentForm()">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </button>
                         </div>
-                        <button class="btn btn-success-custom btn-lg px-4 mt-3" onclick="viewCertificate()">
-                            <i class="bi bi-file-earmark-pdf-fill me-2"></i>View Certificate
-                        </button>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
 
-        <!-- Other Status Examples -->
-        <div class="row">
-            <!-- Pending Example -->
-          
+        <!-- Payment Success (Hidden by default) -->
+        <div id="paymentCompleted" style="display: none;">
+            <div class="divider"></div>
+            <div class="text-center py-3">
+                <div class="status-box approved mb-4">
+                    <i class="bi bi-check-circle-fill status-icon"></i> Payment successfully completed!
+                </div>
+                <div class="alert alert-success" role="alert">
+                    <i class="bi bi-envelope-check-fill me-2"></i> A receipt has been sent to your email address.
+                </div>
+                <button class="btn btn-success-custom btn-lg px-4 mt-3" onclick="viewCertificate()">
+                    <i class="bi bi-file-earmark-pdf-fill me-2"></i>View Certificate
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
 
-            <!-- Rejected Example -->
-            <!-- <div class="col-md-6 mb-4">
+    <!-- Other Status Examples -->
+    <div class="row">
+        <!-- Pending Example -->
+
+
+        <!-- Rejected Example -->
+        <!-- <div class="col-md-6 mb-4">
                 <div class="status-card h-100">
                     <div class="status-header text-center">
                         <h4 class="mb-0"><i class="bi bi-x-circle-fill status-icon"></i> Rejected Application</h4>
@@ -413,9 +480,9 @@ if($result->num_rows > 0 ){
                 </div>
             </div> -->
 
-            <!-- Not Applied Example -->
-          
-        </div>
+        <!-- Not Applied Example -->
+
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -471,13 +538,9 @@ if($result->num_rows > 0 ){
             }
 
             // Show payment success
-            document.getElementById('paymentForm').style.display = 'none';
-            document.getElementById('paymentCompleted').style.display = 'block';
-            document.getElementById('paymentCompleted').scrollIntoView({
-                behavior: 'smooth'
-            });
 
-            return false; // Prevent actual form submission for demo
+
+            // Prevent actual form submission for demo
         }
 
         // Mock certificate viewing

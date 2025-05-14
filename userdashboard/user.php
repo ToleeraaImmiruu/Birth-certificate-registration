@@ -1,5 +1,11 @@
 <?php
 require 'init.php';
+$showSuccess = false;
+if (isset($_SESSION['support_success']) && $_SESSION['support_success']) {
+  $showSuccess = true;
+  unset($_SESSION['support_success']); // Remove it so it doesn't show again on refresh
+}
+
 include "../setup/dbconnection.php";
 $sql = "SELECT * FROM announcements";
 $stmt = $conn->prepare($sql);
@@ -233,7 +239,7 @@ $num_notf = $notification->num_rows;
         <!-- <span class="notification-badge"><?php echo $num_notf ?></span> -->
       </button>
       <button class="btn" onclick="location.href='user.php?page=usersupport'">
-        <img src="../image/user.png" alt="Profile Setting"> user support 
+        <img src="../image/user.png" alt="Profile Setting"> user support
       </button>
     </div>
 
@@ -258,11 +264,11 @@ $num_notf = $notification->num_rows;
           include 'newstatus.php';
         } elseif ($page == "notification") {
           include 'notification.php';
-        }else if($page == 'usersupport'){
+        } else if ($page == 'usersupport') {
           include 'deep2support.php';
-        } else if($page == 'home'){
+        } else if ($page == 'home') {
           include 'home.php';
-         } else {
+        } else {
           echo "<h3>Page Not Found</h3>";
         }
       } else {
@@ -271,6 +277,30 @@ $num_notf = $notification->num_rows;
       ?>
     </div>
   </div>
+  <?php if ($showSuccess): ?>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+      });
+    </script>
+  <?php endif; ?>
+
+  <!-- Success Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-success">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="successModalLabel">Success</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          Your support request was submitted successfully!
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>
