@@ -68,6 +68,7 @@ if ($result->num_rows > 0) {
                     </div>
                 </div>';
     }else if($payment_status == "unpaid" && $result->num_rows > 0){
+        echo'your payment is pending';
 
         
 

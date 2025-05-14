@@ -620,7 +620,7 @@ if (isset($_POST["submit"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
                         <i class="bi bi-arrow-left"></i> Back to Dashboard
                     </a>
                     <div>
-                        <button class="btn btn-approve me-2">
+                        <button class="btn btn-approve me-2" onclick="approved(<?= $application['id']?>)">
                             <i class="bi bi-check-circle"></i> Approve Application
                         </button>
                         <button class="btn btn-reject" onclick="regectapplication()">

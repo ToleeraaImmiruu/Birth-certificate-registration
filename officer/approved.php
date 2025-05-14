@@ -63,7 +63,7 @@ if (isset($_GET['approve_id'])) {
                 $mail->addAddress($applicant["email"], $applicant["full_name"]);
 
                 $mail->Subject = 'Your certificate is approved!';
-                $mail->Body    = "Hello {$applicant["full_name"]},\n\nYour application is approved. You can check your status on your dashboard.\n\nThank you!";
+                $mail->Body    = "Hello {$applicant["full_name"]},\n\nYour application is approved. You can check your status on your dashboard.\n this is your certificate id {$certificate_id}\nThank you!";
 
                 $mail->send();
 

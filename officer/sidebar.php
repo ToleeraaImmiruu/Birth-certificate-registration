@@ -7,7 +7,7 @@
     <title>User Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> -->
     <style>
         body
         /*{
@@ -54,7 +54,7 @@
             margin-right: 10px;
         }
 
-        .content {
+        /* .content {
             flex-grow: 1;
             height: 10vh;
             padding: 20px;
@@ -62,7 +62,7 @@
             margin-left: 250px;
             transition: margin-left 0.5s ease;
             background-color: rgba(108, 117, 125, 0.5);
-        }
+        } */
 
         .sidebar.hidden+.content {
             margin-left: 0;
@@ -112,12 +112,12 @@
             gap: 1rem;
         }
 
-        
-        .logout{
+
+        .logout {
             color: white;
             text-decoration: none;
             text-transform: capitalize;
-        
+
         }
     </style>
     <script>
@@ -140,6 +140,7 @@
         <button class="btn btn-primary" onclick="location.href='sidebar.php?page=application'"><img src="../image/apply.png" alt="Apply"> Applications</button>
         <button class="btn btn-primary" onclick="location.href='sidebar.php?page=manageuser'"><img src="../image/check-list.png" alt="Status"> manage user</button>
         <button class="btn btn-primary" onclick="location.href='sidebar.php?page=announcement'"><img src="../image/check-list.png" alt="Status"> ANNOUNCEMENT </button>
+        <button class="btn btn-primary" onclick="location.href='sidebar.php?page=payments'"><img src="../image/check-list.png" alt="Status"> PAYMENTS </button>
         <button class="btn btn-primary" onclick="location.href='sidebar.php?page=editprofile'"><img src="../image/user.png" alt="Profile Setting"> MY PROFILE </button>
     </div>
 
@@ -156,6 +157,8 @@ if (isset($_GET['page'])) {
         include 'announcement.php';
     } else if ($page == "manageuser") {
         include "manageUser.php";
+    } else if ($page == "payments") {
+        include "payments.php";
     } else {
         echo "<h3>Page Not Found</h3>";
     }
