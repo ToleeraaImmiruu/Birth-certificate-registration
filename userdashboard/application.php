@@ -43,9 +43,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         $father_name = $_POST["father_name"];
         $mother_name = $_POST["mother_name"];
 
-        $sql = "INSERT INTO applications ( user_id,first_name ,middle_name ,last_name ,dob,email,gender,place_of_birth,father_name,mother_name ,current_address,father_id,mother_id,applicant_id,birth_record) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO applications ( user_id,first_name ,middle_name ,last_name ,dob,email,gender,place_of_birth,father_name,mother_name ,current_address,father_id,mother_id,applicant_id,birth_record) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isssssssssssss", $user_id, $firstname, $middlename, $lastname, $dob, $email, $gender, $birth_place, $father_name, $mother_name, $address, $father_id_path, $mother_id_path, $applicant_id_path, $birth_record_path);
+        $stmt->bind_param("issssssssssssss", $user_id, $firstname, $middlename, $lastname, $dob, $email, $gender, $birth_place, $father_name, $mother_name, $address, $father_id_path, $mother_id_path, $applicant_id_path, $birth_record_path);
 
         echo $father_id_path;
         echo $mother_id_path;

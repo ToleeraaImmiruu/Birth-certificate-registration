@@ -1,3 +1,130 @@
+<?php
+require 'init.php';
+
+include "../setup/dbconnection.php";
+
+
+if (!isset($_SESSION["id"])) {
+    header:
+    "location:../public/login.php";
+} else {
+    $user_id = $_SESSION["id"];
+}
+
+// First, check the certificates table
+$sql = "SELECT * FROM certificates WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('s', $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+if($result->num_rows > 0 ){ 
+    $cert = $result->fetch_assoc();
+    $payment_status = $cert["payment_status"];
+
+    if($payment_status == "unpaid"){
+        echo '
+                <div class="status-card mb-4">
+            <div class="status-header text-center">
+                <h3 class="mb-0"><i class="bi bi-file-earmark-text-fill status-icon"></i> Birth Certificate Application Status</h3>
+            </div>
+            <div class="status-body">
+                <!-- Approved Status -->
+                <div id="approvedStatus">
+                    <div class="status-box approved">
+                        <i class="bi bi-check-circle-fill status-icon"></i> Your application has been approved!
+                    </div>
+
+                    <div class="payment-details">
+                        <h5 class="fw-bold text-center mb-3">Payment Information</h5>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center mb-3 mb-md-0">
+                                <div class="payment-amount">ETB 250.00</div>
+                                <small class="text-muted">Certificate issuance fee</small>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Application approved</li>
+                                    <li class="mb-2"><i class="bi bi-currency-exchange text-primary me-2"></i>Payment pending</li>
+                                    <li><i class="bi bi-file-earmark-text text-muted me-2"></i>Certificate not yet issued</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary-custom btn-lg px-4" onclick="showPaymentForm()">
+                            <i class="bi bi-credit-card-fill me-2"></i>Proceed to Payment
+                        </button>
+                    </div>
+                </div>';
+
+    }else if($payment_status == "paid"){
+        echo '
+        
+<div class="container">
+    <div class="card shadow p-4">
+        <h4 class="text-center" style="color: var(--primary-color)">Application Status</h4>
+        <div id="statusContainer" class="status-box approved">✅ Your application is approved.</div>
+        <div id="certificateButtonContainer" class="text-center mt-4">
+            <a href="updatedcertificate.php" class="btn" style="background-color: var(--secondary-color); color: white">View Certificate</a>
+        </div>
+    </div>
+</div>
+        ';
+    }
+
+}else {
+    $sql = "SELECT * FROM applications WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if($result->num_rows > 0){
+
+        echo '
+          <div class="col-md-6 mb-4">
+                <div class="status-card h-100">
+                    <div class="status-header text-center">
+                        <h4 class="mb-0"><i class="bi bi-hourglass-split status-icon"></i> Pending Application</h4>
+                    </div>
+                    <div class="status-body">
+                        <div class="status-box pending">
+                            <i class="bi bi-hourglass-top status-icon"></i> Application under review
+                        </div>
+                        <div class="text-center text-muted mt-3">
+                            <p>Your application is being processed. We will notify you by email once a decision is made.</p>
+                            <span class="badge bg-warning text-dark badge-status">Pending</span>
+                        </div>
+                    </div>
+                </div>
+            </div>';
+        
+    }else{
+        
+        echo '
+          <div class="col-12 ms-5 mt-5">
+                <div class="status-card ms-5">
+                    <div class="status-header text-center">
+                        <h4 class="mb-0"><i class="bi bi-file-earmark-plus status-icon"></i> New Application</h4>
+                    </div>
+                    <div class="status-body text-center">
+                        <div class="status-box pending">
+                            <i class="bi bi-exclamation-circle-fill status-icon"></i> No application submitted
+                        </div>
+                        <p class="text-muted mt-3">You have not applied for a birth certificate yet.</p>
+                        <button class="btn btn-primary-custom px-4" href="newstatus.php?page=apply">
+                            <i class="bi bi-pencil-square me-2"></i>Start New Application
+                        </button>
+                    </div>
+                </div>
+            </div>
+        ';
+    }
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -182,40 +309,7 @@
 <body>
     <div class="container py-5 me-5 ps-0 ">
         <!-- Main Status Card -->
-        <div class="status-card mb-4">
-            <div class="status-header text-center">
-                <h3 class="mb-0"><i class="bi bi-file-earmark-text-fill status-icon"></i> Birth Certificate Application Status</h3>
-            </div>
-            <div class="status-body">
-                <!-- Approved Status -->
-                <div id="approvedStatus">
-                    <div class="status-box approved">
-                        <i class="bi bi-check-circle-fill status-icon"></i> Your application has been approved!
-                    </div>
 
-                    <div class="payment-details">
-                        <h5 class="fw-bold text-center mb-3">Payment Information</h5>
-                        <div class="row align-items-center">
-                            <div class="col-md-6 text-center mb-3 mb-md-0">
-                                <div class="payment-amount">ETB 250.00</div>
-                                <small class="text-muted">Certificate issuance fee</small>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Application approved</li>
-                                    <li class="mb-2"><i class="bi bi-currency-exchange text-primary me-2"></i>Payment pending</li>
-                                    <li><i class="bi bi-file-earmark-text text-muted me-2"></i>Certificate not yet issued</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <button class="btn btn-primary-custom btn-lg px-4" onclick="showPaymentForm()">
-                            <i class="bi bi-credit-card-fill me-2"></i>Proceed to Payment
-                        </button>
-                    </div>
-                </div>
 
                 <!-- Payment Form (Hidden by default) -->
                 <div id="paymentForm" style="display: none;">
@@ -299,25 +393,10 @@
         <!-- Other Status Examples -->
         <div class="row">
             <!-- Pending Example -->
-            <div class="col-md-6 mb-4">
-                <div class="status-card h-100">
-                    <div class="status-header text-center">
-                        <h4 class="mb-0"><i class="bi bi-hourglass-split status-icon"></i> Pending Application</h4>
-                    </div>
-                    <div class="status-body">
-                        <div class="status-box pending">
-                            <i class="bi bi-hourglass-top status-icon"></i> Application under review
-                        </div>
-                        <div class="text-center text-muted mt-3">
-                            <p>Your application is being processed. We will notify you by email once a decision is made.</p>
-                            <span class="badge bg-warning text-dark badge-status">Pending</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          
 
             <!-- Rejected Example -->
-            <div class="col-md-6 mb-4">
+            <!-- <div class="col-md-6 mb-4">
                 <div class="status-card h-100">
                     <div class="status-header text-center">
                         <h4 class="mb-0"><i class="bi bi-x-circle-fill status-icon"></i> Rejected Application</h4>
@@ -332,25 +411,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Not Applied Example -->
-            <div class="col-12">
-                <div class="status-card">
-                    <div class="status-header text-center">
-                        <h4 class="mb-0"><i class="bi bi-file-earmark-plus status-icon"></i> New Application</h4>
-                    </div>
-                    <div class="status-body text-center">
-                        <div class="status-box pending">
-                            <i class="bi bi-exclamation-circle-fill status-icon"></i> No application submitted
-                        </div>
-                        <p class="text-muted mt-3">You haven't applied for a birth certificate yet.</p>
-                        <button class="btn btn-primary-custom px-4">
-                            <i class="bi bi-pencil-square me-2"></i>Start New Application
-                        </button>
-                    </div>
-                </div>
-            </div>
+          
         </div>
     </div>
 

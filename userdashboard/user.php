@@ -16,7 +16,7 @@ $num_notf = $notification->num_rows;
   <title>User Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <!-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> -->
   <style>
     body {
       min-height: 100vh;
@@ -229,7 +229,7 @@ $num_notf = $notification->num_rows;
         <img src="../image/user.png" alt="Profile Setting"> PROFILE SETTING
       </button>
       <button class="btn" onclick="location.href='user.php?page=notification'">
-        <img src="../image/bell.png" alt=""> NOTIFICATIONS
+        <img src="../image/user.png" alt=""> NOTIFICATIONS
         <!-- <span class="notification-badge"><?php echo $num_notf ?></span> -->
       </button>
       <button class="btn" onclick="location.href='user.php?page=usersupport'">
@@ -255,11 +255,11 @@ $num_notf = $notification->num_rows;
         } elseif ($page == "editprofile") {
           include 'editprofile.php';
         } elseif ($page == "status") {
-          include 'status.php';
+          include 'newstatus.php';
         } elseif ($page == "notification") {
           include 'notification.php';
         }else if($page == 'usersupport'){
-          include 'usersupport.php';
+          include 'deep2support.php';
         } else if($page == 'home'){
           include 'home.php';
          } else {
