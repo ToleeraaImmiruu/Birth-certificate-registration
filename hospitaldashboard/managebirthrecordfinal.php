@@ -469,7 +469,7 @@ $firstrecord = $result->fetch_assoc();
         }
         }
         }
-        </scr>
+        </script>
 </body>
 
 </html>

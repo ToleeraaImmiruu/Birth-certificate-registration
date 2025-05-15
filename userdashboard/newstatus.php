@@ -28,12 +28,12 @@ if ($result->num_rows > 0) {
     $paystmt->execute();
     $result = $paystmt->get_result();
     $payment = $result->fetch_assoc();
-    
 
 
-    if ($payment_status == "unpaid" && $result->num_rows ==0) {
+
+    if ($payment_status == "unpaid" && $result->num_rows == 0) {
         echo '
-                <div class="status-card mb-4">
+                <div class="status-card mb-4 payment">
             <div class="status-header text-center">
                 <h3 class="mb-0"><i class="bi bi-file-earmark-text-fill status-icon"></i> Birth Certificate Application Status</h3>
             </div>
@@ -67,11 +67,8 @@ if ($result->num_rows > 0) {
                         </button>
                     </div>
                 </div>';
-    }else if($payment_status == "unpaid" && $result->num_rows > 0){
-        echo'your payment is pending';
-
-        
-
+    } else if ($payment_status == "unpaid" && $result->num_rows > 0) {
+        echo 'your payment is pending';
     } else if ($payment_status == "paid") {
         echo '
         
@@ -216,6 +213,10 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST["submit"])) {
 
         }
 
+        .payment{
+            width: 800px;
+            margin: auto
+        } 
         .status-card {
             border: none;
             border-radius: 12px;
@@ -368,7 +369,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST["submit"])) {
             border-radius: 50px;
         }
 
-        .paymentform{
+        .paymentform {
             margin-left: 10rem;
         }
     </style>

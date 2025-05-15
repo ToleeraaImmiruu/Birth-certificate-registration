@@ -28,9 +28,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     if (isset($_SESSION["id"])) {
         $user_id = $_SESSION["id"];
 
-        $father_id_path = uploadfile("father_id_proof", $target_dir);
-        $mother_id_path = uploadfile("mother_id_proof", $target_dir);
-        $applicant_id_path = uploadfile("applicant_id_proof", $target_dir);
+        $father_id_path = uploadfile("father_id", $target_dir);
+        $mother_id_path = uploadfile("mother_id", $target_dir);
+        $applicant_id_path = uploadfile("applicant_id", $target_dir);
         $birth_record_path = uploadfile("birth_record", $target_dir);
         $firstname = $_POST["first_name"];
         $middlename = $_POST["middle_name"];
