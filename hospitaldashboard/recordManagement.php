@@ -512,7 +512,7 @@
                         <h5 class="mb-4">Newborn Information</h5>
                         <div class="record-detail-item">
                             <div class="record-detail-label">Full Name</div>
-                            <div class="record-detail-value">${record.fullName}</div>
+                            <div class="record-detail-value"><?php echo $record["full_name"]?></div>
                         </div>
                         <div class="record-detail-item">
                             <div class="record-detail-label">Date of Birth</div>

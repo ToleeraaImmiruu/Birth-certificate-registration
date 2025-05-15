@@ -1,3 +1,6 @@
+<?php
+require "../userdashboard/init.php";
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -321,8 +324,8 @@
   }
 
   if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $hospital_id = 1;
-    $record_id = generateId();
+    $hospital_id = $_SESSION["hospital_id"];
+    $HBR = generateId();
     $childname = htmlspecialchars($_POST["child_full_name"]);
     $dob = $_POST["dob"];
     $pob = htmlspecialchars($_POST["pob"]);
@@ -335,11 +338,11 @@
     $address = htmlspecialchars($_POST["address"]);
     $nameofdoctor = htmlspecialchars($_POST["name_of_doctor"]);
 
-    $sql = "INSERT INTO birth_records(record_id,hospital_id,child_name, dob, pob, tob, gender, weight, father_name, mother_name, phone, address, nameOfDoctor)
-              VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+    $sql = "INSERT INTO birth_records(record_id,hospital_id,child_name, dob, pob, tob, gender, weight, father_name, mother_name, phone, address, nameOfDoctor, HBR)
+              VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisssssdsssss", $record_id,$hospital_id, $childname, $dob, $pob, $tob, $gender, $weight, $fatherName, $motherName, $phone, $address, $nameofdoctor);
+    $stmt->bind_param("sisssssdssssss", $record_id,$hospital_id, $childname, $dob, $pob, $tob, $gender, $weight, $fatherName, $motherName, $phone, $address, $nameofdoctor, $HBR);
 
     try {
       if ($stmt->execute()) {

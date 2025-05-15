@@ -16,6 +16,7 @@ if (!$stmt) {
 $stmt->bind_param("i", $hospital_id);
 $stmt->execute();
 $result = $stmt->get_result();
+$firstrecord = $result->fetch_assoc();
 ?>
 
 
@@ -165,10 +166,12 @@ $result = $stmt->get_result();
             margin-top: 60px;
         }
 
-        .flex{
+        .flex {
             display: flex;
             justify-content: space-between;
-        } .margin_left {
+        }
+
+        .margin_left {
             margin-left: 12rem;
         }
 
@@ -262,9 +265,21 @@ $result = $stmt->get_result();
                                         <td><?= $record["father_name"] ?></td>
                                         <td><?= $record["mother_name"] ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-view" onclick="viewRecord()">
+                                            <button class="btn btn-sm btn-view"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#viewRecordModal"
+                                                data-child_name="<?= htmlspecialchars($record['child_name']) ?>"
+                                                data-dob="<?= htmlspecialchars($record['dob']) ?>"
+                                                data-gender="<?= htmlspecialchars($record['gender']) ?>"
+                                                data-weight="<?= htmlspecialchars($record['weight']) ?>"
+                                                data-father_name="<?= htmlspecialchars($record['father_name']) ?>"
+                                                data-mother_name="<?= htmlspecialchars($record['mother_name']) ?>"
+                                                data-pob="<?= htmlspecialchars($record['pob']) ?>">
                                                 <i class="fas fa-eye"></i> View/Print
                                             </button>
+                                            <!-- <button class="btn btn-sm btn-view" onclick="viewRecord(<?php echo $record['record_id'] ?>)">
+                                                <i class="fas fa-eye"></i> View/Print
+                                            </button> -->
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -280,6 +295,9 @@ $result = $stmt->get_result();
 
 
     <!-- View/Print Record Modal -->
+    <?php
+
+    ?>
     <div class="modal fade" id="viewRecordModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -307,41 +325,40 @@ $result = $stmt->get_result();
                                 <div class="section-title">Child Information</div>
                                 <div class="detail-row">
                                     <div class="detail-label">Full Name:</div>
-                                    <div class="detail-value">John Doe</div>
+                                    <div class="detail-value"><span id="modalChildName"></span></div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-label">Date of Birth:</div>
-                                    <div class="detail-value">June 15, 2023 at 08:42 AM</div>
+                                    <div class="detail-value"><span id="modalDOB"></span></div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-label">Gender:</div>
-                                    <div class="detail-value">Male</div>
+                                    <div class="detail-value"><span id="modalGender"></span></div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-label">Birth Weight:</div>
-                                    <div class="detail-value">3.2 kilograms</div>
+                                    <div class="detail-value"><span id="modalWeight"></span></div>
                                 </div>
-                                <div class="detail-row">
-                                    <div class="detail-label">Place of Birth:</div>
-                                    <div class="detail-value">City General Hospital, 123 Medical Center Drive, Cityville</div>
-                                </div>
-
-                                <div class="section-title mt-4">Parent Information</div>
                                 <div class="detail-row">
                                     <div class="detail-label">Father's Name:</div>
-                                    <div class="detail-value">Michael Doe (ID: ID-123456)</div>
+                                    <div class="detail-value"><span id="modalFatherName"></span></div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-label">Mother's Name:</div>
-                                    <div class="detail-value">Jane Doe (ID: ID-654321)</div>
+                                    <div class="detail-value"><span id="modalMotherName"></span></div>
                                 </div>
                                 <div class="detail-row">
+                                    <div class="detail-label">Place of Birth:</div>
+                                    <div class="detail-value"><span id="modalPOB"></span></div>
+                                </div>
+
+                                <div class="detail-row">
                                     <div class="detail-label">Parents' Address:</div>
-                                    <div class="detail-value">123 Main Street, Cityville, State 12345</div>
+                                    <div class="detail-value"><?= $record["address"] ?></div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-label">Parents' Contact:</div>
-                                    <div class="detail-value">(123) 456-7890</div>
+                                    <div class="detail-value"><?= $record["phone"] ?></div>
                                 </div>
 
                                 <div class="section-title mt-4">Birth Details</div>
@@ -361,11 +378,11 @@ $result = $stmt->get_result();
                                 <div class="section-title mt-4">Registration Information</div>
                                 <div class="detail-row">
                                     <div class="detail-label">Certificate Number:</div>
-                                    <div class="detail-value">BR-2023-001</div>
+                                    <div class="detail-value"><?= $record["HBR"] ?></div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-label">Date Registered:</div>
-                                    <div class="detail-value">June 16, 2023</div>
+                                    <div class="detail-value"><?= $record["created_at"] ?></div>
                                 </div>
 
                                 <div class="signature-area">
@@ -403,37 +420,56 @@ $result = $stmt->get_result();
         // Initialize the modal
         const viewRecordModal = new bootstrap.Modal(document.getElementById('viewRecordModal'));
 
-        // View record details function
-        function viewRecord() {
+        //View record details function
+        function viewRecord(id) {
+            <?php $viewid = $id ?>
             viewRecordModal.show();
         }
+    
+         const viewModal = document.getElementById('viewRecordModal');
+        viewModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
 
-        function searchTable() {
-            // Get input value and convert to lowercase
-            const input = document.getElementById("searchInput");
-            const filter = input.value.toLowerCase();
+            document.getElementById('modalChildName').innerText = button.getAttribute('data-child_name');
+            document.getElementById('modalDOB').innerText = button.getAttribute('data-dob');
+            document.getElementById('modalGender').innerText = button.getAttribute('data-gender');
+            document.getElementById('modalWeight').innerText = button.getAttribute('data-weight');
+            document.getElementById('modalFatherName').innerText = button.getAttribute('data-father_name');
+            document.getElementById('modalMotherName').innerText = button.getAttribute('data-mother_name');
+            document.getElementById('modalPOB').innerText = button.getAttribute('data-pob');
+            document.getElementById('modalAddress').innerText = button.getAttribute('data-address');
+        });
 
-            // Get table and rows
-            const table = document.getElementById("recordsTable");
-            const rows = table.getElementsByTagName("tr");
 
-            // Loop through all table rows (skip header row)
-            for (let i = 1; i < rows.length; i++) {
-                // Get the name column (second column, index 1)
-                const nameCell = rows[i].getElementsByTagName("td")[1];
-                if (nameCell) {
-                    const nameText = nameCell.textContent || nameCell.innerText;
 
-                    // Show/hide row based on search term
-                    if (nameText.toLowerCase().indexOf(filter) > -1) {
-                        rows[i].style.display = "";
-                    } else {
-                        rows[i].style.display = "none";
-                    }
-                }
-            }
+
+
+    function searchTable() {
+    // Get input value and convert to lowercase
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+
+    // Get table and rows
+    const table = document.getElementById("recordsTable");
+    const rows = table.getElementsByTagName("tr");
+
+    // Loop through all table rows (skip header row)
+    for (let i = 1; i < rows.length; i++) {
+        // Get the name column (second column, index 1)
+        const nameCell=rows[i].getElementsByTagName("td")[1];
+        if (nameCell) {
+        const nameText=nameCell.textContent || nameCell.innerText;
+
+        // Show/hide row based on search term
+        if (nameText.toLowerCase().indexOf(filter)> -1) {
+        rows[i].style.display = "";
+        } else {
+        rows[i].style.display = "none";
         }
-    </script>
+        }
+        }
+        }
+        </scr>
 </body>
 
 </html>
