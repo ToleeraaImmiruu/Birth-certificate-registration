@@ -620,7 +620,7 @@ if (isset($_POST["submit"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
                         <i class="bi bi-arrow-left"></i> Back to Dashboard
                     </a>
                     <div>
-                        <button class="btn btn-approve me-2" onclick="approved(<?= $application['id']?>)">
+                        <button class="btn btn-approve me-2" onclick="approved(<?= $application['id'] ?>)">
                             <i class="bi bi-check-circle"></i> Approve Application
                         </button>
                         <button class="btn btn-reject" onclick="regectapplication()">
@@ -713,13 +713,37 @@ if (isset($_POST["submit"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-
         function displayPhoto(photoSrc) {
             const mainPhotoDisplay = document.getElementById('mainPhotoDisplay');
             if (photoSrc && photoSrc !== 'photo is not uploaded') {
                 mainPhotoDisplay.innerHTML = `<img src="${photoSrc}" alt="Displayed Photo" class="img-fluid" style="max-height: 100%;">`;
             } else {
                 mainPhotoDisplay.innerHTML = '<p class="text-muted">Photo not available</p>';
+            }
+        }
+
+        function approved(appId) {
+            if (confirm("Are you sure you want to approve this application?")) {
+                fetch('approved.php', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'app_id=' + encodeURIComponent(appId)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Application approved successfully!");
+                            window.location.href = "sidebar.php?page=application";
+                        } else {
+                            alert("Error: " + (data.message || "Failed to approve application"));
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("An error occurred while approving the application");
+                    });
             }
         }
 
