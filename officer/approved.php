@@ -7,8 +7,8 @@ require '../vendor/autoload.php'; // Path to Composer autoload
 
 include '../setup/dbconnection.php';
 
-if (isset($_POST['approve_id'])) {
-    $application_id = $_POST['approve_id'];
+if (isset($_POST['app_id'])) {
+    $application_id = $_POST['app_id'];
 
     function generate_id(){
         global $conn;
@@ -24,8 +24,8 @@ if (isset($_POST['approve_id'])) {
 
     $certificate_id = generate_id();
 
-    $sql_insert = "INSERT INTO certificates (certificate_id,user_id, first_name, middle_name, last_name, dob, gender, place_of_birth, father_name, mother_name, current_address, NOW()) 
-                   SELECT ?,user_id, first_name, middle_name, last_name, dob, gender, place_of_birth, father_name, mother_name, current_address, ?
+    $sql_insert = "INSERT INTO certificates (certificate_id,user_id, first_name, middle_name, last_name, dob, gender, place_of_birth, father_name, mother_name, current_address, issued_at) 
+                   SELECT ?,user_id, first_name, middle_name, last_name, dob, gender, place_of_birth, father_name, mother_name, current_address,NOW()
                    FROM applications WHERE id = ?";
 
 

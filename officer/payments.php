@@ -136,13 +136,18 @@ $result = $stmt->get_result();
                                 </thead>
                                 <tbody id="paymentList">
                                     <?php
-                                    
+                                  if($result && $result->num_rows > 0){
                                     while ($payment = $result->fetch_assoc()) {
-                                        echo "<tr>";
+                                        echo "<tr id='row-" . $payment['id']. "'>";
                                         echo "<td>" . htmlspecialchars($payment['full_name']) . "</td>";
                                         echo "<td>" . htmlspecialchars($payment['certificate_id']) . "</td>";
                                         echo '<td><button class="btn btn-view btn-sm" data-id="' . $payment['id'] . '">View</button></td>';
                                         echo "</tr>";
+                                    }
+                                 } else{
+                                        echo "<tr?>
+                                        <td colspan='3' class='text-center'>NO PAYMENTS FOUND</td>
+                                        </tr>";
                                     }
 
                                     ?>
@@ -173,8 +178,8 @@ $result = $stmt->get_result();
                     </div>
                     <div class="mt-4 text-end">
                         <button id="rejectBtn" class="btn btn-reject me-2">Reject</button>
-                        <button id="approveBtn"  class="btn btn-approve">Approve</button>
-                        <button id="closeBtn"  class="btn btn-secondary">Close</button>
+                        <button id="approveBtn" class="btn btn-approve">Approve</button>
+                        <button id="closeBtn" class="btn btn-secondary">Close</button>
                     </div>
                 </div>
             </div>
@@ -223,7 +228,7 @@ $result = $stmt->get_result();
             document.getElementById('detailPhone').textContent = payment.phone;
             document.getElementById('detailAmount').textContent = payment.amount;
             // In showPaymentDetails()
-            document.getElementById('detailScreenshot').src =window.location.origin + '/    birth_certificate_project/userdashboard/' + payment.payment_IMG;
+            document.getElementById('detailScreenshot').src = window.location.origin + '/    birth_certificate_project/userdashboard/' + payment.payment_IMG;
 
             const paymentDetails = document.getElementById('paymentDetails');
             paymentDetails.style.display = 'block';
@@ -235,16 +240,16 @@ $result = $stmt->get_result();
 
             // Set up approve/reject buttons
             document.getElementById('approveBtn').onclick = function() {
-                updatePaymentStatus(payment.id, 'approved');
+                updatePaymentStatus(payment.id, 'paid', payment.certificate_id);
             };
 
             document.getElementById('rejectBtn').onclick = function() {
-                updatePaymentStatus(payment.id, 'rejected');
+                updatePaymentStatus(payment.id, 'rejected', payment.certificate_id);
             };
         }
 
         // Update payment status
-        function updatePaymentStatus(paymentId, status) {
+        function updatePaymentStatus(paymentId, status, certificate_id) {
             fetch('update_payment_status.php', {
                     method: 'POST',
                     headers: {
@@ -252,7 +257,8 @@ $result = $stmt->get_result();
                     },
                     body: JSON.stringify({
                         id: paymentId,
-                        status: status
+                        status: status,
+                        certificate_id: certificate_id
                     })
                 })
                 .then(response => response.json())
@@ -260,6 +266,7 @@ $result = $stmt->get_result();
                     if (data.success) {
                         alert(`Payment ${status} successfully!`);
                         document.getElementById('paymentDetails').style.display = 'none';
+                        document.getElementById("row-" + paymentId).remove();
                         // Optionally refresh the payment list
                         window.location.reload();
                     } else {

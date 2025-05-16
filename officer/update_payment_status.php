@@ -14,11 +14,20 @@ if (isset($data['id']) && isset($data['status'])) {
     $certstmt->bind_param('ss', $status, $certificate_id);
     $certstmt->execute();
     $certstmt->close();
-    $sql = "UPDATE payments SET status = ? WHERE id = ?";
+    $sql = "INSERT INTO approved_payments (payment_id, full_name, certificate_id, phone, amount, payment_IMG)
+  SELECT id, full_name, certificate_id, phone, amount, payment_IMG
+FROM payments
+WHERE id = ?;
+";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('si', $status, $id);
+    $stmt->bind_param('i', $id);
 
     if ($stmt->execute()) {
+        $sql = "DELETE FROM payments WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $stmt->close();
 
         echo json_encode(['success' => true]);
     } else {
