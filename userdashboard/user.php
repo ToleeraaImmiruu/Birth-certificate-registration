@@ -265,7 +265,7 @@ $num_notf = $notification->num_rows;
         } elseif ($page == "notification") {
           include 'notification.php';
         } else if ($page == 'usersupport') {
-          include 'deep2support.php';
+          include 'usersupport.php';
         } else if ($page == 'home') {
           include 'home.php';
         } else {

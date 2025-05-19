@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $feedback = $_POST['officer_feedback'];
         $sql = "INSERT INTO applications_support (user_id,email,subject, message) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isss", $user_id, $subject, $email, $feedback);
+        $stmt->bind_param("isss", $user_id, $email, $subject,  $feedback);
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql = "INSERT INTO account_support (user_id, email,subject, message) VALUES (?, ?, ?, ?)";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isss", $user_id, $subject, $email, $feedback);
+        $stmt->bind_param("isss", $user_id, $email, $subject,  $feedback);
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {
