@@ -138,7 +138,7 @@
         <img src="../image/birth.png" alt="Logo" class="logo">
         <button class="btn btn-primary" onclick="location.href='sidebar.php'"><img src="../image/home.png" alt="Home"> HOME</button>
         <button class="btn btn-primary" onclick="location.href='sidebar.php?page=application'"><img src="../image/apply.png" alt="Apply"> Applications</button>
-        <button class="btn btn-primary" onclick="location.href='sidebar.php?page=manageuser'"><img src="../image/check-list.png" alt="Status"> manage user</button>
+        <button class="btn btn-primary" onclick="location.href='sidebar.php?page=manageuser'"><img src="../image/check-list.png" alt="Status"> a user</button>
         <button class="btn btn-primary" onclick="location.href='sidebar.php?page=announcement'"><img src="../image/check-list.png" alt="Status"> ANNOUNCEMENT </button>
         <button class="btn btn-primary" onclick="location.href='sidebar.php?page=payments'"><img src="../image/check-list.png" alt="Status"> PAYMENTS </button>
         <button class="btn btn-primary" onclick="location.href='sidebar.php?page=usersupport'"><img src="../image/check-list.png" alt="Status"> USER SUPPORT </button>

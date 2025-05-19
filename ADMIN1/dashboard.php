@@ -7,7 +7,7 @@ include '../setup/dbconnection.php';
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hospital Dashboard</title>
+  <title>Admin Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -214,11 +214,20 @@ include '../setup/dbconnection.php';
     <a href="dashboard.php?page=create" class="btn">
       <i class="fas fa-user-tag"></i> CREATE ROLE
     </a>
-    <a href="dashboard.php?page=notification" class="btn">
-      <i class="fas fa-bell"></i> NOTIFICATION
+    <a href="dashboard.php?page=announcement" class="btn">
+      <i class="fas fa-bell"></i> ANNOUNCEMENT
     </a>
     <a href="dashboard.php?page=usersupport" class="btn">
       <i class="fas fa-bell"></i> USER SUPPORT
+    </a>
+    <a href="dashboard.php?page=hospitals" class="btn">
+      <i class="fas fa-hopital"></i> HOSPITALS
+    </a>
+    <a href="dashboard.php?page=officers" class="btn">
+      <i class="fas fa-officers"></i> OFFICERS
+    </a>
+    <a href="dashboard.php?page=officers" class="btn">
+      <i class="fas fa-officers"></i> LOGOUT
     </a>
   </div>
 
@@ -243,11 +252,10 @@ include '../setup/dbconnection.php';
         include 'manageuser.php';
       } elseif ($page == "create") {
         include 'createrole.php';
-      } elseif ($page == "notification") {
-        include 'notification.php';
-      }else if($page == "usersupport"){
+      } elseif ($page == "announcement") {
+        include 'announcement.php';
+      } else if ($page == "usersupport") {
         include 'usersupport.php';
-
       } else {
         echo "<div class='alert alert-danger'>Page Not Found</div>";
       }

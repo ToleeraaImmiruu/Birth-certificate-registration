@@ -9,15 +9,8 @@
   <!-- Animate.css for animations -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <style>
-    :root {
-      --primary-color: #2c3e50;
-      --secondary-color: #0d924f;
-      --accent-color: #e74c3c;
-      --light-bg: #f8f9fa;
-    }
-    
     body {
-      background-color: var(--light-bg);
+      background-color: #f8f9fa;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -49,7 +42,7 @@
     }
     
     .form-header {
-      background: linear-gradient(135deg, var(--primary-color), #1a252f);
+      background: linear-gradient(135deg, #0d6efd, #0b5ed7);
       color: white;
       padding: 20px;
     }
@@ -75,16 +68,6 @@
     .btn-toggle.active {
       transform: translateY(-3px);
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    
-    #userBtn {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
-    }
-    
-    #announcementBtn {
-      background-color: var(--secondary-color);
-      border-color: var(--secondary-color);
     }
     
     @keyframes fadeIn {
@@ -113,15 +96,6 @@
     
     .btn-submit:hover {
       transform: translateY(-2px);
-    }
-    
-    .form-header.bg-success {
-      background: linear-gradient(135deg, var(--secondary-color), #0b7a44) !important;
-    }
-    
-    .alert-success {
-      background-color: var(--secondary-color);
-      border-color: #0b7a44;
     }
   </style>
 </head>
@@ -162,7 +136,7 @@
               <textarea class="form-control" id="userMessage" rows="5" placeholder="Type your message..." required></textarea>
             </div>
             <div class="text-center">
-              <button type="submit" class="btn btn-primary btn-submit" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+              <button type="submit" class="btn btn-primary btn-submit">
                 <i class="fas fa-paper-plane me-2"></i> Send Message
               </button>
             </div>
@@ -196,7 +170,7 @@
               <textarea class="form-control" id="announcementBody" rows="5" placeholder="Write announcement..." required></textarea>
             </div>
             <div class="text-center">
-              <button type="submit" class="btn btn-success btn-submit" style="background-color: var(--secondary-color); border-color: var(--secondary-color);">
+              <button type="submit" class="btn btn-success btn-submit">
                 <i class="fas fa-share-square me-2"></i> Post Announcement
               </button>
             </div>
