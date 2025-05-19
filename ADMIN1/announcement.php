@@ -1,5 +1,43 @@
 <?php
-// PHP code can be added here for form processing
+include "../setup/dbconnection.php";
+
+
+// Initialize variables
+$title = $message = '';
+$success_message = '';
+$error_message = '';
+
+// Process form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementsubmit'])) {
+  // Sanitize and validate input
+  $title = htmlspecialchars(trim($_POST['title']));
+  $message = htmlspecialchars(trim($_POST['message']));
+
+  // Validate inputs
+  if (empty($title) || empty($message)) {
+    $error_message = 'Title and message are required!';
+  } else {
+    try {
+      // Connect to database
+      $sql = "INSERT INTO announcements (title, body ,posted_at) VALUES (?, ?, NOW())";
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("ss", $title, $message);
+      
+
+      // Execute query
+      if ($stmt->execute()) {
+        $success_message = 'Announcement posted successfully!';
+
+        // Clear form fields
+        $title = $priority = $message = '';
+      } else {
+        $error_message = 'Failed to post announcement. Please try again.';
+      }
+    } catch (PDOException $e) {
+      $error_message = 'Database error: ' . $e->getMessage();
+    }
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,18 +104,6 @@
       border-color: #0b7a43;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
     .form-control,
     .form-select {
       border-radius: 8px;
@@ -109,11 +135,30 @@
       background-color: var(--secondary-color);
       color: white;
     }
+
+    .error-alert {
+      background-color: var(--accent-color);
+      color: white;
+    }
   </style>
 </head>
 
 <body>
   <div class="container main-container animate__animated animate__fadeIn">
+    <?php if ($success_message): ?>
+      <div class="alert success-alert animate__animated animate__fadeInDown position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999;">
+        <i class="fas fa-check-circle me-2"></i>
+        <?php echo $success_message; ?>
+      </div>
+    <?php endif; ?>
+
+    <?php if ($error_message): ?>
+      <div class="alert error-alert animate__animated animate__fadeInDown position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999;">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <?php echo $error_message; ?>
+      </div>
+    <?php endif; ?>
+
     <div class="text-center mb-5">
       <h2 class="fw-bold display-5 mb-3 title-highlight">Admin Announcement Panel</h2>
       <p class="text-muted">Create and manage important announcements</p>
@@ -126,22 +171,17 @@
           <h4 class="mb-0"><i class="fas fa-bullhorn me-2"></i> Post an Announcement</h4>
         </div>
         <div class="form-body">
-          <form action="" method="POST" onsubmit="handleSubmit(event)">
+          <form method="POST" action="">
             <div class="mb-4">
               <label for="announcementTitle" class="form-label fw-bold">Title</label>
-              <input type="text" name="title" class="form-control" id="announcementTitle" placeholder="Announcement title" required>
+              <input type="text" name="title" class="form-control" id="announcementTitle"
+                placeholder="Announcement title" value="<?php echo htmlspecialchars($title); ?>" required>
             </div>
-            <div class="mb-4">
-              <label for="announcementPriority" class="form-label fw-bold">Priority</label>
-              <select class="form-select" name="priority" id="announcementPriority">
-                <option value="normal">Normal</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
-              </select>
-            </div>
+          
             <div class="mb-4">
               <label for="announcementBody" class="form-label fw-bold">Announcement</label>
-              <textarea class="form-control" name="message" id="announcementBody" rows="5" placeholder="Write announcement..." required></textarea>
+              <textarea class="form-control" name="message" id="announcementBody" rows="5"
+                placeholder="Write announcement..." required><?php echo htmlspecialchars($message); ?></textarea>
             </div>
             <div class="text-center">
               <button type="submit" name="announcementsubmit" class="btn btn-submit">
@@ -160,35 +200,16 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    function handleSubmit(event) {
-      event.preventDefault();
-
-      // Get priority value for styling
-      const priority = document.getElementById('announcementPriority').value;
-      let priorityClass = '';
-      if (priority === 'high') priorityClass = 'priority-high';
-      if (priority === 'urgent') priorityClass = 'priority-urgent';
-
-      // Show success alert with animation
-      const alertDiv = document.createElement('div');
-      alertDiv.className = 'alert success-alert animate__animated animate__fadeInUp position-fixed top-0 start-50 translate-middle-x mt-3';
-      alertDiv.style.zIndex = '9999';
-      alertDiv.innerHTML = `
-        <i class="fas fa-check-circle me-2"></i>
-        <strong>Success!</strong> Announcement submitted successfully.
-        <span class="${priorityClass}">(Priority: ${priority.charAt(0).toUpperCase() + priority.slice(1)})</span>
-      `;
-      document.body.appendChild(alertDiv);
-
-      // Remove alert after 3 seconds
-      setTimeout(() => {
-        alertDiv.classList.add('animate__fadeOut');
-        setTimeout(() => alertDiv.remove(), 500);
-      }, 3000);
-
-      // You can submit the form programmatically here if needed
-      // event.target.submit();
-    }
+    // Auto-hide alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        setTimeout(() => {
+          alert.classList.add('animate__fadeOut');
+          setTimeout(() => alert.remove(), 500);
+        }, 5000);
+      });
+    });
   </script>
 </body>
 

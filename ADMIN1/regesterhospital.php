@@ -12,9 +12,9 @@ $username = $_REQUEST["username"];
 $phone = $_REQUEST["phone"];
 $password = $_REQUEST["password"];
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-$sql = "INSERT INTO hospitals (name, email, phone, username, password) VALUES (?,?,?,?,?)";
+$sql = "INSERT INTO hospitals (name, email, phone, address, username, password) VALUES (?,?,?,?,?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssss", $hospital_name, $email, $phone, $username, $hashed_password);
+$stmt->bind_param("sssss", $hospital_name, $email, $phone, $address, $username, $hashed_password);
 if($stmt->execute()){
     $mail = new PHPMailer(true);
 

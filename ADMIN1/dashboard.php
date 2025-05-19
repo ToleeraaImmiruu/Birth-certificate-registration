@@ -257,7 +257,7 @@ include '../setup/dbconnection.php';
       } else if ($page == "usersupport") {
         include 'usersupport.php';
       }else if( $page == "hospitals"){
-        include 'hospitals.php';
+        include 'hospital.php';
       }else if($page == "officers"){
         include 'officers.php';
       } else {
