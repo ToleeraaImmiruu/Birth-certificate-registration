@@ -1,170 +1,139 @@
 <?php
-
-
-
+// PHP code can be added here for form processing
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Admin Messaging Panel</title>
+  <title>Admin Announcement Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Animate.css for animations -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #0d924f;
+      --accent-color: #e74c3c;
+      --light-bg: #f8f9fa;
+    }
+
     body {
-      background-color: #f8f9fa;
+      background-color: var(--light-bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
-    
+
     .main-container {
       max-width: 800px;
       margin: 0 auto;
     }
-    
-    .form-container {
-      display: none;
-      opacity: 0;
-      transition: all 0.3s ease;
-    }
-    
-    .form-container.show {
-      display: block;
-      opacity: 1;
-      animation: fadeIn 0.5s ease;
-    }
-    
+
     .form-card {
       border: none;
       border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
       overflow: hidden;
     }
-    
+
     .form-header {
-      background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      background: linear-gradient(135deg, var(--primary-color), #1a252f);
       color: white;
       padding: 20px;
     }
-    
+
     .form-body {
       padding: 30px;
+      background-color: white;
     }
-    
-    .btn-toggle {
-      width: 220px;
-      padding: 12px;
-      font-weight: 500;
-      border-radius: 50px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .btn-toggle:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    
-    .btn-toggle.active {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .form-control, .form-select {
-      border-radius: 8px;
-      padding: 12px;
-      border: 1px solid #ced4da;
-      transition: all 0.3s;
-    }
-    
-    .form-control:focus, .form-select:focus {
-      border-color: #86b7fe;
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-    
+
     .btn-submit {
       padding: 12px 30px;
       border-radius: 50px;
       font-weight: 500;
       transition: all 0.3s;
+      background-color: var(--secondary-color);
+      border-color: var(--secondary-color);
     }
-    
+
     .btn-submit:hover {
       transform: translateY(-2px);
+      background-color: #0b7a43;
+      border-color: #0b7a43;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #ced4da;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 0.25rem rgba(13, 146, 79, 0.25);
+    }
+
+    .title-highlight {
+      color: var(--primary-color);
+    }
+
+    .priority-high {
+      color: #d35400;
+    }
+
+    .priority-urgent {
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    .success-alert {
+      background-color: var(--secondary-color);
+      color: white;
     }
   </style>
 </head>
+
 <body>
   <div class="container main-container animate__animated animate__fadeIn">
     <div class="text-center mb-5">
-      <h2 class="fw-bold display-5 mb-3">Admin Communication Panel</h2>
-      <p class="text-muted">Manage your communications with users and announcements</p>
-    </div>
-
-    <div class="d-flex justify-content-center gap-4 mb-5 flex-wrap">
-      <button id="userBtn" class="btn btn-primary btn-toggle active" onclick="showForm('user')">
-        <i class="fas fa-user me-2"></i> Message to User
-      </button>
-      <button id="announcementBtn" class="btn btn-success btn-toggle" onclick="showForm('announcement')">
-        <i class="fas fa-bullhorn me-2"></i> Announcement
-      </button>
-    </div>
-
-    <!-- Message to User Form -->
-    <div id="userForm" class="form-container show">
-      <div class="form-card">
-        <div class="form-header">
-          <h4 class="mb-0"><i class="fas fa-user me-2"></i> Send Message to User</h4>
-        </div>
-        <div class="form-body">
-          <form action="" method="POST">
-            <div class="mb-4">
-              <label for="userEmail" class="form-label fw-bold">User Email</label>
-              <input type="email" name="email" class="form-control" id="userEmail" placeholder="Enter user email" required>
-            </div>
-            <div class="mb-4">
-              <label for="userSubject" class="form-label fw-bold">Subject</label>
-              <input type="text" name="subject" class="form-control" id="userSubject" placeholder="Message subject" required>
-            </div>
-            <div class="mb-4">
-              <label for="userMessage" class="form-label fw-bold">Message</label>
-              <textarea class="form-control" name="message" id="userMessage" rows="5" placeholder="Type your message..." required></textarea>
-            </div>
-            <div class="text-center">
-              <button type="submit"  name="usersubmit" class="btn btn-primary btn-submit">
-                <i class="fas fa-paper-plane me-2"></i> Send Message
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <h2 class="fw-bold display-5 mb-3 title-highlight">Admin Announcement Panel</h2>
+      <p class="text-muted">Create and manage important announcements</p>
     </div>
 
     <!-- Announcement Form -->
-    <div id="announcementForm" class="form-container">
+    <div id="announcementForm">
       <div class="form-card">
-        <div class="form-header bg-success">
+        <div class="form-header">
           <h4 class="mb-0"><i class="fas fa-bullhorn me-2"></i> Post an Announcement</h4>
         </div>
         <div class="form-body">
-          <form onsubmit="handleSubmit(event, 'Announcement')">
+          <form action="" method="POST" onsubmit="handleSubmit(event)">
             <div class="mb-4">
               <label for="announcementTitle" class="form-label fw-bold">Title</label>
-              <input type="text" class="form-control" id="announcementTitle" placeholder="Announcement title" required>
+              <input type="text" name="title" class="form-control" id="announcementTitle" placeholder="Announcement title" required>
             </div>
             <div class="mb-4">
               <label for="announcementPriority" class="form-label fw-bold">Priority</label>
-              <select class="form-select" id="announcementPriority">
+              <select class="form-select" name="priority" id="announcementPriority">
                 <option value="normal">Normal</option>
                 <option value="high">High</option>
                 <option value="urgent">Urgent</option>
@@ -172,10 +141,10 @@
             </div>
             <div class="mb-4">
               <label for="announcementBody" class="form-label fw-bold">Announcement</label>
-              <textarea class="form-control" id="announcementBody" rows="5" placeholder="Write announcement..." required></textarea>
+              <textarea class="form-control" name="message" id="announcementBody" rows="5" placeholder="Write announcement..." required></textarea>
             </div>
             <div class="text-center">
-              <button type="submit" class="btn btn-success btn-submit">
+              <button type="submit" name="announcementsubmit" class="btn btn-submit">
                 <i class="fas fa-share-square me-2"></i> Post Announcement
               </button>
             </div>
@@ -189,49 +158,38 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <!-- Bootstrap JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script>
-    function showForm(type) {
-      const userForm = document.getElementById('userForm');
-      const announcementForm = document.getElementById('announcementForm');
-      const userBtn = document.getElementById('userBtn');
-      const announcementBtn = document.getElementById('announcementBtn');
-      
-      if (type === 'user') {
-        userForm.classList.add('show');
-        announcementForm.classList.remove('show');
-        userBtn.classList.add('active');
-        announcementBtn.classList.remove('active');
-      } else {
-        userForm.classList.remove('show');
-        announcementForm.classList.add('show');
-        userBtn.classList.remove('active');
-        announcementBtn.classList.add('active');
-      }
-    }
 
-    function handleSubmit(event, formType) {
+  <script>
+    function handleSubmit(event) {
       event.preventDefault();
-      
+
+      // Get priority value for styling
+      const priority = document.getElementById('announcementPriority').value;
+      let priorityClass = '';
+      if (priority === 'high') priorityClass = 'priority-high';
+      if (priority === 'urgent') priorityClass = 'priority-urgent';
+
       // Show success alert with animation
       const alertDiv = document.createElement('div');
-      alertDiv.className = 'alert alert-success animate__animated animate__fadeInUp position-fixed top-0 start-50 translate-middle-x mt-3';
+      alertDiv.className = 'alert success-alert animate__animated animate__fadeInUp position-fixed top-0 start-50 translate-middle-x mt-3';
       alertDiv.style.zIndex = '9999';
       alertDiv.innerHTML = `
         <i class="fas fa-check-circle me-2"></i>
-        <strong>Success!</strong> ${formType} submitted successfully.
+        <strong>Success!</strong> Announcement submitted successfully.
+        <span class="${priorityClass}">(Priority: ${priority.charAt(0).toUpperCase() + priority.slice(1)})</span>
       `;
       document.body.appendChild(alertDiv);
-      
+
       // Remove alert after 3 seconds
       setTimeout(() => {
         alertDiv.classList.add('animate__fadeOut');
         setTimeout(() => alertDiv.remove(), 500);
       }, 3000);
-      
-      // Reset form
-      event.target.reset();
+
+      // You can submit the form programmatically here if needed
+      // event.target.submit();
     }
   </script>
 </body>
+
 </html>

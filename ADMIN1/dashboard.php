@@ -226,7 +226,7 @@ include '../setup/dbconnection.php';
     <a href="dashboard.php?page=officers" class="btn">
       <i class="fas fa-officers"></i> OFFICERS
     </a>
-    <a href="dashboard.php?page=officers" class="btn">
+    <a href="../public/logOut.php" class="btn">
       <i class="fas fa-officers"></i> LOGOUT
     </a>
   </div>
@@ -253,9 +253,13 @@ include '../setup/dbconnection.php';
       } elseif ($page == "create") {
         include 'createrole.php';
       } elseif ($page == "announcement") {
-        include 'announcement1.php';
+        include 'announcement.php';
       } else if ($page == "usersupport") {
         include 'usersupport.php';
+      }else if( $page == "hospitals"){
+        include 'hospitals.php';
+      }else if($page == "officers"){
+        include 'officers.php';
       } else {
         echo "<div class='alert alert-danger'>Page Not Found</div>";
       }
