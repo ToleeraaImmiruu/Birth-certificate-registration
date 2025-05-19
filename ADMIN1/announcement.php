@@ -1,3 +1,8 @@
+<?php
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,21 +127,21 @@
           <h4 class="mb-0"><i class="fas fa-user me-2"></i> Send Message to User</h4>
         </div>
         <div class="form-body">
-          <form onsubmit="handleSubmit(event, 'User Message')">
+          <form action="" method="POST">
             <div class="mb-4">
               <label for="userEmail" class="form-label fw-bold">User Email</label>
-              <input type="email" class="form-control" id="userEmail" placeholder="Enter user email" required>
+              <input type="email" name="email" class="form-control" id="userEmail" placeholder="Enter user email" required>
             </div>
             <div class="mb-4">
               <label for="userSubject" class="form-label fw-bold">Subject</label>
-              <input type="text" class="form-control" id="userSubject" placeholder="Message subject" required>
+              <input type="text" name="subject" class="form-control" id="userSubject" placeholder="Message subject" required>
             </div>
             <div class="mb-4">
               <label for="userMessage" class="form-label fw-bold">Message</label>
-              <textarea class="form-control" id="userMessage" rows="5" placeholder="Type your message..." required></textarea>
+              <textarea class="form-control" name="message" id="userMessage" rows="5" placeholder="Type your message..." required></textarea>
             </div>
             <div class="text-center">
-              <button type="submit" class="btn btn-primary btn-submit">
+              <button type="submit"  name="usersubmit" class="btn btn-primary btn-submit">
                 <i class="fas fa-paper-plane me-2"></i> Send Message
               </button>
             </div>

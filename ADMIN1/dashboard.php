@@ -253,7 +253,7 @@ include '../setup/dbconnection.php';
       } elseif ($page == "create") {
         include 'createrole.php';
       } elseif ($page == "announcement") {
-        include 'announcement.php';
+        include 'announcement1.php';
       } else if ($page == "usersupport") {
         include 'usersupport.php';
       } else {
