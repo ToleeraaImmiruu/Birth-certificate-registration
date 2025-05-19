@@ -75,6 +75,9 @@ $result = $conn->query($sql);
             white-space: nowrap;
         }
 
+        .margin_left{
+            margin-left: 50px;
+        } 
         .table td,
         .table th {
             padding: 12px 15px;
@@ -84,7 +87,7 @@ $result = $conn->query($sql);
 </head>
 
 <body>
-    <div class="container">
+    <div class="container margin_left">
         <div class="row mb-4">
             <div class="col-12">
                 <h2 class="text-center">User Management</h2>

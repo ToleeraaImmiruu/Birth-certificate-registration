@@ -113,7 +113,6 @@ $result = $conn->query($sql);
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Role</th>
                                 <th class="actions-cell">Actions</th>
                             </tr>
                         </thead>

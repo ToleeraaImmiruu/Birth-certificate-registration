@@ -1,3 +1,122 @@
+<?php
+include "../setup/dbconnection.php";
+$sql = "SELECT COUNT(*) AS total_user FROM users WHERE role = 'user'";
+$result = $conn->prepare($sql);
+$result->execute();
+$total_users = $result->get_result()->fetch_assoc()['total_user'];
+
+$sqlhospital = "SELECT COUNT(*) AS total_hospital FROM hospitals";
+$result = $conn->prepare($sqlhospital);
+$result->execute();
+$total_hospital = $result->get_result()->fetch_assoc()['total_hospital'];
+
+$sqlkebele = "SELECT COUNT(*) AS total_kebele FROM kebele_officers";
+$result = $conn->prepare($sqlkebele);
+$result->execute();
+$total_kebele = $result->get_result()->fetch_assoc()['total_kebele'];
+
+
+$sqlofficer = "SELECT COUNT(*) AS total_officers FROM officers";
+$result = $conn->prepare($sqlofficer);
+$result->execute();
+$total_officer = $result->get_result()->fetch_assoc()['total_officers'];
+
+$sql = "
+SELECT 
+    SUM(CASE WHEN MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN 1 ELSE 0 END) AS current_month,
+    SUM(CASE WHEN MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) THEN 1 ELSE 0 END) AS last_month
+FROM users
+";
+
+$result = mysqli_query($conn, $sql);
+$data = mysqli_fetch_assoc($result);
+
+$currentMonth = $data['current_month'];
+$lastMonth = $data['last_month'];
+
+// Calculate percentage increase
+if ($lastMonth > 0) {
+    $increaseuser = $currentMonth - $lastMonth;
+} else {
+    $increaseuser = $currentMonth; // 100% if users were added this month and none last month
+}
+
+$sql = "
+SELECT 
+    SUM(CASE WHEN MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN 1 ELSE 0 END) AS current_month,
+    SUM(CASE WHEN MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) THEN 1 ELSE 0 END) AS last_month
+FROM hospitals
+";
+$result = mysqli_query($conn, $sql);
+$data = mysqli_fetch_assoc($result);
+
+$currentMonth = $data['current_month'];
+$lastMonth = $data['last_month'];
+
+// Calculate percentage increase
+if ($lastMonth > 0) {
+    $increasehospital = $currentMonth - $lastMonth;
+} else {
+    $increasehospital = $currentMonth; // 100% if users were added this month and none last month
+}
+$sql = "
+SELECT 
+    SUM(CASE WHEN MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN 1 ELSE 0 END) AS current_month,
+    SUM(CASE WHEN MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) THEN 1 ELSE 0 END) AS last_month
+FROM officers
+";
+$result = mysqli_query($conn, $sql);
+$data = mysqli_fetch_assoc($result);
+
+$currentMonth = $data['current_month'];
+$lastMonth = $data['last_month'];
+
+// Calculate percentage increase
+if ($lastMonth > 0) {
+    $increaseofficer = $currentMonth - $lastMonth;
+} else {
+    $increaseofficer = $currentMonth; // 100% if users were added this month and none last month
+}
+$sql = "
+SELECT 
+    SUM(CASE WHEN MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN 1 ELSE 0 END) AS current_month,
+    SUM(CASE WHEN MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) THEN 1 ELSE 0 END) AS last_month
+FROM kebele_officers
+";
+$result = mysqli_query($conn, $sql);
+$data = mysqli_fetch_assoc($result);
+
+$currentMonth = $data['current_month'];
+$lastMonth = $data['last_month'];
+
+// Calculate percentage increase
+if ($lastMonth > 0) {
+    $increasekebele = $currentMonth - $lastMonth;
+} else {
+    $increasekebele = $currentMonth; // 100% if users were added this month and none last month
+}
+
+$sql = "SELECT COUNT(*) AS female_user FROM users WHERE gender = 'female'";
+$result = $conn->prepare($sql);
+$result->execute();
+$femaleuser = $result->get_result()->fetch_assoc()["female_user"];
+
+$sql = "SELECT COUNT(*) AS male_user FROM users WHERE gender = 'male'";
+$result = $conn->prepare($sql);
+$result->execute();
+$maleuser = $result->get_result()->fetch_assoc()["male_user"];
+
+
+$sqlrecent = "SELECT * FROM account_support WHERE status = 'unreplied' ORDER BY created_at DESC LIMIT 4 ";
+$stmt = $conn->prepare($sqlrecent);
+$stmt->execute();
+$recent_support = $stmt->get_result();
+
+
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -226,7 +345,7 @@
 
 <body>
     <div class="d-flex  ">
-      
+
 
         <!-- Main Content -->
         <div class="main-content margin_left " id="main-content">
@@ -235,7 +354,7 @@
                 <div class="container-fluid p-0">
                     <span class="menu-toggle me-3" id="menuToggle"><i class="fas fa-bars"></i></span>
                     <h1 class="h4 mb-0 flex-grow-1">Dashboard Overview</h1>
-                    
+
                 </div>
             </nav>
 
@@ -244,29 +363,29 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card">
                         <h3>Total Hospitals</h3>
-                        <div class="value">1,248</div>
-                        <div class="change">+12 this month</div>
+                        <div class="value"><?php echo $total_hospital ?></div>
+                        <div class="change">+ <?php echo $increasehospital ?> this month</div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card app-officers">
                         <h3>Application Officers</h3>
-                        <div class="value">586</div>
-                        <div class="change">+5 this month</div>
+                        <div class="value"><?php echo $total_officer ?></div>
+                        <div class="change">+ <?php echo $increaseofficer ?> this month</div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card kebele-officers">
                         <h3>Kebele Officers</h3>
-                        <div class="value">2,417</div>
-                        <div class="change">+23 this month</div>
+                        <div class="value"><?php echo $total_kebele ?></div>
+                        <div class="change">+<?php echo $increasekebele ?> this month</div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card total-users">
                         <h3>Total Users</h3>
-                        <div class="value">84,752</div>
-                        <div class="change">+1,284 this month</div>
+                        <div class="value"><?php echo $total_users ?></div>
+                        <div class="change">+<?Php echo $increaseuser ?> this month</div>
                     </div>
                 </div>
             </div>
@@ -281,7 +400,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="chart-card">
-                        <h2 class="h5 mb-4">Certificate Requests (Last 6 Months)</h2>
+                        <h2 class="h5 mb-4">user  registered (Last 6 Months)</h2>
                         <canvas id="requestsChart"></canvas>
                     </div>
                 </div>
@@ -335,15 +454,31 @@
                             <h2 class="h5 mb-0">Recent Support Tickets</h2>
                             <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
                         </div>
-                        <div class="ticket-item">
-                            <div class="ticket-avatar">A</div>
+                      <?php if($recent_support->num_rows > 0){
+                        while($user_support = $recent_support -> fetch_assoc()){
+                            if($user_support['status'] == 'unreplied'){
+                            
+                            ?>
+                        <div class="ticket-item">                          
                             <div class="flex-grow-1">
-                                <h4 class="h6 mb-1">Application Rejected</h4>
-                                <p class="mb-0 text-muted small">From: Alemayehu Girma</p>
+                                <h4 class="h6 mb-1"><?php echo $user_support['subject']?></h4>
+                                <?php $user_id = $user_support['user_id'];
+                                $sql = "SELECT * FROM users WHERE id = ?";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("i", $user_id);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+                                $user = $result->fetch_assoc();
+                                $full_name = $user['first_name'] . ' ' .$user['middle_name'] ; 
+                                ?>
+                                <p class="mb-0 text-muted small">From: <?php echo $full_name ?></p>
                             </div>
-                            <span class="badge status-pending">Pending</span>
+                            <span class="badge status-pending"><?php echo $user_support['status']?></span>
                         </div>
-                        <div class="ticket-item">
+                        <?php }
+                         } 
+                    }?>
+                        <!-- <div class="ticket-item">
                             <div class="ticket-avatar">M</div>
                             <div class="flex-grow-1">
                                 <h4 class="h6 mb-1">Document Upload Issue</h4>
@@ -366,7 +501,7 @@
                                 <p class="mb-0 text-muted small">From: Eden Teshome</p>
                             </div>
                             <span class="badge status-resolved">Resolved</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -413,17 +548,17 @@
         // Initialize charts
         document.addEventListener('DOMContentLoaded', function() {
             // Gender Distribution Chart
+
             const genderCtx = document.getElementById('genderChart').getContext('2d');
             const genderChart = new Chart(genderCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Male', 'Female', 'Other'],
+                    labels: ['Male', 'Female'],
                     datasets: [{
-                        data: [65, 32, 3],
+                        data: [<?php echo $maleuser ?>, <?php echo $femaleuser ?>],
                         backgroundColor: [
                             '#3498db',
-                            '#e83e8c',
-                            '#6c757d'
+                            '#e83e8c'
                         ],
                         borderWidth: 0
                     }]

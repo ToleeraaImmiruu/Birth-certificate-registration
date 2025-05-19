@@ -115,7 +115,7 @@ include '../setup/dbconnection.php';
       padding: 20px;
       transition: all 0.3s ease;
       min-height: 100vh;
-      /* width: 100%; */
+      /* width: 90%; */
     }
 
     .sidebar.hidden+.main-content {

@@ -3,11 +3,9 @@ if (isset($_GET["page"])) {
   $page = $_GET["page"];
 
   if ($page == "home") {
-    include "home.php";
-    
+    include "home.php";  
   } else if ($page == "birthrecord") {
     include "birthrecord.php";
-    
   } else if ($page == "recordManagement") {
     include "managebirthrecordfinal.php";
   } else if ($page == "notification") {
