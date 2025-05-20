@@ -4,210 +4,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Hospital Birth Records Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            display: flex;
-            min-height: 100vh;
-            margin: 0;
-            justify-content: center;
-            align-items: center;
-            background-color: #f8f9fa;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #0d924f;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
         }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 1200px;
+        /* Main Content Styles (won't conflict with sidebar) */
+        .main-content {
+            background-color: var(--light-bg);
+            min-height: 100vh;
+            margin-left: 280px;
+            /* Adjust based on your sidebar width */
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .dashboard-header {
+            background-color: white;
             padding: 20px;
             border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card {
             background-color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #6c757d;
-            color: white;
+            border-radius: 10px;
             padding: 20px;
-            transition: transform 0.5s ease, background-color 0.5s ease;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-        }
-
-        .sidebar.hidden {
-            transform: translateX(-100%);
-            background-color: rgba(108, 117, 125, 0.5);
-        }
-
-        .sidebar .btn {
-            width: 100%;
-            margin-bottom: 10px;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            transition: opacity 0.5s ease;
-        }
-
-        .sidebar.hidden .btn {
-            opacity: 0;
-        }
-
-        .sidebar .btn img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-            margin-left: 250px;
-            transition: margin-left 0.5s ease;
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        .sidebar.hidden+.content {
-            margin-left: 0;
-        }
-
-        .logo {
-            width: 100px;
-            display: block;
             margin-bottom: 20px;
-            transition: opacity 0.5s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border-left: 4px solid var(--primary-color);
         }
 
-        .sidebar.hidden .logo {
-            opacity: 0;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
-        .logout-btn {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            display: flex;
-            align-items: center;
+        .stat-card.primary {
+            border-left-color: var(--primary-color);
         }
 
-        .logout-btn img {
-            width: 20px;
-            height: 20px;
-            margin-right: 5px;
+        .stat-card.success {
+            border-left-color: var(--secondary-color);
         }
 
-        .toggle-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1000;
+        .stat-card.danger {
+            border-left-color: var(--accent-color);
         }
 
-        .animated-card {
-            overflow: hidden;
-            border-radius: 15px;
-            transform: translateY(30px);
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
         }
 
-        .animated-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
         }
 
-        .animated-card:hover img {
-            transform: scale(1.1);
+        .stat-title {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        @keyframes fadeInUp {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .recent-records {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        .animated-delay-1 {
-            animation-delay: 0.3s;
+        .table-custom thead th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 15px;
         }
 
-        .animated-delay-2 {
-            animation-delay: 0.6s;
+        .table-custom tbody tr {
+            transition: all 0.3s;
         }
 
-        .animated-delay-3 {
-            animation-delay: 0.9s;
+        .table-custom tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
         }
 
-        .animated-delay-4 {
-            animation-delay: 1.2s;
+        .badge-custom {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 500;
         }
 
-        /* Animated H4 Heading */
-        .animated-title {
-            font-weight: bold;
-            animation: slideFadeIn 1.2s ease-out forwards;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.4s ease-in-out;
+        .badge-pending {
+            background-color: #fff3cd;
+            color: #856404;
         }
 
-        @keyframes slideFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
+        .badge-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #1a252f;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-success-custom {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-success-custom:hover {
+            background-color: #0a7a40;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="content">
-            <button class="btn btn-primary logout-btn">
-                <img src="image/logout.png" alt="Logout" /><a href="../public/logOut.php">Logout</a>
-            </button>
+    <!-- Sidebar would be included here -->
+    <!-- <div class="sidebar">...</div> -->
 
-            <h4 class="mb-4 animated-title">Welcome to Hospital Dashboard</h4>
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h2 class="mb-0"><i class="fas fa-baby me-2"></i>Birth Records Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back, Dr. Smith</p>
+        </div>
 
-            <div class="row g-4">
-                <div class="col-md-3">
-                    <div class="animated-card animated-delay-1">
-                        <img src="image/mom1.jpg" alt="Image 1" />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-baby-carriage"></i>
+                    </div>
+                    <div class="stat-number">1,248</div>
+                    <div class="stat-title">Total Births Recorded</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-number">324</div>
+                    <div class="stat-title">Births This Month</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card danger">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-number">18</div>
+                    <div class="stat-title">Pending Certifications</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="recent-records">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0"><i class="fas fa-list me-2"></i>Recent Birth Records</h4>
+                        <button class="btn btn-custom btn-sm">
+                            <i class="fas fa-plus me-1"></i> New Record
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Record ID</th>
+                                    <th>Mother's Name</th>
+                                    <th>Birth Date</th>
+                                    <th>Gender</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>BR-2023-0456</td>
+                                    <td>Sarah Johnson</td>
+                                    <td>2023-06-15</td>
+                                    <td>Female</td>
+                                    <td><span class="badge badge-completed badge-custom">Completed</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>BR-2023-0455</td>
+                                    <td>Emily Williams</td>
+                                    <td>2023-06-14</td>
+                                    <td>Male</td>
+                                    <td><span class="badge badge-completed badge-custom">Completed</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>BR-2023-0454</td>
+                                    <td>Jessica Brown</td>
+                                    <td>2023-06-14</td>
+                                    <td>Female</td>
+                                    <td><span class="badge badge-pending badge-custom">Pending</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>BR-2023-0453</td>
+                                    <td>Amanda Jones</td>
+                                    <td>2023-06-13</td>
+                                    <td>Male</td>
+                                    <td><span class="badge badge-completed badge-custom">Completed</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>BR-2023-0452</td>
+                                    <td>Jennifer Garcia</td>
+                                    <td>2023-06-12</td>
+                                    <td>Female</td>
+                                    <td><span class="badge badge-pending badge-custom">Pending</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end mt-3">
+                        <a href="#" class="text-primary">View All Records <i class="fas fa-arrow-right ms-1"></i></a>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="animated-card animated-delay-2">
-                        <img src="image/mom2.jpg" alt="Image 2" />
+            </div>
+            <div class="col-md-4">
+                <div class="recent-records">
+                    <h4 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Birth Statistics</h4>
+                    <div class="text-center mb-4">
+                        <canvas id="birthChart" height="200"></canvas>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="animated-card animated-delay-3">
-                        <img src="image/mom3.jpg" alt="Image 3" />
+                    <div class="mt-4">
+                        <h5 class="mb-3"><i class="fas fa-calendar-alt me-2"></i>Today's Births</h5>
+                        <div class="list-group">
+                            <div class="list-group-item border-0 py-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>Male Births</span>
+                                    <strong>4</strong>
+                                </div>
+                            </div>
+                            <div class="list-group-item border-0 py-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>Female Births</span>
+                                    <strong>3</strong>
+                                </div>
+                            </div>
+                            <div class="list-group-item border-0 py-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>Twins</span>
+                                    <strong>1</strong>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="animated-card animated-delay-4">
-                        <img src="image/mom4.jpg" alt="Image 4" />
+                    <div class="mt-4">
+                        <button class="btn btn-success-custom w-100">
+                            <i class="fas fa-file-export me-2"></i> Generate Monthly Report
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sample chart data
+        const ctx = document.getElementById('birthChart').getContext('2d');
+        const birthChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Male', 'Female', 'Twins'],
+                datasets: [{
+                    data: [45, 52, 3],
+                    backgroundColor: [
+                        '#3498db',
+                        '#e83e8c',
+                        '#ffc107'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // You would add your sidebar toggle functionality here
+        // function toggleSidebar() {...}
+    </script>
 </body>
 
 </html>

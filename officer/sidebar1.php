@@ -208,9 +208,6 @@
         <button class="sidebar-btn" onclick="location.href='sidebar1.php?page=application'">
             <img src="../image/apply.png" alt="Apply"> Applications
         </button>
-        <button class="sidebar-btn" onclick="location.href='sidebar1.php?page=manageuser'">
-            <img src="../image/check-list.png" alt="Status"> Manage Users
-        </button>
         <button class="sidebar-btn" onclick="location.href='sidebar1.php?page=announcement'">
             <img src="../image/megaphone.png" alt="Announcement"> ANNOUNCEMENT
         </button>
@@ -242,12 +239,10 @@
                     include 'editprofile.php';
                 } elseif ($page == "announcement") {
                     include 'announcement.php';
-                } else if ($page == "manageuser") {
-                    include "manageUser.php";
-                } else if ($page == "payments") {
+                }  else if ($page == "payments") {
                     include "payments.php";
                 } else if ($page == "usersupport") {
-                    include "usersupport1.php";
+                    include "usersupport.php";
                 } else {
                     echo "<h3>Page Not Found</h3>";
                 }

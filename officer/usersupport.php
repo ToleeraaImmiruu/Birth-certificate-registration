@@ -1,10 +1,79 @@
+<?php
+// Database configuration
+include "../setup/dbconnection.php";
+
+// Initialize variables
+$complaints = [];
+$selected_complaint = null;
+$reply_message = '';
+$success_message = '';
+$error_message = '';
+
+try {
+    // Fetch all complaints
+    $sql = "SELECT * FROM account_support ORDER BY created_at";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $complaints = $result->fetch_all(MYSQLI_ASSOC);
+
+    // Handle viewing a specific complaint
+    if (isset($_GET['view']) && is_numeric($_GET['view'])) {
+        $view_id = $_GET['view'];
+        $stmt = $conn->prepare("SELECT * FROM account_support WHERE id = ?");
+        $stmt->bind_param("i", $view_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $selected_complaint = $result->fetch_assoc();
+    }
+
+    // Handle replying to a complaint
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_reply'])) {
+        $complaint_id = $_POST['complaint_id'];
+        $reply_message = htmlspecialchars(trim($_POST['reply_message']));
+
+        if (empty($reply_message)) {
+            $error_message = 'Reply message cannot be empty!';
+        } else {
+            // Update complaint with admin reply
+            $stmt = $conn->prepare("UPDATE account_support SET admin_reply = ?, status = 'resolved', reply_at = NOW() WHERE id = ?");
+            $stmt->bind_param("si", $reply_message, $complaint_id);
+            $stmt->execute();
+            $feedback = "for your question";
+            $current_time = date('Y-m-d H:i:s');
+
+            $sqltomessage = "INSERT INTO messages (user_id , title , body , sent_at) VALUES (?,?,?,?)";
+            $stmt = $conn->prepare($sqltomessage);
+            $stmt->bind_param("isss", $complaint_id, $feedback, $reply_message, $current_time);
+            $stmt->execute();
+
+            $success_message = 'Reply sent successfully!';
+
+            // Refresh the selected complaint
+            $stmt = $conn->prepare("SELECT * FROM account_support WHERE id = ?");
+            $stmt->bind_param("i", $complaint_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $selected_complaint = $result->fetch_assoc();
+
+            // Refresh complaints list
+            $stmt = $conn->prepare("SELECT * FROM account_support ORDER BY created_at DESC");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $complaints = $result->fetch_all(MYSQLI_ASSOC);
+        }
+    }
+} catch (Exception $e) {
+    $error_message = 'Database error: ' . $e->getMessage();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Officer Support Dashboard</title>
+    <title>User Support Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -15,554 +84,258 @@
             --secondary-color: #0d924f;
             --accent-color: #e74c3c;
             --light-bg: #f8f9fa;
-            --unread-bg: #f0f8ff;
         }
 
         body {
             background-color: var(--light-bg);
-            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
         }
 
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #1a252f);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
         }
 
-        .support-header {
-            color: var(--primary-color);
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .support-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100px;
-            height: 4px;
-            background: var(--secondary-color);
-            border-radius: 2px;
-        }
-
-        .support-card {
+        .card {
             border: none;
             border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.3s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
-        }
-
-        .support-card.unread {
-            background-color: var(--unread-bg);
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .support-card:hover {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
 
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--secondary-color);
+        .card-header {
+            background-color: var(--primary-color);
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .support-subject {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.2rem;
-        }
-
-        .support-preview {
-            color: #6c757d;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .support-date {
-            color: #6c757d;
-            font-size: 0.85rem;
-        }
-
-        .badge-status {
-            font-size: 0.75rem;
-            font-weight: 500;
-            padding: 4px 8px;
-        }
-
-        .history-container {
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .message-item {
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .message-item.user {
-            border-left: 3px solid var(--secondary-color);
-        }
-
-        .message-item.officer {
-            border-left: 3px solid var(--primary-color);
-        }
-
-        .message-meta {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-bottom: 5px;
-        }
-
-        .message-content {
-            line-height: 1.5;
-        }
-
-        .reply-form {
-            margin-top: 20px;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .form-control:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 0.25rem rgba(13, 146, 79, 0.25);
+            border-radius: 10px 10px 0 0 !important;
         }
 
         .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #1a252f;
+            border-color: #1a252f;
+        }
+
+        .btn-success {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
         }
 
-        .btn-primary:hover {
-            background-color: #0b7a41;
-            border-color: #0b7a41;
+        .btn-success:hover {
+            background-color: #0b7a43;
+            border-color: #0b7a43;
         }
 
-        .sidebar {
+        .btn-danger {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        .status-pending {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .status-resolved {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .highlight-row:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+            cursor: pointer;
+        }
+
+        .success-alert {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .error-alert {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .complaint-details {
             background-color: white;
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            height: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .nav-pills .nav-link.active {
-            background-color: var(--secondary-color);
-        }
-
-        .nav-pills .nav-link {
-            color: var(--primary-color);
-        }
-
-        .unread-count {
-            background-color: var(--accent-color);
-        }
-
-        .support-details {
+        .reply-form {
             background-color: white;
             border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
-    <div class="dashboard-container container-fluid py-4">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 mb-4">
-                <div class="sidebar">
-                    <h4 class="mb-4">Support Dashboard</h4>
+    <div class="header">
+        <div class="container">
+            <h1 class="display-5"><i class="fas fa-headset me-2"></i> User Support Management</h1>
+            <p class="lead">Manage and respond to user complaints</p>
+        </div>
+    </div>
 
-                    <ul class="nav nav-pills flex-column mb-3">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">
-                                <i class="fas fa-inbox me-2"></i> All Requests
-                                <span class="badge unread-count float-end">3</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-check-circle me-2"></i> Resolved
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-clock me-2"></i> Pending
-                            </a>
-                        </li>
-                    </ul>
-
-                    <h5 class="mt-4 mb-3">Filters</h5>
-                    <div class="mb-3">
-                        <label class="form-label">Priority</label>
-                        <select class="form-select">
-                            <option>All</option>
-                            <option>High</option>
-                            <option>Medium</option>
-                            <option>Low</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Date Range</label>
-                        <select class="form-select">
-                            <option>Last 7 days</option>
-                            <option>Last 30 days</option>
-                            <option>Last 3 months</option>
-                            <option>All time</option>
-                        </select>
-                    </div>
-                </div>
+    <div class="container">
+        <?php if ($success_message): ?>
+            <div class="alert success-alert alert-dismissible fade show">
+                <i class="fas fa-check-circle me-2"></i>
+                <?php echo $success_message; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+        <?php endif; ?>
 
-            <!-- Main Content -->
-            <div class="col-md-9">
-                <div class="row mb-4">
-                    <div class="col">
-                        <h2 class="support-header">
-                            <i class="fas fa-headset me-2"></i>User Support Requests
-                        </h2>
+        <?php if ($error_message): ?>
+            <div class="alert error-alert alert-dismissible fade show">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <?php echo $error_message; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i> User Complaints</h5>
                     </div>
-                    <div class="col-auto">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search requests...">
-                            <button class="btn btn-outline-secondary" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Support Requests List -->
-                <div class="row">
-                    <div class="col-md-5 pe-md-3">
-                        <div class="support-list">
-                            <!-- Support Request 1 -->
-                            <div class="support-card card unread" data-bs-toggle="collapse" href="#request1" role="button">
-                                <div class="card-body py-3">
-                                    <div class="d-flex gap-3">
-                                        <div class="user-avatar">EB</div>
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <h5 class="support-subject mb-1">Login Issues</h5>
-                                                <span class="support-date">Today, 10:30 AM</span>
-                                            </div>
-                                            <p class="support-preview mb-1">I can't log in to my account despite resetting my password...</p>
-                                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                                <span class="badge bg-warning text-dark badge-status">Pending</span>
-                                                <span class="badge bg-danger badge-status">High Priority</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Support Request 2 -->
-                            <div class="support-card card" data-bs-toggle="collapse" href="#request2" role="button">
-                                <div class="card-body py-3">
-                                    <div class="d-flex gap-3">
-                                        <div class="user-avatar">AT</div>
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <h5 class="support-subject mb-1">Payment Refund</h5>
-                                                <span class="support-date">Yesterday, 2:15 PM</span>
-                                            </div>
-                                            <p class="support-preview mb-1">I was charged twice for my subscription and need a refund...</p>
-                                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                                <span class="badge bg-info text-dark badge-status">In Progress</span>
-                                                <span class="badge bg-warning text-dark badge-status">Medium Priority</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Support Request 3 -->
-                            <div class="support-card card" data-bs-toggle="collapse" href="#request3" role="button">
-                                <div class="card-body py-3">
-                                    <div class="d-flex gap-3">
-                                        <div class="user-avatar">MK</div>
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <h5 class="support-subject mb-1">Feature Request</h5>
-                                                <span class="support-date">May 12, 10:45 AM</span>
-                                            </div>
-                                            <p class="support-preview mb-1">Would it be possible to add bulk editing to the dashboard...</p>
-                                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                                <span class="badge bg-success badge-status">Resolved</span>
-                                                <span class="badge bg-secondary badge-status">Low Priority</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Support Request Details -->
-                    <div class="col-md-7 ps-md-3">
-                        <div class="support-details">
-                            <!-- Default empty state -->
-                            <div id="emptyState" class="text-center py-5">
-                                <i class="fas fa-comments fa-3x text-muted mb-3"></i>
-                                <h4 class="text-muted">Select a support request</h4>
-                                <p class="text-muted">Choose a request from the list to view details and respond</p>
-                            </div>
-
-                            <!-- Request 1 Details (hidden by default) -->
-                            <div id="request1" class="collapse">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h4>Login Issues</h4>
-                                    <div>
-                                        <span class="badge bg-warning text-dark me-2">Pending</span>
-                                        <span class="badge bg-danger">High Priority</span>
-                                    </div>
-                                </div>
-
-                                <div class="user-info mb-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="user-avatar me-3">EB</div>
-                                        <div>
-                                            <h5 class="mb-1">Ebisa Berhanu</h5>
-                                            <p class="text-muted mb-1">ebisa@example.com</p>
-                                            <p class="text-muted small">Submitted: Today, 10:30 AM</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="history-container mb-4">
-                                    <!-- Initial request -->
-                                    <div class="message-item user">
-                                        <div class="message-meta">
-                                            <strong>Ebisa Berhanu</strong> - Today, 10:30 AM
-                                        </div>
-                                        <div class="message-content">
-                                            <p>Hello, I'm having trouble logging into my account. I've tried resetting my password multiple times but still can't access my account. The system says my credentials are invalid. Please help!</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Possible previous communications would appear here -->
-                                </div>
-
-                                <div class="reply-form">
-                                    <h5 class="mb-3"><i class="fas fa-reply me-2"></i>Reply to Ebisa</h5>
-                                    <form>
-                                        <div class="mb-3">
-                                            <textarea class="form-control" rows="4" placeholder="Type your response..." required></textarea>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="markResolved">
-                                                <label class="form-check-label" for="markResolved">
-                                                    Mark as resolved
-                                                </label>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-paper-plane me-1"></i> Send Response
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <!-- Request 2 Details (hidden by default) -->
-                            <div id="request2" class="collapse">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h4>Payment Refund</h4>
-                                    <div>
-                                        <span class="badge bg-info text-dark me-2">In Progress</span>
-                                        <span class="badge bg-warning text-dark">Medium Priority</span>
-                                    </div>
-                                </div>
-
-                                <div class="user-info mb-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="user-avatar me-3">AT</div>
-                                        <div>
-                                            <h5 class="mb-1">Anma Tesfa</h5>
-                                            <p class="text-muted mb-1">anma@example.com</p>
-                                            <p class="text-muted small">Submitted: Yesterday, 2:15 PM</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="history-container mb-4">
-                                    <!-- Initial request -->
-                                    <div class="message-item user">
-                                        <div class="message-meta">
-                                            <strong>Anma Tesfa</strong> - Yesterday, 2:15 PM
-                                        </div>
-                                        <div class="message-content">
-                                            <p>I noticed that I was charged twice for my monthly subscription on May 10th. I've attached screenshots of both transactions. Could you please process a refund for the duplicate charge?</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Officer response -->
-                                    <div class="message-item officer mt-3">
-                                        <div class="message-meta">
-                                            <strong>Officer Response</strong> - Yesterday, 3:45 PM
-                                        </div>
-                                        <div class="message-content">
-                                            <p>Hello Anma,</p>
-                                            <p>Thank you for bringing this to our attention. I've reviewed your account and can confirm the duplicate charge. Our finance team has been notified and will process your refund within 3-5 business days.</p>
-                                            <p>Please let me know if you have any other questions.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="reply-form">
-                                    <h5 class="mb-3"><i class="fas fa-reply me-2"></i>Reply to Anma</h5>
-                                    <form>
-                                        <div class="mb-3">
-                                            <textarea class="form-control" rows="4" placeholder="Type your response..." required></textarea>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="markResolved2">
-                                                <label class="form-check-label" for="markResolved2">
-                                                    Mark as resolved
-                                                </label>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-paper-plane me-1"></i> Send Response
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <!-- Request 3 Details (hidden by default) -->
-                            <div id="request3" class="collapse">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h4>Feature Request</h4>
-                                    <div>
-                                        <span class="badge bg-success me-2">Resolved</span>
-                                        <span class="badge bg-secondary">Low Priority</span>
-                                    </div>
-                                </div>
-
-                                <div class="user-info mb-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="user-avatar me-3">MK</div>
-                                        <div>
-                                            <h5 class="mb-1">Mekdes Kassahun</h5>
-                                            <p class="text-muted mb-1">mekdes@example.com</p>
-                                            <p class="text-muted small">Submitted: May 12, 10:45 AM</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="history-container mb-4">
-                                    <!-- Initial request -->
-                                    <div class="message-item user">
-                                        <div class="message-meta">
-                                            <strong>Mekdes Kassahun</strong> - May 12, 10:45 AM
-                                        </div>
-                                        <div class="message-content">
-                                            <p>I manage multiple projects and would love to see bulk editing functionality added to the dashboard. Currently, I have to edit each item individually which is time-consuming. Is this feature on your roadmap?</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Officer response -->
-                                    <div class="message-item officer mt-3">
-                                        <div class="message-meta">
-                                            <strong>Officer Response</strong> - May 12, 2:30 PM
-                                        </div>
-                                        <div class="message-content">
-                                            <p>Hi Mekdes,</p>
-                                            <p>Thank you for your suggestion! Bulk editing is actually part of our Q3 development plan. We expect to release this feature in August.</p>
-                                            <p>I've added you to our beta tester list for this feature if you'd like early access. Let me know if you're interested!</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- User follow-up -->
-                                    <div class="message-item user mt-3">
-                                        <div class="message-meta">
-                                            <strong>Mekdes Kassahun</strong> - May 12, 3:15 PM
-                                        </div>
-                                        <div class="message-content">
-                                            <p>That's great news! I'd definitely be interested in the beta testing program. Please send me the details when available.</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Officer closing -->
-                                    <div class="message-item officer mt-3">
-                                        <div class="message-meta">
-                                            <strong>Officer Response</strong> - May 12, 3:45 PM
-                                        </div>
-                                        <div class="message-content">
-                                            <p>Wonderful! I'll make sure you receive the beta invitation as soon as it's ready. I'm marking this request as resolved but feel free to reach out if you have any other questions.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="reply-form">
-                                    <h5 class="mb-3"><i class="fas fa-reply me-2"></i>Reply to Mekdes</h5>
-                                    <form>
-                                        <div class="mb-3">
-                                            <textarea class="form-control" rows="4" placeholder="Type your response..."></textarea>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="reopenRequest">
-                                                <label class="form-check-label" for="reopenRequest">
-                                                    Reopen request
-                                                </label>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-paper-plane me-1"></i> Send Response
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>subject</th>
+                                        <th>email</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (count($complaints) > 0): ?>
+                                        <?php foreach ($complaints as $complain):
+                                            if ($complain["status"] == "unreplied"): ?>
+                                                <tr class="highlight-row">
+                                                    <td><?php echo $complain['id']; ?></td>
+                                                    <td><?php echo htmlspecialchars($complain['email']); ?></td>
+                                                    <td><?php echo htmlspecialchars($complain['subject']); ?></td>
+                                                    <td><?php echo date('M j, Y g:i a', strtotime($complain['created_at'])); ?></td>
+                                                    <td>
+                                                        <a href="usersupport.php?view=<?php echo $complain['id']; ?>" class="btn btn-sm btn-primary">
+                                                            <i class="fas fa-eye me-1"></i> View
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                        <?php endif;
+                                        endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="6" class="no-results">No complaints found.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <?php if ($selected_complaint): ?>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="complaint-details">
+                        <h4><i class="fas fa-file-alt me-2"></i> Complaint Details</h4>
+                        <div class="mb-3">
+                            <a href="usersupport.php" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Back to User Support
+                            </a>
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>email:</strong> <?php echo htmlspecialchars($selected_complaint['email']); ?></p>
+                                <p><strong>Subject:</strong> <?php echo htmlspecialchars($selected_complaint['subject']); ?></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Submitted:</strong> <?php echo date('M j, Y g:i a', strtotime($selected_complaint['created_at'])); ?></p>
+                                <?php if ($selected_complaint['reply_at']): ?>
+                                    <p><strong>Replied:</strong> <?php echo date('M j, Y g:i a', strtotime($selected_complaint['reply_at'])); ?></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <h5>Complaint Message:</h5>
+                            <div class="p-3 bg-light rounded">
+                                <?php echo nl2br(htmlspecialchars($selected_complaint['message'])); ?>
+                            </div>
+                        </div>
+
+                        <?php if ($selected_complaint['admin_reply']): ?>
+                            <div class="mt-4">
+                                <h5>Your Reply:</h5>
+                                <div class="p-3 bg-light rounded">
+                                    <?php echo nl2br(htmlspecialchars($selected_complaint['admin_reply'])); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if ($selected_complaint['status'] !== 'resolved'): ?>
+                        <div class="reply-form mt-4">
+                            <h4><i class="fas fa-reply me-2"></i> Reply to Complaint</h4>
+                            <hr>
+                            <form method="POST" action="">
+                                <input type="hidden" name="complaint_id" value="<?php echo $selected_complaint['user_id']; ?>">
+                                <div class="mb-3">
+                                    <label for="reply_message" class="form-label">Your Response</label>
+                                    <textarea class="form-control" id="reply_message" name="reply_message" rows="5" required></textarea>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" name="send_reply" class="btn btn-success">
+                                        <i class="fas fa-paper-plane me-2"></i> Send Reply
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Simple script to handle the empty state and request selection
+        // Auto-hide alerts after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
-            const supportCards = document.querySelectorAll('.support-card');
-            const emptyState = document.getElementById('emptyState');
-
-            supportCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Hide empty state when a request is selected
-                    emptyState.style.display = 'none';
-
-                    // Remove active class from all cards
-                    supportCards.forEach(c => {
-                        c.classList.remove('active');
-                        c.classList.remove('unread');
-                    });
-
-                    // Add active class to clicked card
-                    this.classList.add('active');
-                });
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
             });
         });
     </script>
