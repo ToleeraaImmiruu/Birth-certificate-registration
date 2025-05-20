@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #0d924f;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .payment-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .payment-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .btn-view {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background-color: #1a252f;
+            color: white;
+        }
+        
+        .btn-approve {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-reject {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .details-container {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        .screenshot-preview {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <h1>Payment Management System</h1>
+        <p class="mb-0">Review and process birth certificate applications</p>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card payment-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Pending Payments</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Application ID</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentList">
+                                    <!-- Payment list will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="paymentDetails" class="details-container">
+                    <h4>Payment Details</h4>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Full Name:</strong> <span id="detailName"></span></p>
+                            <p><strong>Application ID:</strong> <span id="detailAppId"></span></p>
+                            <p><strong>Phone Number:</strong> <span id="detailPhone"></span></p>
+                            <p><strong>Amount (ETB):</strong> <span id="detailAmount"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Payment Screenshot:</strong></p>
+                            <img id="detailScreenshot" src="" alt="Payment Screenshot" class="screenshot-preview">
+                        </div>
+                    </div>
+                    <div class="mt-4 text-end">
+                        <button id="rejectBtn" class="btn btn-reject me-2">Reject</button>
+                        <button id="approveBtn" class="btn btn-approve">Approve</button>
+                        <button id="closeBtn" class="btn btn-secondary">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample payment data (extracted from the image)
+        const payments = [
+            {
+                fullName: "Ebisa Berhanu",
+                applicationId: "BC-2023-58741",
+                phoneNumber: "0953935589",
+                amount: "250 ETB",
+                screenshot: "https://via.placeholder.com/300x200?text=Payment+Screenshot"
+            },
+            {
+                fullName: "Anam Tesfa",
+                applicationId: "BC-2023-98765",
+                phoneNumber: "0945744342",
+                amount: "250 ETB",
+                screenshot: "https://via.placeholder.com/300x200?text=Another+Payment"
+            }
+        ];
+        
+        // Populate the payment list
+        const paymentList = document.getElementById('paymentList');
+        const paymentDetails = document.getElementById('paymentDetails');
+        const closeBtn = document.getElementById('closeBtn');
+        
+        function renderPaymentList() {
+            paymentList.innerHTML = '';
+            payments.forEach((payment, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payment.fullName}</td>
+                    <td>${payment.applicationId}</td>
+                    <td><button class="btn btn-view btn-sm" data-index="${index}">View</button></td>
+                `;
+                paymentList.appendChild(row);
+            });
+            
+            // Add event listeners to view buttons
+            document.querySelectorAll('.btn-view').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    showPaymentDetails(index);
+                });
+            });
+        }
+        
+        function showPaymentDetails(index) {
+            const payment = payments[index];
+            
+            document.getElementById('detailName').textContent = payment.fullName;
+            document.getElementById('detailAppId').textContent = payment.applicationId;
+            document.getElementById('detailPhone').textContent = payment.phoneNumber;
+            document.getElementById('detailAmount').textContent = payment.amount;
+            document.getElementById('detailScreenshot').src = payment.screenshot;
+            
+            paymentDetails.style.display = 'block';
+            
+            // Scroll to details
+            paymentDetails.scrollIntoView({ behavior: 'smooth' });
+            
+            // Set up approve/reject buttons
+            document.getElementById('approveBtn').onclick = function() {
+                alert(`Payment for ${payment.fullName} (${payment.applicationId}) has been approved!`);
+                paymentDetails.style.display = 'none';
+            };
+            
+            document.getElementById('rejectBtn').onclick = function() {
+                alert(`Payment for ${payment.fullName} (${payment.applicationId}) has been rejected.`);
+                paymentDetails.style.display = 'none';
+            };
+            
+            // Close button event listener
+            closeBtn.onclick = function() {
+                paymentDetails.style.display = 'none';
+            };
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', renderPaymentList);
+    </script>
+</body>
+</html>

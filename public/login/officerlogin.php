@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
 
             // Redirect based on user role
             if ($user) {
-                header("Location: ../../officer/sidebar.php");
+                header("Location: ../../officerfinal/sidebar1.php");
             } else {
                 header("location: ../../userdashboard/user.php");
             }
