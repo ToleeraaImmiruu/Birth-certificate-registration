@@ -1,15 +1,90 @@
 <?php
-include '../setup/dbconnection.php';
-$sql = "SELECT *  FROM hospitals ORDER BY created_at DESC LIMIT 5";
-$stmt = $conn->prepare($sql);
-$stmt->execute();
-$recent_records = $stmt->get_result();
-if (!$recent_records) {
-    die("error in fetching");
+session_start();
+require_once '../setup/dbconnection.php';
+
+// Check if user is logged in
+if (!isset($_SESSION['hospital_id'])) {
+    header("Location: login.php");
+    exit();
 }
 
+// Get hospital information
+$hospital_id = $_SESSION['hospital_id'];
+$sql = "SELECT * FROM hospitals WHERE hospital_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $hospital_id);
+$stmt->execute();
+$hospital = $stmt->get_result()->fetch_assoc();
 
+if (!$hospital) {
+    die("Hospital not found");
+}
 
+// Get recent birth records
+$sql = "SELECT * FROM birth_records WHERE hospital_id = ? ORDER BY created_at DESC LIMIT 5";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $hospital_id);
+$stmt->execute();
+$recent_records = $stmt->get_result();
+
+// Get statistics
+$stats = [
+    'total_births' => 0,
+    'monthly_births' => 0,
+    'pending_certs' => 0,
+    'gender_stats' => ['Male' => 0, 'Female' => 0],
+    'today_stats' => ['Male' => 0, 'Female' => 0]
+];
+
+// Total births
+$sql = "SELECT COUNT(*) as total FROM birth_records WHERE hospital_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $hospital_id);
+$stmt->execute();
+$result = $stmt->get_result()->fetch_assoc();
+$stats['total_births'] = $result['total'];
+
+// Monthly births
+$sql = "SELECT COUNT(*) as monthly FROM birth_records 
+        WHERE hospital_id = ? AND MONTH(dob) = MONTH(CURRENT_DATE()) 
+        AND YEAR(dob) = YEAR(CURRENT_DATE())";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $hospital_id);
+$stmt->execute();
+$result = $stmt->get_result()->fetch_assoc();
+$stats['monthly_births'] = $result['monthly'];
+
+// Pending certifications
+// $sql = "SELECT COUNT(*) as pending FROM birth_records 
+//         WHERE hospital_id = ? AND certification_status = 'pending'";
+// $stmt = $conn->prepare($sql);
+// $stmt->bind_param("i", $hospital_id);
+// $stmt->execute();
+// $result = $stmt->get_result()->fetch_assoc();
+// $stats['pending_certs'] = $result['pending'];
+
+// Gender statistics
+$sql = "SELECT gender, COUNT(*) as count FROM birth_records 
+        WHERE hospital_id = ? GROUP BY gender";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $hospital_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $stats['gender_stats'][$row['gender']] = $row['count'];
+}
+
+// Today's births
+$sql = "SELECT gender, COUNT(*) as count FROM birth_records 
+        WHERE hospital_id = ? AND DATE(dob) = CURDATE() 
+        GROUP BY gender";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $hospital_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $stats['today_stats'][$row['gender']] = $row['count'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,12 +104,10 @@ if (!$recent_records) {
             --light-bg: #f8f9fa;
         }
 
-        /* Main Content Styles (won't conflict with sidebar) */
         .main-content {
             background-color: var(--light-bg);
             min-height: 100vh;
             margin-left: 280px;
-            /* Adjust based on your sidebar width */
             padding: 20px;
             transition: all 0.3s;
         }
@@ -116,22 +189,6 @@ if (!$recent_records) {
             background-color: rgba(44, 62, 80, 0.05);
         }
 
-        .badge-custom {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-weight: 500;
-        }
-
-        .badge-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .badge-completed {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
         .btn-custom {
             background-color: var(--primary-color);
             color: white;
@@ -156,7 +213,6 @@ if (!$recent_records) {
             background-color: #0a7a40;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 992px) {
             .main-content {
                 margin-left: 0;
@@ -167,13 +223,10 @@ if (!$recent_records) {
 </head>
 
 <body>
-    <!-- Sidebar would be included here -->
-    <!-- <div class="sidebar">...</div> -->
-
     <div class="main-content">
         <div class="dashboard-header">
             <h2 class="mb-0"><i class="fas fa-baby me-2"></i>Birth Records Dashboard</h2>
-            <p class="text-muted mb-0">Welcome back, Dr. Smith</p>
+            <p class="text-muted mb-0"><?= htmlspecialchars($hospital['name']) ?></p>
         </div>
 
         <div class="row">
@@ -182,7 +235,7 @@ if (!$recent_records) {
                     <div class="stat-icon">
                         <i class="fas fa-baby-carriage"></i>
                     </div>
-                    <div class="stat-number">1,248</div>
+                    <div class="stat-number"><?= number_format($stats['total_births']) ?></div>
                     <div class="stat-title">Total Births Recorded</div>
                 </div>
             </div>
@@ -191,7 +244,7 @@ if (!$recent_records) {
                     <div class="stat-icon">
                         <i class="fas fa-calendar-check"></i>
                     </div>
-                    <div class="stat-number">324</div>
+                    <div class="stat-number"><?= number_format($stats['monthly_births']) ?></div>
                     <div class="stat-title">Births This Month</div>
                 </div>
             </div>
@@ -200,7 +253,7 @@ if (!$recent_records) {
                     <div class="stat-icon">
                         <i class="fas fa-file-alt"></i>
                     </div>
-                    <div class="stat-number">18</div>
+                    <div class="stat-number"><?= number_format($stats['pending_certs']) ?></div>
                     <div class="stat-title">Pending Certifications</div>
                 </div>
             </div>
@@ -211,9 +264,9 @@ if (!$recent_records) {
                 <div class="recent-records">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="mb-0"><i class="fas fa-list me-2"></i>Recent Birth Records</h4>
-                        <button class="btn btn-custom btn-sm">
+                        <a href="add_record.php" class="btn btn-custom btn-sm">
                             <i class="fas fa-plus me-1"></i> New Record
-                        </button>
+                        </a>
                     </div>
 
                     <div class="table-responsive">
@@ -221,41 +274,39 @@ if (!$recent_records) {
                             <thead>
                                 <tr>
                                     <th>Record ID</th>
-                                    <th>Mother's Name</th>
+                                    <th>Child's Name</th>
                                     <th>Birth Date</th>
                                     <th>Gender</th>
-                                    <th>Name of Doctor</th>
+                                    <th>Doctor</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-
                             <tbody>
-                                <?php if ($recent_records->num_rows > 0 && $result_records){
-                                    while($record = $recent_records->fetch_assoc() ){ ?>
-                                <tr>
-                                    <td><?php echo $record["id"]?></td>
-                                    <td><?php echo $record["child_name"]?></td>
-                                    <td><?php echo $record["dob"]?></td>
-                                    <td><?php echo $record["gender"]?></td>
-                                    <td><?php echo $record["nameOfDoctor"]?></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php } 
-                            }else{
-                                ?>
-                                <tr>
-                                   <td colspan="6"  class="text-center text-muted">no recent record found</td>
-                                </tr> 
-                                <?php } ?>  
+                                <?php if ($recent_records->num_rows > 0): ?>
+                                    <?php while ($record = $recent_records->fetch_assoc()): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($record['record_id']) ?></td>
+                                            <td><?= htmlspecialchars($record['child_name']) ?></td>
+                                            <td><?= date('M j, Y', strtotime($record['dob'])) ?></td>
+                                            <td><?= htmlspecialchars($record['gender']) ?></td>
+                                            <td><?= htmlspecialchars($record['nameOfDoctor']) ?></td>
+                                            <td>
+                                                <a href="view_record.php?id=<?= $record['record_id'] ?>" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">No recent records found</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                     <div class="text-end mt-3">
-                        <a href="#" class="text-primary">View All Records <i class="fas fa-arrow-right ms-1"></i></a>
+                        <a href="all_records.php" class="text-primary">View All Records <i class="fas fa-arrow-right ms-1"></i></a>
                     </div>
                 </div>
             </div>
@@ -271,27 +322,21 @@ if (!$recent_records) {
                             <div class="list-group-item border-0 py-2">
                                 <div class="d-flex justify-content-between">
                                     <span>Male Births</span>
-                                    <strong>4</strong>
+                                    <strong><?= $stats['today_stats']['Male'] ?></strong>
                                 </div>
                             </div>
                             <div class="list-group-item border-0 py-2">
                                 <div class="d-flex justify-content-between">
                                     <span>Female Births</span>
-                                    <strong>3</strong>
-                                </div>
-                            </div>
-                            <div class="list-group-item border-0 py-2">
-                                <div class="d-flex justify-content-between">
-                                    <span>Twins</span>
-                                    <strong>1</strong>
+                                    <strong><?= $stats['today_stats']['Female'] ?></strong>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-4">
-                        <button class="btn btn-success-custom w-100">
+                        <a href="generate_report.php" class="btn btn-success-custom w-100">
                             <i class="fas fa-file-export me-2"></i> Generate Monthly Report
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -301,34 +346,33 @@ if (!$recent_records) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Sample chart data
-        const ctx = document.getElementById('birthChart').getContext('2d');
-        const birthChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Male', 'Female', 'Twins'],
-                datasets: [{
-                    data: [45, 52, 3],
-                    backgroundColor: [
-                        '#3498db',
-                        '#e83e8c',
-                        '#ffc107'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        position: 'bottom'
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('birthChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Male', 'Female'],
+                        datasets: [{
+                            data: [<?= $stats['gender_stats']['Male'] ?>, <?= $stats['gender_stats']['Female'] ?>],
+                            backgroundColor: [
+                                '#3498db',
+                                '#e83e8c'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
                     }
-                }
+                });
             }
         });
-
-        // You would add your sidebar toggle functionality here
-        // function toggleSidebar() {...}
     </script>
 </body>
 

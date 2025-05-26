@@ -374,13 +374,13 @@ $pending = $result->fetch_assoc();
         const genderChart = new Chart(genderCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Male', 'Female', 'Other'],
+                labels: ['Male', 'Female'],
                 datasets: [{
                     data: [<?php echo  $male["male_gender"] ?>, <?php echo  $female["female_gender"] ?>, 0],
                     backgroundColor: [
                         'rgba(52, 152, 219, 0.7)',
-                        'rgba(155, 89, 182, 0.7)',
-                        'rgba(241, 196, 15, 0.7)'
+                        'rgba(155, 89, 182, 0.7)'
+                    
                     ],
                     borderColor: [
                         'rgba(52, 152, 219, 1)',
