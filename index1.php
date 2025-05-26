@@ -1,3 +1,19 @@
+<?php
+include "setup/dbconnection.php";
+$sql = "SELECT * FROM feedback ";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$sql = "SELECT * FROM announcements";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$resultannounce = $stmt->get_result();
+
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +59,12 @@
             padding-top: var(--header-height);
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.3;
@@ -623,9 +644,10 @@
             transform: translateY(-5px);
         }
 
-        .carousel-control-prev, .carousel-control-next {
+        .carousel-control-prev,
+        .carousel-control-next {
             width: 5%;
-            background-color: rgba(0,0,0,0.2);
+            background-color: rgba(0, 0, 0, 0.2);
             border-radius: 50%;
             height: 50px;
             width: 50px;
@@ -635,7 +657,8 @@
             transition: var(--transition);
         }
 
-        .carousel-control-prev:hover, .carousel-control-next:hover {
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
             background-color: var(--primary-color);
             transform: translateY(-50%) scale(1.1);
         }
@@ -659,15 +682,31 @@
         }
 
         @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .bounce-in {
@@ -675,9 +714,19 @@
         }
 
         @keyframes bounceIn {
-            0% { transform: scale(0.1); opacity: 0; }
-            60% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(0.1);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .zoom-in {
@@ -685,8 +734,15 @@
         }
 
         @keyframes zoomIn {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .fade-in {
@@ -694,8 +750,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .slide-in-left {
@@ -703,8 +764,15 @@
         }
 
         @keyframes slideInLeft {
-            from { transform: translateX(-100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .service-slide {
@@ -787,11 +855,11 @@
             .hero-title {
                 font-size: 3rem;
             }
-            
+
             .navbar-nav .nav-item {
                 margin: 2px 0;
             }
-            
+
             .navbar-collapse {
                 padding: 15px 0;
             }
@@ -813,20 +881,20 @@
             .about-img {
                 margin-bottom: 40px;
             }
-            
+
             .navbar-brand img {
                 height: 35px;
                 width: 35px;
             }
-            
+
             .navbar-brand span {
                 font-size: 1.3rem;
             }
-            
+
             .language-switcher {
                 margin: 10px 0;
             }
-            
+
             .login-dropdown {
                 margin: 10px 0;
             }
@@ -862,16 +930,17 @@
                 margin-bottom: 0;
             }
 
-            .carousel-control-prev, .carousel-control-next {
+            .carousel-control-prev,
+            .carousel-control-next {
                 height: 40px;
                 width: 40px;
             }
-            
+
             .navbar-brand img {
                 height: 30px;
                 width: 30px;
             }
-            
+
             .navbar-brand span {
                 font-size: 1.2rem;
             }
@@ -893,7 +962,7 @@
             .contact-form {
                 padding: 30px 20px;
             }
-            
+
             .navbar-brand span {
                 display: inline;
             }
@@ -901,7 +970,7 @@
             .service-img {
                 height: 180px;
             }
-            
+
             .footer-col {
                 margin-bottom: 30px;
             }
@@ -918,11 +987,11 @@
                 <img src="/images/IfaaBulaa_icon.jpg" alt="Ifaa Bulaa Kebele Logo" width="40" height="40" class="pulse">
                 <span>Ifaa Bulaa Kebele</span>
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -941,7 +1010,7 @@
                         <a class="nav-link" href="#contact">Contact</a>
                     </li>
                 </ul>
-                
+
                 <div class="language-switcher ms-lg-3">
                     <div class="btn-group" role="group" aria-label="Language switcher">
                         <button type="button" class="btn btn-sm btn-outline-secondary active">EN</button>
@@ -949,7 +1018,7 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary">AM</button>
                     </div>
                 </div>
-                
+
                 <div class="dropdown ms-lg-3 login-dropdown">
                     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-box-arrow-in-right me-1"></i> Login
@@ -962,7 +1031,7 @@
                         <li><a class="dropdown-item" href="public/login/officerlogin.php"><i class="bi bi-person-badge me-2"></i>Officer</a></li>
                     </ul>
                 </div>
-                
+
                 <a class="btn btn-primary ms-lg-3 mt-3 mt-lg-0" href="public/signUp.php"><i class="bi bi-person-plus me-1"></i> Register</a>
             </div>
         </div>
@@ -991,7 +1060,7 @@
                     <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">We provide various government services to our community members with efficiency and care.</p>
                 </div>
             </div>
-            
+
             <div id="servicesCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                 <div class="carousel-indicators">
                     <button type="button" data-bs-target="#servicesCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -1016,7 +1085,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                                 <div class="service-card card-hover-grow service-slide">
                                     <div class="service-img">
@@ -1032,7 +1101,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
                                 <div class="service-card card-hover-grow service-slide">
                                     <div class="service-badge">New</div>
@@ -1068,7 +1137,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                                 <div class="service-card card-hover-grow service-slide">
                                     <div class="service-badge">Popular</div>
@@ -1085,7 +1154,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
                                 <div class="service-card card-hover-grow service-slide">
                                     <div class="service-img">
@@ -1124,7 +1193,7 @@
                     <div class="about-text">
                         <h3 class="text-gradient">Our Administrative Unit</h3>
                         <p>Ifaa Bulaa Kebele is a local government administrative unit serving the community with various governmental and social services. We are committed to providing efficient, transparent, and accessible services to all residents.</p>
-                        
+
                         <ul class="feature-list mt-4">
                             <li><i class="bi bi-check-circle-fill"></i> Transparent and accountable administration</li>
                             <li><i class="bi bi-check-circle-fill"></i> Efficient service delivery systems</li>
@@ -1151,52 +1220,29 @@
                     <p class="section-subtitle text-white-50" data-aos="fade-up" data-aos-delay="100">Hear from our residents about their experiences with our services.</p>
                 </div>
             </div>
-            
+
+
+
             <div class="row g-4">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="testimonial-card bounce-in">
-                        <div class="testimonial-text">
-                            The birth registration process was so smooth and efficient. I received my child's certificate within days! The staff were very helpful throughout the process.
-                        </div>
-                        <div class="testimonial-author">
-                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Amina Mohammed" loading="lazy">
-                            <div class="author-info">
-                                <h5>Amina Mohammed</h5>
-                                <p>Mother & Small Business Owner</p>
+                <?php if ($result->num_rows > 0) {
+                    while ($feedback = $result->fetch_assoc()) { ?>
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="testimonial-card bounce-in">
+                                <div class="testimonial-text">
+                                   <?php echo $feedback["message"]?> 
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Amina Mohammed" loading="lazy">
+                                    <div class="author-info">
+                                        <h5><?php echo $feedback["name"] ?></h5>
+                                        <p><?php echo $feedback["email"]?></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="testimonial-card bounce-in">
-                        <div class="testimonial-text">
-                            The online services saved me so much time. I didn't have to visit the office in person for my certificate reprint. The digital system works perfectly.
-                        </div>
-                        <div class="testimonial-author">
-                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Daniel Tadesse" loading="lazy">
-                            <div class="author-info">
-                                <h5>Daniel Tadesse</h5>
-                                <p>University Student</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
-                    <div class="testimonial-card bounce-in">
-                        <div class="testimonial-text">
-                            As a teacher who often needs to verify student documents, I appreciate the efficient verification system. The staff are professional and helpful.
-                        </div>
-                        <div class="testimonial-author">
-                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Selamawit Abebe" loading="lazy">
-                            <div class="author-info">
-                                <h5>Selamawit Abebe</h5>
-                                <p>High School Teacher</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+                <?php }
+                } ?>
             </div>
         </div>
     </section>
@@ -1209,19 +1255,23 @@
                     <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Stay updated with our latest news and important notices for the community.</p>
                 </div>
             </div>
-            
+
             <div class="row g-4">
+                <?php if($resultannounce->num_rows > 0){
+                    while($announcement = $resultannounce->fetch_assoc()){?>
                 <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="announcement-card zoom-in">
-                        <div class="announcement-date">October 15, 2023</div>
+                        <div class="announcement-date"><?php echo $announcement["posted_at"] ?></div>
                         <div class="announcement-content">
-                            <h3 class="announcement-title">Community Development Meeting</h3>
-                            <p>There will be a community meeting on October 20th to discuss upcoming development projects and gather resident input.</p>
+                            <h3 class="announcement-title"><?php echo $announcement["title"] ?></h3>
+                            <p><?php echo $announcement["body"] ?></p>
                             <a href="announcements/community-meeting-oct2023.html" class="btn btn-sm btn-outline-primary mt-2">Read Details</a>
                         </div>
                     </div>
                 </div>
-                
+                <?php } 
+            }?>
+<!-- 
                 <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="announcement-card zoom-in">
                         <div class="announcement-date">November 3, 2023</div>
@@ -1232,7 +1282,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
                     <div class="announcement-card zoom-in">
                         <div class="announcement-date">December 1, 2023</div>
@@ -1243,8 +1293,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
+            </div> -->
+
             <div class="text-center mt-5" data-aos="fade-up">
                 <a href="announcements.html" class="btn btn-primary">View All Announcements</a>
             </div>
@@ -1259,7 +1309,7 @@
                     <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Reach out to us for any inquiries or assistance you may need regarding our services.</p>
                 </div>
             </div>
-            
+
             <div class="row g-4">
                 <div class="col-lg-5" data-aos="fade-right">
                     <div class="contact-info-box fade-in shadow-lg-primary">
@@ -1272,7 +1322,7 @@
                                 <p>Ifaa Bulaa Kebele, Jimma, Oromia, Ethiopia</p>
                             </div>
                         </div>
-                        
+
                         <div class="d-flex mb-4">
                             <div class="contact-icon">
                                 <i class="bi bi-telephone-fill"></i>
@@ -1282,7 +1332,7 @@
                                 <p>Main Office: +251 953 835 589</p>
                             </div>
                         </div>
-                        
+
                         <div class="d-flex mb-4">
                             <div class="contact-icon">
                                 <i class="bi bi-envelope-fill"></i>
@@ -1292,7 +1342,7 @@
                                 <p>General Inquiries: ifaabulakebele@gmail.com</p>
                             </div>
                         </div>
-                        
+
                         <div class="d-flex">
                             <div class="contact-icon">
                                 <i class="bi bi-clock-fill"></i>
@@ -1306,7 +1356,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-7" data-aos="fade-left">
                     <div class="contact-form fade-in shadow-lg-primary">
                         <form id="contactForm" method="POST">
@@ -1314,22 +1364,22 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="name" class="form-label">Full Name *</label>
-                                        <input type="text" class="form-control" id="name" name="name" required 
-                                               pattern="[A-Za-z\s]+" title="Please enter only letters and spaces">
+                                        <input type="text" class="form-control" id="name" name="name" required
+                                            pattern="[A-Za-z\s]+" title="Please enter only letters and spaces">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="email" class="form-label">Email Address *</label>
                                         <input type="email" class="form-control" id="email" name="email" required
-                                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address">
+                                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address">
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="subject" class="form-label">Subject *</label>
                                         <input type="text" class="form-control" id="subject" name="subject" required
-                                               pattern="[A-Za-z0-9\s\-.,]+" title="Please enter only letters, numbers, and basic punctuation">
+                                            pattern="[A-Za-z0-9\s\-.,]+" title="Please enter only letters, numbers, and basic punctuation">
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -1367,7 +1417,7 @@
                             <span class="footer-brand-name">Ifaa Bulaa Kebele</span>
                         </div>
                         <p class="footer-about-text">
-                            Committed to serving our community with transparency, efficiency, and dedication 
+                            Committed to serving our community with transparency, efficiency, and dedication
                             through accessible government services and community development programs.
                         </p>
                     </div>
@@ -1433,14 +1483,13 @@
                         </p>
                         <form class="footer-newsletter-form mt-3">
                             <div class="input-group mb-3">
-                                <input 
-                                    type="email" 
-                                    class="form-control" 
-                                    placeholder="Your Email" 
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    placeholder="Your Email"
                                     aria-label="Email address"
                                     required
-                                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                                >
+                                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                                 <button class="btn btn-subscribe" type="submit" aria-label="Subscribe">
                                     <i class="bi bi-send-fill"></i>
                                 </button>
@@ -1506,7 +1555,10 @@
 
         backToTopButton.addEventListener('click', (e) => {
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
 
         const navbar = document.querySelector('.navbar');
@@ -1522,30 +1574,30 @@
         if (contactForm) {
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 const name = this.querySelector('#name').value.trim();
                 const email = this.querySelector('#email').value.trim();
                 const subject = this.querySelector('#subject').value.trim();
                 const message = this.querySelector('#message').value.trim();
                 const consent = this.querySelector('#consent').checked;
-                
+
                 if (!name || !email || !subject || !message || !consent) {
                     alert('Please fill in all required fields and provide consent.');
                     return;
                 }
-                
+
                 const namePattern = /^[A-Za-z\s]+$/;
                 if (!namePattern.test(name)) {
                     alert('Please enter a valid name (only letters and spaces allowed).');
                     return;
                 }
-                
+
                 const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
                 if (!emailPattern.test(email)) {
                     alert('Please enter a valid email address.');
                     return;
                 }
-                
+
                 this.reset();
                 alert('Thank you for your message! We will get back to you soon.');
             });
@@ -1556,18 +1608,18 @@
             newsletterForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const emailInput = this.querySelector('input[type="email"]');
-                
+
                 if (emailInput.value.trim() === '') {
                     alert('Please enter your email address');
                     return;
                 }
-                
+
                 const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
                 if (!emailPattern.test(emailInput.value.trim())) {
                     alert('Please enter a valid email address.');
                     return;
                 }
-                
+
                 emailInput.value = '';
                 alert('Thank you for subscribing to our newsletter!');
             });
@@ -1582,23 +1634,23 @@
                     wrap: true,
                     pause: false
                 });
-                
-                servicesCarousel.addEventListener('slide.bs.carousel', function (e) {
+
+                servicesCarousel.addEventListener('slide.bs.carousel', function(e) {
                     const nextSlide = e.relatedTarget;
                     const direction = e.direction;
-                    
+
                     if (direction === 'left') {
                         nextSlide.classList.add('slide-in-right');
                     } else {
                         nextSlide.classList.add('slide-in-left');
                     }
-                    
+
                     setTimeout(() => {
                         nextSlide.classList.remove('slide-in-right', 'slide-in-left');
                     }, 600);
                 });
             }
-            
+
             const serviceSlides = document.querySelectorAll('.service-slide');
             const slideObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1609,11 +1661,13 @@
                         }, 1000);
                     }
                 });
-            }, { threshold: 0.1 });
+            }, {
+                threshold: 0.1
+            });
 
             serviceSlides.forEach(slide => {
                 slideObserver.observe(slide);
-                
+
                 slide.addEventListener('mouseenter', () => {
                     slide.style.transform = 'translateX(10px)';
                 });
@@ -1624,4 +1678,5 @@
         });
     </script>
 </body>
+
 </html>
