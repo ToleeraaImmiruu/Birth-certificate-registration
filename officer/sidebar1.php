@@ -232,7 +232,6 @@
             <?php
             if (isset($_GET['page'])) {
                 $page = $_GET['page'];
-
                 if ($page == "application") {
                     include 'applications.php';
                 } elseif ($page == "editprofile") {
@@ -274,5 +273,4 @@
         });
     </script>
 </body>
-
 </html>

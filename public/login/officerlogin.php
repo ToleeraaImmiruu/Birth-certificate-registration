@@ -1,7 +1,5 @@
 <?php
 session_start(); // Start session for user login
-
-
 include '../../setup/dbconnection.php'; // Include database connection
 
 
@@ -23,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user["password"])) {
             // Store user session
-            $_SESSION["id"] = $user["id"];
-            $_SESSION["role"] = $user["role"]; // Store role for admin/user handling
-            $_SESSION["email"] = $user["email"];
+            $_SESSION["officer_id"] = $user["id"];
+            // $_SESSION["officer_role"] = $user["role"]; // Store role for admin/user handling
+            $_SESSION["officcer_email"] = $user["email"];
 
             // Redirect based on user role
             if ($user) {
@@ -44,28 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     // Close statement and connection
     $stmt->close();
     $conn->close();
-    // }elseif($role == 'hospital'){
-    //     $sql = "SELECT * FROM hospitals WHERE email = ?";
-    //     $stmt = $conn->prepare($sql);
-    //     $stmt->bind_param("s", $email);
-    //     $stmt->execute();
-    //     $result = $stmt->get_result();
-    //     if($result->num_rows > 0){
-    //             $hospital = $result->fetch_assoc();
-    //             $_SESSION["id"]= $hospital["hospital_id"];
-    //             $_SESSION["email"] = $hospital["email"];
-    //             include "../hospitaldashboard/hospitalDashboard.php";
-
 }
-
-
-
-
-
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 

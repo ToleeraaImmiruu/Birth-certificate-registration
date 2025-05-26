@@ -25,20 +25,14 @@ $hospital_msgs = $msg_stmt->get_result();
             --light-bg: #f8f9fa;
         }
 
-        /* Specific container for this page to prevent conflicts */
-        .page-specific-container {
+        body {
             background-color: var(--light-bg);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
-            width: 100%;
-            min-height: 100vh;
         }
 
-        /* Wrapper to center and constrain width */
-        .content-wrapper {
+        .notification-container {
             max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 2rem auto;
         }
 
         .notification-header {
@@ -116,61 +110,59 @@ $hospital_msgs = $msg_stmt->get_result();
 </head>
 
 <body>
-    <div class="page-specific-container">
-        <div class="content-wrapper">
-            <div class="text-center mb-5">
-                <h1 class="notification-header">
-                    <i class="bi bi-bell-fill me-2"></i>Hospital Notifications
-                </h1>
-                <p class="text-muted">View all your messages and announcements in one place</p>
-            </div>
+    <div class="container notification-container">
+        <div class="text-center mb-5">
+            <h1 class="notification-header">
+                <i class="bi bi-bell-fill me-2"></i>Hospital Notifications
+            </h1>
+            <p class="text-muted">View all your messages and announcements in one place</p>
+        </div>
 
-            <?php if (isset($hospital_msgs) && $hospital_msgs->num_rows > 0) { ?>
-                <div class="mb-4">
-                    <h4 class="text-muted mb-3">
-                        <i class="bi bi-envelope me-2"></i>Your Messages
-                    </h4>
-
-                    <?php while ($message = $hospital_msgs->fetch_assoc()) { ?>
-                        <div class="card message-card shadow-sm">
-                            <div class="card-header message-header d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong><?= htmlspecialchars($message["subject"]) ?></strong>
-                                </div>
-                                <div>
-                                    <span class="message-time me-2">
-                                        <i class="bi bi-clock me-1"></i><?= htmlspecialchars($message["sent_at"]) ?>
-                                    </span>
-                                    <span class="badge message-badge">Admin</span>
-                                </div>
+        <?php if (isset($hospital_msgs) && $hospital_msgs->num_rows > 0) { ?>
+            <div class="mb-4">
+                <h4 class="text-muted mb-3">
+                    <i class="bi bi-envelope me-2"></i>Your Messages
+                </h4>
+                
+                <?php while ($message = $hospital_msgs->fetch_assoc()) { ?>
+                    <div class="card message-card shadow-sm">
+                        <div class="card-header message-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong><?= htmlspecialchars($message["subject"]) ?></strong>
                             </div>
-                            <div class="card-body">
-                                <p class="card-text" id="msg-<?= $message['id'] ?>">
-                                    <?= nl2br(htmlspecialchars($message["message"])) ?>
-                                </p>
-                                <button class="btn btn-link see-more-btn p-0" onclick="toggleText('msg-<?= $message['id'] ?>', this)">
-                                    <i class="bi bi-chevron-down me-1"></i>Read more
-                                </button>
+                            <div>
+                                <span class="message-time me-2">
+                                    <i class="bi bi-clock me-1"></i><?= htmlspecialchars($message["sent_at"]) ?>
+                                </span>
+                                <span class="badge message-badge">Admin</span>
                             </div>
                         </div>
-                    <?php } ?>
-                </div>
-            <?php } else { ?>
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <i class="bi bi-inbox"></i>
+                        <div class="card-body">
+                            <p class="card-text" id="msg-<?= $message['id'] ?>">
+                                <?= nl2br(htmlspecialchars($message["message"])) ?>
+                            </p>
+                            <button class="btn btn-link see-more-btn p-0" onclick="toggleText('msg-<?= $message['id'] ?>', this)">
+                                <i class="bi bi-chevron-down me-1"></i>Read more
+                            </button>
+                        </div>
                     </div>
-                    <h3 class="text-primary">No Messages Found</h3>
-                    <p class="text-muted">You don't have any messages or announcements yet.</p>
-                    <button class="btn btn-outline-primary mt-3">
-                        <i class="bi bi-arrow-repeat me-1"></i>Check Again
-                    </button>
-                </div>
-            <?php } ?>
-
-            <div class="text-center mt-5 text-muted">
-                <small>© <?= date('Y') ?> Hospital Management System. All rights reserved.</small>
+                <?php } ?>
             </div>
+        <?php } else { ?>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-inbox"></i>
+                </div>
+                <h3 class="text-primary">No Messages Found</h3>
+                <p class="text-muted">You don't have any messages or announcements yet.</p>
+                <button class="btn btn-outline-primary mt-3">
+                    <i class="bi bi-arrow-repeat me-1"></i>Check Again
+                </button>
+            </div>
+        <?php } ?>
+
+        <div class="text-center mt-5 text-muted">
+            <small>© <?= date('Y') ?> Hospital Management System. All rights reserved.</small>
         </div>
     </div>
 
@@ -178,7 +170,7 @@ $hospital_msgs = $msg_stmt->get_result();
         function toggleText(id, btn) {
             const content = document.getElementById(id);
             const icon = btn.querySelector('i');
-
+            
             if (content.classList.contains('expanded')) {
                 content.classList.remove('expanded');
                 content.style.webkitLineClamp = "3";

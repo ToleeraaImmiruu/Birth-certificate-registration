@@ -1,3 +1,17 @@
+<?php
+include '../setup/dbconnection.php';
+$sql = "SELECT *  FROM hospitals ORDER BY created_at DESC LIMIT 5";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$recent_records = $stmt->get_result();
+if (!$recent_records) {
+    die("error in fetching");
+}
+
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -201,6 +215,7 @@
                             <i class="fas fa-plus me-1"></i> New Record
                         </button>
                     </div>
+
                     <div class="table-responsive">
                         <table class="table table-custom table-hover">
                             <thead>
@@ -209,71 +224,33 @@
                                     <th>Mother's Name</th>
                                     <th>Birth Date</th>
                                     <th>Gender</th>
-                                    <th>Status</th>
+                                    <th>Name of Doctor</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
+
                             <tbody>
+                                <?php if ($recent_records->num_rows > 0 && $result_records){
+                                    while($record = $recent_records->fetch_assoc() ){ ?>
                                 <tr>
-                                    <td>BR-2023-0456</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>2023-06-15</td>
-                                    <td>Female</td>
-                                    <td><span class="badge badge-completed badge-custom">Completed</span></td>
+                                    <td><?php echo $record["id"]?></td>
+                                    <td><?php echo $record["child_name"]?></td>
+                                    <td><?php echo $record["dob"]?></td>
+                                    <td><?php echo $record["gender"]?></td>
+                                    <td><?php echo $record["nameOfDoctor"]?></td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </td>
                                 </tr>
+                                <?php } 
+                            }else{
+                                ?>
                                 <tr>
-                                    <td>BR-2023-0455</td>
-                                    <td>Emily Williams</td>
-                                    <td>2023-06-14</td>
-                                    <td>Male</td>
-                                    <td><span class="badge badge-completed badge-custom">Completed</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>BR-2023-0454</td>
-                                    <td>Jessica Brown</td>
-                                    <td>2023-06-14</td>
-                                    <td>Female</td>
-                                    <td><span class="badge badge-pending badge-custom">Pending</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>BR-2023-0453</td>
-                                    <td>Amanda Jones</td>
-                                    <td>2023-06-13</td>
-                                    <td>Male</td>
-                                    <td><span class="badge badge-completed badge-custom">Completed</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>BR-2023-0452</td>
-                                    <td>Jennifer Garcia</td>
-                                    <td>2023-06-12</td>
-                                    <td>Female</td>
-                                    <td><span class="badge badge-pending badge-custom">Pending</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                   <td colspan="6"  class="text-center text-muted">no recent record found</td>
+                                </tr> 
+                                <?php } ?>  
                             </tbody>
                         </table>
                     </div>

@@ -260,36 +260,71 @@ $result = $conn->query($sql);
         });
 
         // Send message action
+        // document.getElementById('sendMessage').addEventListener('click', function() {
+        //     const userId = this.getAttribute('data-user-id');
+        //     const subject = document.getElementById('messageSubject').value;
+        //     const content = document.getElementById('messageContent').value;
+
+        //     if (!subject || !content) {
+        //         alert('Please fill in both subject and message content.');
+        //         return;
+        //     }
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.onreadystatechange = function() {
+        //         if (xhr.readyState === 4 && xhr.status === 200) {
+        //             // Remove the row from the table
+        //             messageModal.hide();
+        //         }
+        //     };
+        //     xhr.open("GET", "sentmessage.php?user_id=" + userId + "&subject=" + encodeURIComponent(subject) + "&content=" + encodeURIComponent(content), true);
+        //     xhr.send();
+
+        //     console.log(`Sending message to user ${userId}: Subject - ${subject}, Content - ${content}`);
+
+        //     // Show success message
+        //     alert(`Message sent to user ${userId}.`);
+
+        //     // Close the modal
+        //     const messageModal = bootstrap.Modal.getInstance(document.getElementById('messageModal'));
+
+        //     // Reset form
+        //     document.getElementById('messageSubject').value = '';
+        //     document.getElementById('messageContent').value = '';
+        // });
+        // Send message action
         document.getElementById('sendMessage').addEventListener('click', function() {
-            const userId = this.getAttribute('data-user-id');
-            const subject = document.getElementById('messageSubject').value;
-            const content = document.getElementById('messageContent').value;
+            const hospitalId = this.getAttribute('data-user-id');
+            const subject = document.getElementById('messageSubject').value.trim();
+            const content = document.getElementById('messageContent').value.trim();
 
             if (!subject || !content) {
                 alert('Please fill in both subject and message content.');
                 return;
             }
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Remove the row from the table
-                    messageModal.hide();
-                }
-            };
-            xhr.open("GET", "sentmessage.php?user_id=" + userId + "&subject=" + encodeURIComponent(subject) + "&content=" + encodeURIComponent(content), true);
-            xhr.send();
 
-            console.log(`Sending message to user ${userId}: Subject - ${subject}, Content - ${content}`);
+            // build form data
+            const data = new FormData();
+            data.append('hospital_id', hospitalId);
+            data.append('subject', subject);
+            data.append('content', content);
 
-            // Show success message
-            alert(`Message sent to user ${userId}.`);
-
-            // Close the modal
-            const messageModal = bootstrap.Modal.getInstance(document.getElementById('messageModal'));
-
-            // Reset form
-            document.getElementById('messageSubject').value = '';
-            document.getElementById('messageContent').value = '';
+            fetch('messagetohospital.php', {
+                    method: 'POST',
+                    body: data
+                })
+                .then(res => res.text())
+                .then(text => {
+                    alert(text); // e.g. "Message sent and saved successfully!"
+                    // close & reset modal
+                    const msgModal = bootstrap.Modal.getInstance(document.getElementById('messageModal'));
+                    msgModal.hide();
+                    document.getElementById('messageSubject').value = '';
+                    document.getElementById('messageContent').value = '';
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Failed to send message.');
+                });
         });
 
         function searchUsers() {

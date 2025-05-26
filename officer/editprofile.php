@@ -1,5 +1,22 @@
+<?php
+session_start();
+include "../setup/dbconnection.php";
+ $sql = "SELECT * FROM officers WHERE id = ?";
+ $sql = $conn->prepare($sql);
+ $sql->bind_param("i", $_SESSION["officer_id"]);
+ $sql->execute();
+ $result = $sql->get_result();
+ if( $result->num_rows > 0){
+     $officer = $result->fetch_assoc();
+     
+ }else{
+
+     echo "use not found";
+    echo $_SESSION["officer_id"];
+    echo $_SESSION["officer_id"];
+}
+?>
 <!DOCTYPE html>
-<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -118,7 +135,7 @@
             <div class="col-lg-8">
                 <div class="profile-card">
                     <div class="profile-header">
-                        <img src="pp.png" alt="Profile Picture" class="profile-pic" id="profilePicture">
+                        <img src="../assets//uploads/1746019401_photo_2025-04-26_22-11-24.jpg" alt="Profile Picture" class="profile-pic" id="profilePicture">
                         <div class="edit-icon" id="changePhotoBtn">
                             <i class="fas fa-camera"></i>
                         </div>
@@ -130,7 +147,7 @@
                                 <label for="fullName" class="form-label">Full Name</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" value="John Doe">
+                                    <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" value="<?php echo $officer['full_name']; ?>">
                                 </div>
                             </div>
 
@@ -138,7 +155,7 @@
                                 <label for="email" class="form-label">Email Address</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" class="form-control" id="email" placeholder="Enter your email" value="john.doe@example.com">
+                                    <input type="email" class="form-control" id="email" placeholder="Enter your email" value="<?php echo $officer['email'];?>">
                                 </div>
                             </div>
 
@@ -146,7 +163,7 @@
                                 <label for="phone" class="form-label">Phone Number</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                    <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" value="+1 (555) 123-4567">
+                                    <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" value="<?php echo $officer['phone']?>">
                                 </div>
                             </div>
 
