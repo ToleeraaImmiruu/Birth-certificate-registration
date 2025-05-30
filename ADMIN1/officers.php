@@ -125,9 +125,9 @@ $result = $conn->query($sql);
                                         <td><?= $user["email"] ?></td>
                                         <td><?= $user["phone"] ?></td>
                                         <td class="actions-cell">
-                                            <button class="btn btn-sm btn-reject me-2" onclick="deleteUser(<?= $user['id'] ?>, '<?= addslashes($user['full_name']) ?>')">
+                                            <!-- <button class="btn btn-sm btn-reject me-2" onclick="deleteUser(<?= $user['id'] ?>, '<?= addslashes($user['full_name']) ?>')">
                                                 <i class="fas fa-user-times me-1"></i> DELETE
-                                            </button>
+                                            </button> -->
                                             <button class="btn btn-sm btn-message" onclick="showMessageModal(<?= $user['id'] ?>, '<?= addslashes($user['full_name']) ?>')">
                                                 <i class="fas fa-envelope me-1"></i> Message
                                             </button>

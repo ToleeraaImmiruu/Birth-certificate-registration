@@ -263,31 +263,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["hospitallogin"])) {
             }
         });
 
-        // Form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // // Form submission
+        // document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
 
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        //     const username = document.getElementById('username').value;
+        //     const password = document.getElementById('password').value;
 
-            // Here you would typically send this data to a server for validation
-            console.log('Login attempt with:', { username, password });
+        //     // Here you would typically send this data to a server for validation
+        //     console.log('Login attempt with:', { username, password });
 
-            // For demo purposes, show an alert
-            alert('Login functionality would be implemented here. Check console for credentials.');
-        });
+        //     // For demo purposes, show an alert
+        //     alert('Login functionality would be implemented here. Check console for credentials.');
+        // });
 
         // Forgot password link
-        document.getElementById('forgotPassword').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Forgot password functionality would be implemented here.');
-        });
+        // document.getElementById('forgotPassword').addEventListener('click', function(e) {
+        //     e.preventDefault();
+        //     alert('Forgot password functionality would be implemented here.');
+        // });
 
-        // Create account link
-        document.getElementById('createAccount').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Account creation functionality would be implemented here.');
-        });
+        // // Create account link
+        // document.getElementById('createAccount').addEventListener('click', function(e) {
+        //     e.preventDefault();
+        //     alert('Account creation functionality would be implemented here.');
+        // });
     </script>
 </body>
 
