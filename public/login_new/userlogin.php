@@ -394,7 +394,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["userlogin"])) {
             </div>
 
             <div class="login-links">
-                <a href="forgetpassword.php" id="forgotPassword">
+                <a href="forgetpassword1.php" id="forgotPassword">
                     <i class="fas fa-key"></i> Forgot Password?
                 </a>
                 <a href="../signUp.php" id="createAccount">

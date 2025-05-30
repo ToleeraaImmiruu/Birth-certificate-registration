@@ -194,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     <div class="login-container">
         <div class="login-header">
             <i class="fas fa-user-shield"></i>
-            <h2>ADMIN LOGIN</h2>
+            <h2>OFFICER LOGIN</h2>
             <p>Please enter your credentials</p>
         </div>
 
