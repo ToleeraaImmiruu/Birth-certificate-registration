@@ -1517,7 +1517,7 @@ $resultannounce = $stmt->get_result();
                 <div class="row">
                     <div class="col-md-6">
                         <p class="copyright-text">
-                            &copy; 2023 Ifaa Bulaa Kebele Administration. All Rights Reserved.
+                            &copy; 2025 Ifaa Bulaa Kebele Administration. All Rights Reserved.
                         </p>
                     </div>
                     <div class="col-md-6">

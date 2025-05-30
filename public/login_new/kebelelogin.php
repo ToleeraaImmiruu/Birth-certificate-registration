@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["hospitallogin"])) {
         $kebele = $result->fetch_assoc();
         echo $hospital["hospital_id"];
         if (password_verify($password, $kebele["password"])) {
-            $_SESSION["kebele"] = $kebele["hospital_id"];
+            $_SESSION["kebele_id"] = $kebele["id"];
             header("location: ../../kebeledashboard/sidebar.php");
         } else {
             echo 'incorrect password';

@@ -71,22 +71,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <!-- Custom CSS -->
     <style>
-        :root {
+        /* :root {
             --primary-color: #4361ee;
             --secondary-color: #3a0ca3;
+            --accent-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        } */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #0d924f;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
             --accent-color: #f72585;
             --light-color: #f8f9fa;
             --dark-color: #212529;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            /* background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
         }
 
         .registration-container {
-            max-width: 850px;
+            max-width: 900px;
             margin: 40px auto;
             padding: 40px;
             background-color: white;

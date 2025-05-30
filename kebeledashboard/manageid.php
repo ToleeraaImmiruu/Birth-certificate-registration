@@ -1,6 +1,6 @@
 <?php
 include "../setup/dbconnection.php";
-$sql = "SELECT id, CONCAT(first_name, ' ', last_name) AS full_name, email, phone, role FROM users LIMIT 10";
+$sql = "SELECT id,  Kebele_id_number, CONCAT(first_name, ' ',middle_name, ' ', last_name) AS full_name, date_of_birth, gender, address, nationality, photo_path role FROM kebele_ids LIMIT 10";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
@@ -76,7 +76,7 @@ $result = $conn->query($sql);
         }
 
         .margin_left {
-            margin-left: 50px;
+            margin-left: 80px;
         }
 
         .table td,
@@ -115,9 +115,10 @@ $result = $conn->query($sql);
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Role</th>
+                                <th>dob</th>
+                                <th>gender</th>
+                                <th>address</th>
+                                <th>nationality</th>
                                 <th class="actions-cell">Actions</th>
                             </tr>
                         </thead>
@@ -125,14 +126,15 @@ $result = $conn->query($sql);
                             <?php if ($result->num_rows > 0) {
                                 while ($user = $result->fetch_assoc()) { ?>
                                     <tr id="row-<?= $user["id"] ?>">
-                                        <td><?= $user["id"] ?></td>
+                                        <td><?= $user["Kebele_id_number"] ?></td>
                                         <td><?= $user["full_name"] ?></td>
-                                        <td><?= $user["email"] ?></td>
-                                        <td><?= $user["phone"] ?></td>
-                                        <td><?= $user["role"] ?></td>
+                                        <td><?= $user["date_of_birth"] ?></td>
+                                        <td><?= $user["gender"] ?></td>
+                                        <td><?= $user["address"] ?></td>
+                                        <td><?= $user["nationality"] ?></td>
                                         <td class="actions-cell">
                                             <button class="btn btn-sm btn-reject me-2" onclick="deleteUser(<?= $user['id'] ?>, '<?= addslashes($user['full_name']) ?>')">
-                                                <i class="fas fa-user-times me-1"></i> DELETE
+                                                <i class="fas fa-user-times me-1"></i> delete
                                             </button>
                                             <button class="btn btn-sm btn-message" onclick="showMessageModal(<?= $user['id'] ?>, '<?= addslashes($user['full_name']) ?>')">
                                                 <i class="fas fa-envelope me-1"></i> Message

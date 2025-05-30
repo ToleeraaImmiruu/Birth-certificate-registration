@@ -633,18 +633,15 @@
         <img src="image/manage.png" alt="Manage" /> MANAGE
       </button>
       <button onclick="location.href='sidebar.php?page=message'" class="btn btn-primary">
-        <img src="image/message.png" alt="Message" /> MESSAGE
+        <img src="image/message.png" alt="Message" />MESSAGE
       </button>
+
     </div>
 
     <div class="content">
       <button class="logout-btn">
         <img src="image/logout.png" alt="Logout" /> Logout
       </button>
-
-
-
-
       <?php
       if (isset($_GET["page"])) {
         $page = $_GET["page"];
@@ -656,14 +653,15 @@
         } else if ($page == "manage") {
           include "manageid.php";
         } else if ($page == "message") {
-          include "message.php";
+          include "message1.php";
+        } else if ($page == "inbox") {
+          include "inbox.php";
         } else {
           include "home.php";
         }
       }
 
       ?>
-
     </div>
   </div>
 
