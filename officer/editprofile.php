@@ -1,9 +1,8 @@
 <?php
-session_start();
+// session_start();
 include "../setup/dbconnection.php";
- $sql = "SELECT * FROM officers WHERE id = ?";
+ $sql = "SELECT * FROM officers";
  $sql = $conn->prepare($sql);
- $sql->bind_param("i", $_SESSION["officer_id"]);
  $sql->execute();
  $result = $sql->get_result();
  if( $result->num_rows > 0){

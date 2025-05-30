@@ -11,7 +11,7 @@ $error_message = '';
 
 try {
     // Fetch all complaints
-    $sql = "SELECT * FROM account_support ORDER BY created_at";
+    $sql = "SELECT * FROM applications_support ORDER BY created_at";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -20,7 +20,7 @@ try {
     // Handle viewing a specific complaint
     if (isset($_GET['view']) && is_numeric($_GET['view'])) {
         $view_id = $_GET['view'];
-        $stmt = $conn->prepare("SELECT * FROM account_support WHERE id = ?");
+        $stmt = $conn->prepare("SELECT * FROM applications_support WHERE id = ?");
         $stmt->bind_param("i", $view_id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -36,7 +36,7 @@ try {
             $error_message = 'Reply message cannot be empty!';
         } else {
             // Update complaint with admin reply
-            $stmt = $conn->prepare("UPDATE account_support SET admin_reply = ?, status = 'resolved', reply_at = NOW() WHERE id = ?");
+            $stmt = $conn->prepare("UPDATE applications_support SET admin_reply = ?, status = 'resolved', reply_at = NOW() WHERE id = ?");
             $stmt->bind_param("si", $reply_message, $complaint_id);
             $stmt->execute();
             $feedback = "for your question";
@@ -50,14 +50,14 @@ try {
             $success_message = 'Reply sent successfully!';
 
             // Refresh the selected complaint
-            $stmt = $conn->prepare("SELECT * FROM account_support WHERE id = ?");
+            $stmt = $conn->prepare("SELECT * FROM applications_support WHERE id = ?");
             $stmt->bind_param("i", $complaint_id);
             $stmt->execute();
             $result = $stmt->get_result();
             $selected_complaint = $result->fetch_assoc();
 
             // Refresh complaints list
-            $stmt = $conn->prepare("SELECT * FROM account_support ORDER BY created_at DESC");
+            $stmt = $conn->prepare("SELECT * FROM applications_support ORDER BY created_at DESC");
             $stmt->execute();
             $result = $stmt->get_result();
             $complaints = $result->fetch_all(MYSQLI_ASSOC);
@@ -225,8 +225,8 @@ try {
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>subject</th>
                                         <th>email</th>
+                                        <th>subject</th>
                                         <th>Date</th>
                                         <th>Actions</th>
                                     </tr>
@@ -234,7 +234,7 @@ try {
                                 <tbody>
                                     <?php if (count($complaints) > 0): ?>
                                         <?php foreach ($complaints as $complain):
-                                            if ($complain["status"] == "unreplied"): ?>
+                                            if ($complain["status"] == "not resolved"): ?>
                                                 <tr class="highlight-row">
                                                     <td><?php echo $complain['id']; ?></td>
                                                     <td><?php echo htmlspecialchars($complain['email']); ?></td>

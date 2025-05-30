@@ -156,7 +156,7 @@ $pending = $result->fetch_assoc();
                 <h2 class="mb-0">Admin Dashboard</h2>
                 <div class="d-flex align-items-center">
                     <span class="me-3">Welcome, <?php echo $addmin["first_name"] . " " . $addmin["last_name"] ?></span>
-                    <img src="https://via.placeholder.com/40" class="home-profile-img" alt="Profile">
+                    <img src="../assets//uploads/1746019401_photo_2025-04-26_22-11-24.jpg" class="home-profile-img" alt="Profile">
                 </div>
             </div>
         </div>
@@ -380,7 +380,7 @@ $pending = $result->fetch_assoc();
                     backgroundColor: [
                         'rgba(52, 152, 219, 0.7)',
                         'rgba(155, 89, 182, 0.7)'
-                    
+
                     ],
                     borderColor: [
                         'rgba(52, 152, 219, 1)',

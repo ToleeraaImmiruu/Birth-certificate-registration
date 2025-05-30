@@ -209,16 +209,16 @@
             <img src="../image/apply.png" alt="Apply"> Applications
         </button>
         <button class="sidebar-btn" onclick="location.href='sidebar1.php?page=announcement'">
-            <img src="../image/megaphone.png" alt="Announcement"> ANNOUNCEMENT
+            <img src="../image/announcement.png" alt="Announcement"> ANNOUNCEMENT
         </button>
         <button class="sidebar-btn" onclick="location.href='sidebar1.php?page=payments'">
-            <img src="../image/payment.png" alt="Payments"> PAYMENTS
+            <img src="../image/payment-method.png" alt="Payments"> PAYMENTS
         </button>
         <button class="sidebar-btn" onclick="location.href='sidebar1.php?page=usersupport'">
-            <img src="../image/support.png" alt="Support"> USER SUPPORT
+            <img src="../image/business-team.png" alt="Support"> USER SUPPORT
         </button>
         <button class="sidebar-btn" onclick="location.href='sidebar1.php?page=editprofile'">
-            <img src="../image/user.png" alt="Profile"> MY PROFILE
+            <img src="../image/account-settings.png" alt="Profile"> MY PROFILE
         </button>
 
         <div class="sidebar-footer">

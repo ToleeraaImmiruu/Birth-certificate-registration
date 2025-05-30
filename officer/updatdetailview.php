@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../vendor/autoload.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -118,9 +119,17 @@ if (isset($_POST["submit"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
     <style>
-        :root {
+        /* :root {
             --primary-color: #3498db;
             --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+        } */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
             --success-color: #2ecc71;
             --danger-color: #e74c3c;
         }
@@ -616,7 +625,7 @@ if (isset($_POST["submit"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <a href="sidebar.php?page=application" class="btn btn-secondary">
+                    <a href="sidebar1.php" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Back to Dashboard
                     </a>
                     <div>
@@ -794,7 +803,7 @@ if (isset($_POST["submit"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="id-card-body">
             <div class="id-photo-section">
-                <img src="../kebele/${data.kebele_id.photo_path || 'https://via.placeholder.com/150'}"
+                <img src="../kebeledashboard/${data.kebele_id.photo_path || 'https://via.placeholder.com/150'}"
                     alt="ID Photo" class="id-main-photo">
             </div>
             <div class="id-details-section">

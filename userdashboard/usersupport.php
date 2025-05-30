@@ -158,7 +158,7 @@ $conn->close();
                 <!-- Officer Form (default visible) -->
                 <div id="officerForm">
                     <h4 class="form-title">Officer Support Request</h4>
-                    <form action="deep2support.php" method="post">
+                    <form action="usersupport.php" method="post">
                         <div class="mb-3">
                             <label for="officerSubject" class="form-label">Subject</label>
                             <input type="text" name="officer_subjet" class="form-control" id="officerSubject" placeholder="Enter subject" required>
@@ -178,7 +178,7 @@ $conn->close();
                 <!-- Admin Form (hidden by default) -->
                 <div id="adminForm" class="d-none">
                     <h4 class="form-title">Admin Support Request</h4>
-                    <form action="deep2support.php" method="post">
+                    <form action="usersupport.php" method="post">
                         <div class="mb-3">
                             <label for="adminSubject" class="form-label">Subject</label>
                             <input type="text" name="admin_subject" class="form-control" id="adminSubject" placeholder="Enter subject" required>

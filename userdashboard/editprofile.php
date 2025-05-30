@@ -49,7 +49,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
             errorModal.show();
         });
     </script>";
-           
         }
     }
 }
@@ -64,11 +63,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
+        /* :root {
             --primary-color: #3498db;
             --secondary-color: #2c3e50;
             --accent-color: #e74c3c;
             --light-gray: #f8f9fa;
+        } */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #0d924f;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
         }
 
         body {
@@ -188,7 +193,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     <div class="profile-container ms-5">
         <div class="profile-card">
             <div class="profile-header">
-                <img src="../assets/uploads/<?php echo htmlspecialchars($user["profile_image"] ?? 'default-profile.jpg') ?>"
+                <img src="../assets/uploads/<?php echo htmlspecialchars($user["profile_image"] ?? 'profile.png') ?>"
                     alt="Profile Image"
                     class="profile-avatar">
                 <h3><?php echo htmlspecialchars($user["first_name"] . " " . $user["last_name"]) ?></h3>
@@ -296,7 +301,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                 your profile is changed successfully
+                    your profile is changed successfully
                 </div>
             </div>
         </div>

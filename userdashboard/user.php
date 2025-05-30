@@ -221,7 +221,7 @@ $num_notf = $notification->num_rows;
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 
     <div class="sidebar">
-      <img src="../image/birth.png" alt="Logo" class="logo">
+      <img src="image/profile.png"alt="Logo" class="logo">
       <button class="btn" onclick="location.href='user.php'">
         <img src="../image/home.png" alt="Home"> HOME
       </button>
