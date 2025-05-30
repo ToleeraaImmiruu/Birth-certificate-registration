@@ -1024,11 +1024,11 @@ $resultannounce = $stmt->get_result();
                         <i class="bi bi-box-arrow-in-right me-1"></i> Login
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="loginDropdown">
-                        <li><a class="dropdown-item" href="public/login/addminlogin.php"><i class="bi bi-person-fill-gear me-2"></i>Admin</a></li>
-                        <li><a class="dropdown-item" href="public/login/hopsitalogin.php"><i class="bi bi-hospital me-2"></i>Hospital</a></li>
-                        <li><a class="dropdown-item" href="public/login/userlogin.php"><i class="bi bi-person-fill me-2"></i>User</a></li>
-                        <li><a class="dropdown-item" href="public/login/kebelelogin.php"><i class="bi bi-building me-2"></i>Kebele Staff</a></li>
-                        <li><a class="dropdown-item" href="public/login/officerlogin.php"><i class="bi bi-person-badge me-2"></i>Officer</a></li>
+                        <li><a class="dropdown-item" href="public/login_new/addminlogin.php"><i class="bi bi-person-fill-gear me-2"></i>Admin</a></li>
+                        <li><a class="dropdown-item" href="public/login_new/hopsitalogin.php"><i class="bi bi-hospital me-2"></i>Hospital</a></li>
+                        <li><a class="dropdown-item" href="public/login_new/userlogin.php"><i class="bi bi-person-fill me-2"></i>User</a></li>
+                        <li><a class="dropdown-item" href="public/login_new/kebelelogin.php"><i class="bi bi-building me-2"></i>Kebele Staff</a></li>
+                        <li><a class="dropdown-item" href="public/login_new/officerlogin.php"><i class="bi bi-person-badge me-2"></i>Officer</a></li>
                     </ul>
                 </div>
 
