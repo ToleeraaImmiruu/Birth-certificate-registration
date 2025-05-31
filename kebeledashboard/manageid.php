@@ -91,7 +91,7 @@ $result = $conn->query($sql);
     <div class="container margin_left">
         <div class="row mb-4">
             <div class="col-12">
-                <h2 class="text-center">User Management</h2>
+                <h2 class="text-center">ID Management</h2>
             </div>
         </div>
 

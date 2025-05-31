@@ -1,5 +1,5 @@
 <?php
-require "../userdashboard/init.php";
+// require "../userdashboard/init.php";
  ?>
 <!DOCTYPE html>
 <html lang="en">

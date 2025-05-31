@@ -3,7 +3,7 @@ session_start();
 
 include "../../setup/dbconnection.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["hospitallogin"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["kebelelogin"])) {
     $username = trim($_POST["username"]);
     $password = trim($_POST["password"]);
 
@@ -205,7 +205,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["hospitallogin"])) {
             <p>Please login to access your account</p>
         </div>
 
-        <form id="loginForm" action="" method="POST">
+        <form id="loginForm" action="kebelelogin.php" method="POST">
             <div class="mb-4">
                 <label for="username" class="form-label">Username</label>
                 <div class="input-group">
@@ -262,30 +262,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["hospitallogin"])) {
         });
 
         // Form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
 
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        //     const username = document.getElementById('username').value;
+        //     const password = document.getElementById('password').value;
 
-            // Here you would typically send this data to a server for validation
-            console.log('Login attempt with:', { username, password });
+        //     // Here you would typically send this data to a server for validation
+        //     console.log('Login attempt with:', { username, password });
 
-            // For demo purposes, show an alert
-            alert('Login functionality would be implemented here. Check console for credentials.');
-        });
+        //     // For demo purposes, show an alert
+        //     alert('Login functionality would be implemented here. Check console for credentials.');
+        // });
 
-        // Forgot password link
-        document.getElementById('forgotPassword').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Forgot password functionality would be implemented here.');
-        });
+        // // Forgot password link
+        // document.getElementById('forgotPassword').addEventListener('click', function(e) {
+        //     e.preventDefault();
+        //     alert('Forgot password functionality would be implemented here.');
+        // });
 
-        // Create account link
-        document.getElementById('createAccount').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Account creation functionality would be implemented here.');
-        });
+        // // Create account link
+        // document.getElementById('createAccount').addEventListener('click', function(e) {
+        //     e.preventDefault();
+        //     alert('Account creation functionality would be implemented here.');
+        // });
     </script>
 </body>
 
