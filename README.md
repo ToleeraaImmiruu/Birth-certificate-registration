@@ -62,7 +62,7 @@ The system includes tables for:
 ---
 
 ## 🖼️ Screenshots
-![Dashboard Screenshot]([https://your-image-url-here](https://github.com/user-attachments/assets/b0c48ce2-bf1e-4548-ba31-15f729e219a3))
+
 
 <img width="1917" height="902" alt="Image" src="https://github.com/user-attachments/assets/b0c48ce2-bf1e-4548-ba31-15f729e219a3" />
 
