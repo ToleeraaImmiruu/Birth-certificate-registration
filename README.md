@@ -87,3 +87,13 @@ The system includes tables for:
 
 <img width="1918" height="907" alt="Image" src="https://github.com/user-attachments/assets/a3f72a6a-6c23-4bad-b68e-af7abe291276" />
 
+## Applicant Dashboard
+
+<img width="1905" height="911" alt="Image" src="https://github.com/user-attachments/assets/0142bf76-fd13-4373-9f2a-03344f33201d" />
+
+<img width="1887" height="916" alt="Image" src="https://github.com/user-attachments/assets/d2290498-7909-4a96-a448-9ae18387d239" />
+
+<img width="1895" height="932" alt="Image" src="https://github.com/user-attachments/assets/5339cd0f-a20e-4b81-8c5c-6f073c1a9e9f" />
+
+<img width="1916" height="917" alt="Image" src="https://github.com/user-attachments/assets/67f2fa13-27db-4433-b620-0ca4bda7e356" />
+
