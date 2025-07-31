@@ -77,6 +77,13 @@ The system includes tables for:
 
 <img width="1890" height="902" alt="Image" src="https://github.com/user-attachments/assets/0c5a0e6e-36d1-4a52-a97b-a2555e7330f2" />
 
-## Addmin Dashboard
+## Birth Certificate Officer(issuer)  Dashboard
 
+<img width="1913" height="907" alt="Image" src="https://github.com/user-attachments/assets/1131c8b7-e3b4-445b-92ac-287dce0ed5c1" />
+
+<img width="1918" height="907" alt="Image" src="https://github.com/user-attachments/assets/1334852a-9acb-4ef0-b07f-39acac9a6699" />
+
+<img width="1907" height="900" alt="Image" src="https://github.com/user-attachments/assets/e41da09a-ff85-4bc7-841a-439ff3b5ecb8" />
+
+<img width="1918" height="907" alt="Image" src="https://github.com/user-attachments/assets/a3f72a6a-6c23-4bad-b68e-af7abe291276" />
 
