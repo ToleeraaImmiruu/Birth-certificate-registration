@@ -97,6 +97,13 @@ The system includes tables for:
 
 <img width="1916" height="917" alt="Image" src="https://github.com/user-attachments/assets/67f2fa13-27db-4433-b620-0ca4bda7e356" />
 
-##Hospital Dashboard
+## Hospital Dashboard
+
 <img width="1912" height="897" alt="Image" src="https://github.com/user-attachments/assets/1d142384-236d-446a-8080-954b84305d8a" />
+
+## Kebele Staff Dahboard
+
+
+<img width="1917" height="917" alt="Image" src="https://github.com/user-attachments/assets/cfa3f91c-c1a0-4bb1-8ee1-9e9145253090" />
+
 
