@@ -58,16 +58,14 @@ The system includes tables for:
 ---
 
 ## Vedios
-[[https://github.com/user-attachments/assets/77349111-df68-4545-9e6f-8677717eafb3](https://github.com/user-attachments/assets/03a15202-3d29-4a6b-bdd9-adfeccd18bec)
 
-](https://github.com/user-attachments/assets/76b40a1f-24d4-4100-82e6-67eb11346d2c
+https://github.com/user-attachments/assets/76b40a1f-24d4-4100-82e6-67eb11346d2c
 
 https://github.com/user-attachments/assets/6350dd7c-145f-4028-899a-3a3a75741c83
 
 https://github.com/user-attachments/assets/e80dcd21-2141-48e6-b19d-4c5b1114f576
 
 https://github.com/user-attachments/assets/ec4eddda-a566-4d56-a076-4cb9192d8a4d
-)
 ---
 
 ## 🖼️ Screenshots
