@@ -1,0 +1,217 @@
+<?php
+session_start();
+include "../setup/dbconnection.php";
+
+// Retrieve all user applications from the database
+$sql = "SELECT id, CONCAT(first_name, ' ', middle_name,' ', last_name) AS full_name, dob, place_of_birth, gender,father_name, mother_name, curent_address FROM aplications";
+$result = $conn->query($sql);
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Review Applications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #0d924f;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        .visible {
+            display: block;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            color: var(--primary-color) !important;
+        }
+        
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        
+        .table thead th {
+            background-color: var(--primary-color) !important;
+            color: white;
+            font-weight: 500;
+            vertical-align: middle;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.03);
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-group-sm .btn {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .badge-status {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .page-title {
+            color: var(--primary-color);
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 12px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .action-btns {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-check me-2"></i>Admin Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h3 class="page-title">User Applications</h3>
+        
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>App ID</th>
+                                <th>Full Name</th>
+                                <th>Date of Birth</th>
+                                <th>Place of Birth</th>
+                                <th>Gender</th>
+                                <th>Mother Name</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if ($result && $result->num_rows > 0): ?>
+                                <?php while ($row = $result->fetch_assoc()): ?>
+                                    <tr id="row-<?= $row['id']; ?>">
+                                        <td class="fw-semibold">#<?= $row['id']; ?></td>
+                                        <td><?= $row['full_name']; ?></td>
+                                        <td><?= $row['dob']; ?></td>
+                                        <td><?= $row['place_of_birth']; ?></td>
+                                        <td><?= $row['gender']; ?></td>
+                                        <td><?= $row['mother_name']; ?></td>
+                                        <td class="action-btns text-end">
+                                            <div class="btn-group-sm d-inline-flex">
+                                                <a href="viewdocument.php?app_id=<?= $row['id']; ?>" class="btn btn-outline-info btn-sm">
+                                                    <i class="bi bi-file-earmark-text"></i> Docs
+                                                </a>
+                                                <button class="btn btn-outline-success btn-sm approveBtn" data-appid="<?= $row['id']; ?>">
+                                                    <i class="bi bi-check-circle"></i> Approve
+                                                </button>
+                                                <button class="btn btn-outline-danger btn-sm rejectBtn" onclick="feedbackfunction()" data-appid="<?= $row['id']; ?>">
+                                                    <i class="bi bi-x-circle"></i> Reject
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted">
+                                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                        <p class="mt-2 mb-0">No applications found</p>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for rejection reason -->
+    <div class="modal fade" id="feedback" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="rejectForm">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="rejectModalLabel">Reject Application</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="app_id" id="rejectAppId" value="">
+                        <div class="mb-3">
+                            <label for="reject_reason" class="form-label">Reason for Rejection</label>
+                            <textarea name="reject_reason" id="reject_reason" class="form-control" rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger" onclick="regectfunction(<?= $row['id'] ?>)">
+                            <i class="bi bi-x-circle me-1"></i> Submit Rejection
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function feedbackfunction() {
+            var feedbackModal = new bootstrap.Modal(document.getElementById('feedback'));
+            feedbackModal.show();
+        }
+
+        function regectfunction(id) {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("row-" + id).remove();
+                    var feedbackModal = bootstrap.Modal.getInstance(document.getElementById('feedback'));
+                    feedbackModal.hide();
+                }
+            }
+            xmlhttp.open("GET", "regect.php?user_id=" + id, true);
+            xmlhttp.send();
+        }
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    </script>
+</body>
+</html>
