@@ -4,7 +4,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php'; // Path to Composer autoload
-
 include '../setup/dbconnection.php';
 
 if (isset($_POST['app_id'])) {
