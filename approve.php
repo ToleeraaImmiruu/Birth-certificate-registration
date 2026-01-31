@@ -11,7 +11,7 @@ if (isset($_POST['app_id'])) {
 
     function generate_id()
     {
-    
+
         global $conn;
         $year = date('y');
         $sql = "SELECT MAX(id) AS max_id FROM certificates";
